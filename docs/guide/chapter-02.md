@@ -606,11 +606,11 @@ Nếu dùng ChatGPT, Claude.ai, Gemini Web, hoặc tool không có hook:
 
 ```bash
 # Interactive (script sẽ hỏi tool + prompt)
-bash scripts/_pyrun.sh scripts/log_manual.py
+scripts/_pyrun.sh scripts/log_manual.py
 
 # One-line
-bash scripts/_pyrun.sh scripts/log_manual.py --tool chatgpt --prompt "Brainstorm UI layout"
-bash scripts/_pyrun.sh scripts/log_manual.py --tool gemini-web --prompt "Research scoring algorithms"
+scripts/_pyrun.sh scripts/log_manual.py --tool chatgpt --prompt "Brainstorm UI layout"
+scripts/_pyrun.sh scripts/log_manual.py --tool gemini-web --prompt "Research scoring algorithms"
 ```
 
 ### Cấu hình `.env`

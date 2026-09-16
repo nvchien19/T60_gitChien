@@ -13,10 +13,10 @@ Workflow này chỉ dành cho khi bạn dùng **tool web không có hook** — v
 **Linux / macOS / Git Bash:**
 ```bash
 # Interactive mode (script sẽ hỏi tool + prompt)
-bash scripts/_pyrun.sh scripts/log_manual.py
+scripts/_pyrun.sh scripts/log_manual.py
 
 # One-line mode
-bash scripts/_pyrun.sh scripts/log_manual.py --tool "<tên tool>" --prompt "<mô tả việc đã làm>"
+scripts/_pyrun.sh scripts/log_manual.py --tool "<tên tool>" --prompt "<mô tả việc đã làm>"
 ```
 
 **Windows (cmd.exe / PowerShell):**
@@ -28,9 +28,9 @@ scripts\_pyrun.cmd scripts\log_manual.py --tool "<tên tool>" --prompt "<mô t�
 ## Ví dụ
 
 ```bash
-bash scripts/_pyrun.sh scripts/log_manual.py --tool chatgpt --prompt "Brainstorm UI layout for verify page"
-bash scripts/_pyrun.sh scripts/log_manual.py --tool gemini-web --prompt "Research risk scoring algorithms"
-bash scripts/_pyrun.sh scripts/log_manual.py --tool claude-web --prompt "Explain OAuth2 PKCE flow"
+scripts/_pyrun.sh scripts/log_manual.py --tool chatgpt --prompt "Brainstorm UI layout for verify page"
+scripts/_pyrun.sh scripts/log_manual.py --tool gemini-web --prompt "Research risk scoring algorithms"
+scripts/_pyrun.sh scripts/log_manual.py --tool claude-web --prompt "Explain OAuth2 PKCE flow"
 ```
 
 Entry sẽ được append vào `.ai-log/session.jsonl` và submit cùng các log auto khác trong lần `git push` kế tiếp.

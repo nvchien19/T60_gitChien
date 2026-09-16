@@ -27,12 +27,20 @@ import argparse
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
+# Python puts this script's own directory on sys.path, so the sibling module
+# imports regardless of the working directory this was run from.
+from _ailog_paths import log_dir as ailog_log_dir, repo_root as ailog_repo_root
+
 VN_TZ = timezone(timedelta(hours=7))
 
 
 def git(cmd):
+    # Run in the repo root so this works from any directory.
     try:
-        return subprocess.check_output(cmd.split(), shell=False, text=True, stderr=subprocess.DEVNULL).strip()
+        return subprocess.check_output(
+            cmd.split(), shell=False, text=True, stderr=subprocess.DEVNULL,
+            cwd=str(ailog_repo_root()),
+        ).strip()
     except Exception:
         return ""
 
@@ -98,8 +106,9 @@ def main():
         "response_summary": result[:500] if result else "",
     }
 
-    log_dir = Path(os.environ.get("AI_LOG_DIR", ".ai-log"))
-    log_dir.mkdir(exist_ok=True)
+    # Anchored to the repo root so this works from any directory.
+    log_dir = ailog_log_dir()
+    log_dir.mkdir(parents=True, exist_ok=True)
     log_file = log_dir / "session.jsonl"
 
     with open(log_file, "a", encoding="utf-8") as f:

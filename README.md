@@ -175,7 +175,7 @@ Mọi prompt được ghi vào `.ai-log/session.jsonl` và tự động gửi l�
 Dùng ChatGPT hay công cụ web khác thì log thủ công:
 
 ```bash
-bash scripts/_pyrun.sh scripts/log_manual.py --tool chatgpt --prompt "What you asked"
+scripts/_pyrun.sh scripts/log_manual.py --tool chatgpt --prompt "What you asked"
 ```
 
 ## Đóng góp
