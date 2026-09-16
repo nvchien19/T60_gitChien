@@ -8,11 +8,17 @@
 # Exits 0 silently if no Python is found — hooks must never block the AI tool.
 set -u
 
-if command -v python3 >/dev/null 2>&1; then
+# On Windows, `python3`/`python` on PATH may resolve to the Microsoft Store's
+# App Execution Alias stub, which exists as a file but errors when run instead
+# of launching Python. `command -v` can't detect that, so probe by actually
+# running --version.
+works() { "$@" --version >/dev/null 2>&1; }
+
+if works python3; then
   PY=python3
-elif command -v python >/dev/null 2>&1; then
+elif works python; then
   PY=python
-elif command -v py >/dev/null 2>&1; then
+elif works py -3; then
   PY="py -3"
 else
   # PATH lookup failed — probe standard Windows install locations.
@@ -23,7 +29,7 @@ else
     "/c/Program Files/Python"*/python.exe \
     "/c/Program Files (x86)/Python"*/python.exe \
     /c/Python*/python.exe; do
-    if [ -x "$cand" ]; then PY="$cand"; break; fi
+    if [ -x "$cand" ] && works "$cand"; then PY="$cand"; break; fi
   done
   shopt -u nullglob 2>/dev/null || true
   [ -n "$PY" ] || exit 0
