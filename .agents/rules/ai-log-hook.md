@@ -21,6 +21,10 @@ Toàn bộ prompt user đã gõ trong Antigravity IDE được capture **nguyên
 
 > Lần đầu mở workspace, Antigravity sẽ hỏi có tin tưởng hook `log-prompt` không — phải bấm đồng ý, nếu không hook sẽ không chạy (chỉ còn lưới an toàn lúc push).
 
+## opencode
+
+opencode cũng được auto-log qua plugin `.opencode/plugin/ai-log.ts` (hook `chat.message`), ghi vào cùng `.ai-log/session.jsonl` với `entry_id` dạng `opencode-<messageID>`. Không cần log thủ công cho opencode.
+
 ## Không làm những việc sau
 
 - ❌ **KHÔNG** gọi `scripts/log_antigravity.py "<summary>" "<model>"` sau mỗi task. Lệnh này đã bị deprecate; nếu vô tình gọi sẽ tạo log entry giả mạo dạng "TaskComplete" không phải prompt thật của user.

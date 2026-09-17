@@ -171,6 +171,7 @@ Mọi prompt được ghi vào `.ai-log/session.jsonl` và tự động gửi l�
 | Gemini CLI | `.gemini/settings.json` | mỗi lượt agent chạy |
 | GitHub Copilot | `.github/hooks/hooks.json` | mỗi prompt và cuối session |
 | Antigravity IDE | `.agents/hooks.json` | mỗi prompt, kèm lần quét lại lúc `git push` |
+| opencode | `.opencode/plugin/ai-log.ts` | mỗi prompt |
 
 Dùng ChatGPT hay công cụ web khác thì log thủ công:
 
