@@ -10,12 +10,23 @@ import subprocess
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
+# Python puts this script's own directory on sys.path, so the sibling module
+# imports regardless of the working directory the hook was spawned in.
+from _ailog_paths import log_dir as ailog_log_dir, repo_root as ailog_repo_root
+
 VN_TZ = timezone(timedelta(hours=7))
 
 
 def git(cmd):
+    # Run in the repo root, not the CWD: a hook spawned from outside the
+    # checkout would otherwise get empty repo/branch/student fields, and
+    # normalize() drops any event whose origin is unknown — losing the log
+    # silently.
     try:
-        return subprocess.check_output(cmd, shell=True, text=True, stderr=subprocess.DEVNULL).strip()
+        return subprocess.check_output(
+            cmd, shell=True, text=True, stderr=subprocess.DEVNULL,
+            cwd=str(ailog_repo_root()),
+        ).strip()
     except Exception:
         return ""
 
@@ -173,8 +184,11 @@ def main():
     if not entry:
         sys.exit(0)
 
-    log_dir = Path(os.environ.get("AI_LOG_DIR", ".ai-log"))
-    log_dir.mkdir(exist_ok=True)
+    # Anchored to the repo root, not the CWD: hooks are spawned by editors and
+    # git from whatever directory happens to be current, and a relative path
+    # would scatter or lose entries.
+    log_dir = ailog_log_dir()
+    log_dir.mkdir(parents=True, exist_ok=True)
     log_file = log_dir / "session.jsonl"
 
     with open(log_file, "a", encoding="utf-8") as f:

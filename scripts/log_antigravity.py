@@ -57,6 +57,10 @@ import sys
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
+# Python puts this script's own directory on sys.path, so the sibling module
+# imports regardless of the working directory the hook was spawned in.
+from _ailog_paths import log_dir as ailog_log_dir
+
 # Fix Windows console encoding so VN diacritics in prompts print cleanly.
 if sys.platform == "win32":
     try:
@@ -362,9 +366,14 @@ def log_from_hook(transcript: Path, data: dict) -> int:
     workspaces = [w for w in (data.get("workspacePaths") or []) if w]
     root = Path(workspaces[0]) if workspaces else Path.cwd()
 
-    log_dir = Path(os.environ.get("AI_LOG_DIR", ".ai-log"))
-    if not log_dir.is_absolute():
-        log_dir = root / log_dir
+    # Hook mode knows the workspace from the payload, so an explicit relative
+    # AI_LOG_DIR is resolved against that workspace rather than the repo root.
+    # Everything else defers to the shared resolver.
+    env_dir = os.environ.get("AI_LOG_DIR", "").strip()
+    if env_dir and not Path(env_dir).is_absolute():
+        log_dir = root / env_dir
+    else:
+        log_dir = ailog_log_dir()
     log_dir.mkdir(parents=True, exist_ok=True)
     log_file = log_dir / "session.jsonl"
     logged_ids = get_logged_entry_ids(log_file)
@@ -453,8 +462,8 @@ def main() -> None:
               file=sys.stderr)
         sys.exit(0)
 
-    log_dir = Path(os.environ.get("AI_LOG_DIR", ".ai-log"))
-    log_dir.mkdir(exist_ok=True)
+    log_dir = ailog_log_dir()
+    log_dir.mkdir(parents=True, exist_ok=True)
     log_file = log_dir / "session.jsonl"
     logged_ids = get_logged_entry_ids(log_file)
 
@@ -518,8 +527,8 @@ def _legacy_log(summary: str, model: str) -> None:
         "prompt": summary[:1000],
         "response_summary": f"[Antigravity] {summary[:500]}",
     }
-    log_dir = Path(os.environ.get("AI_LOG_DIR", ".ai-log"))
-    log_dir.mkdir(exist_ok=True)
+    log_dir = ailog_log_dir()
+    log_dir.mkdir(parents=True, exist_ok=True)
     with open(log_dir / "session.jsonl", "a", encoding="utf-8") as f:
         f.write(json.dumps(entry, ensure_ascii=False) + "\n")
     print(f"[antigravity-log] Logged manual: {summary[:80]}...", file=sys.stderr)

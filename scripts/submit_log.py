@@ -19,6 +19,10 @@ import urllib.error
 from datetime import datetime, timezone
 from pathlib import Path
 
+# Python puts this script's own directory on sys.path, so the sibling module
+# imports regardless of the working directory the hook was spawned in.
+from _ailog_paths import log_dir as ailog_log_dir
+
 try:
     from dotenv import load_dotenv
     load_dotenv()
@@ -27,7 +31,9 @@ except ImportError:
 
 SERVER_URL = os.environ.get("AI_LOG_SERVER", "")
 API_KEY = os.environ.get("AI_LOG_API_KEY", "")
-LOG_DIR = Path(os.environ.get("AI_LOG_DIR", ".ai-log"))
+# Anchored to the repo root: the pre-push hook can be invoked from any
+# subdirectory, and a relative path would submit an empty log from there.
+LOG_DIR = ailog_log_dir()
 LOG_FILE = LOG_DIR / "session.jsonl"
 ARCHIVE_DIR = LOG_DIR / "archive"
 

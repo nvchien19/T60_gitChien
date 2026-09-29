@@ -1,0 +1,8 @@
+# core.autocrlf=true would otherwise check these out with CRLF, which breaks
+# them when Git Bash / sh executes them (the shebang line keeps a trailing \r).
+*.sh text eol=lf
+*.py text eol=lf
+
+# Windows-only launchers must keep CRLF.
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
