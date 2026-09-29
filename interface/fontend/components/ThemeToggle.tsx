@@ -3,22 +3,31 @@
 import { useEffect, useState } from 'react'
 import { Moon, Sun } from 'lucide-react'
 
+type Theme = 'light' | 'dark'
+
+const STORAGE_KEY = 'medicheck-theme'
+
+function applyTheme(theme: Theme) {
+  const root = document.documentElement
+  root.classList.toggle('dark', theme === 'dark')
+  root.classList.toggle('light', theme === 'light')
+  root.style.colorScheme = theme
+}
+
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<'light' | 'dark'>('light')
+  const [theme, setTheme] = useState<Theme>('light')
 
   useEffect(() => {
-    const saved = window.localStorage.getItem('medicheck-theme') as 'light' | 'dark' | null
-    const next = saved ?? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-    document.documentElement.classList.toggle('dark', next === 'dark')
-    document.documentElement.classList.toggle('light', next === 'light')
+    const saved = window.localStorage.getItem(STORAGE_KEY)
+    const next: Theme = saved === 'dark' ? 'dark' : 'light'
+    applyTheme(next)
     setTheme(next)
   }, [])
 
   const toggleTheme = () => {
-    const next = theme === 'dark' ? 'light' : 'dark'
-    document.documentElement.classList.toggle('dark', next === 'dark')
-    document.documentElement.classList.toggle('light', next === 'light')
-    window.localStorage.setItem('medicheck-theme', next)
+    const next: Theme = theme === 'dark' ? 'light' : 'dark'
+    applyTheme(next)
+    window.localStorage.setItem(STORAGE_KEY, next)
     setTheme(next)
   }
 

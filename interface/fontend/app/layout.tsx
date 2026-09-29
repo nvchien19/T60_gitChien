@@ -10,11 +10,7 @@ export const metadata: Metadata = {
     icon: [
       {
         url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
+        sizes: '32x32',
       },
       {
         url: '/icon.svg',
@@ -27,11 +23,10 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   colorScheme: 'light',
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#f7faff' },
-    { media: '(prefers-color-scheme: dark)', color: '#0f1117' },
-  ],
+  themeColor: '#f7faff',
 }
+
+const themeScript = `(function(){try{var s=localStorage.getItem('medicheck-theme');var t=(s==='dark'||s==='light')?s:'light';var r=document.documentElement;r.classList.toggle('dark',t==='dark');r.classList.toggle('light',t==='light');r.style.colorScheme=t;}catch(e){}})();`
 
 export default function RootLayout({
   children,
@@ -39,7 +34,10 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="vi">
+    <html lang="vi" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body className="antialiased">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
