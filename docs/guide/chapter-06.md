@@ -59,7 +59,7 @@ if prompt := st.chat_input("Nhập câu hỏi..."):
     # Call API
     with st.chat_message("assistant"):
         API_URL = "http://localhost:8000/api/v1/chat"
-        
+
         with st.spinner("Đang suy nghĩ..."):
             try:
                 response = requests.post(
@@ -88,7 +88,7 @@ with st.sidebar:
     if st.button("Xóa lịch sử"):
         st.session_state.messages = []
         st.rerun()
-    
+
     st.divider()
     st.caption("AI20K Build Phase — Template Agent")
 ```
@@ -111,7 +111,7 @@ Mở http://localhost:8501 — bạn đã có giao diện chat hoàn chỉnh!
 # Thay phần "Call API" bằng streaming version:
 with st.chat_message("assistant"):
     API_URL = "http://localhost:8000/api/v1/chat/stream"
-    
+
     with st.spinner("Đang suy nghĩ..."):
         try:
             response = requests.post(
@@ -120,7 +120,7 @@ with st.chat_message("assistant"):
                 stream=True,  # Bật streaming cho requests
                 timeout=60,
             )
-            
+
             answer = st.write_stream(
                 line.removeprefix("data: ").strip()
                 for line in response.iter_lines(decode_unicode=True)
@@ -134,14 +134,14 @@ with st.chat_message("assistant"):
 
 ### Khi nào nên dùng Streamlit vs Next.js?
 
-| Tiêu chí | Streamlit | Next.js |
-|-----------|-----------|---------|
-| Thời gian setup | 30 phút | 2-3 giờ |
-| Cần biết | Chỉ Python | Python + JavaScript/React |
-| Giao diện | Đẹp mặc định, ít tùy chỉnh | Tùy chỉnh hoàn toàn |
-| Streaming | Hỗ trợ | Hỗ trợ |
-| Production | Không phù hợp | Phù hợp |
-| Demo Day | ✅ Chấp nhận được | ✅ Tốt hơn |
+| Tiêu chí        | Streamlit                  | Next.js                   |
+| --------------- | -------------------------- | ------------------------- |
+| Thời gian setup | 30 phút                    | 2-3 giờ                   |
+| Cần biết        | Chỉ Python                 | Python + JavaScript/React |
+| Giao diện       | Đẹp mặc định, ít tùy chỉnh | Tùy chỉnh hoàn toàn       |
+| Streaming       | Hỗ trợ                     | Hỗ trợ                    |
+| Production      | Không phù hợp              | Phù hợp                   |
+| Demo Day        | ✅ Chấp nhận được          | ✅ Tốt hơn                |
 
 > 🔑 **ĐIỂM CHÍNH:** Streamlit là công cụ **prototype nhanh nhất** cho AI Agent UI. Dùng nó khi bạn cần focus vào Agent logic (Chương 4) hơn là frontend engineering. Nếu team có thành viên biết React, hãy dùng Next.js (phần 6.1 trở đi) cho giao diện polished hơn.
 
@@ -162,6 +162,7 @@ npx create-next-app@latest ai20k-chat --typescript --tailwind --eslint --app --s
 ```
 
 Khi được hỏi các tùy chọn, chọn:
+
 - TypeScript: Yes
 - ESLint: Yes
 - Tailwind CSS: Yes
@@ -226,9 +227,7 @@ export default function RootLayout({
   return (
     <html lang="vi" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider>
-          {children}
-        </ThemeProvider>
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );
@@ -245,12 +244,10 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-8">
       <div className="max-w-2xl text-center">
-        <h1 className="text-4xl font-bold mb-4">
-          AI20K Agent
-        </h1>
+        <h1 className="text-4xl font-bold mb-4">AI20K Agent</h1>
         <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
-          Trợ lý AI thông minh sẵn sàng giúp bạn nghiên cứu,
-          phân tích và trả lời câu hỏi.
+          Trợ lý AI thông minh sẵn sàng giúp bạn nghiên cứu, phân tích và trả
+          lời câu hỏi.
         </p>
         <Link
           href="/chat"
@@ -330,14 +327,10 @@ export default function ChatPage() {
             Gửi tin nhắn để bắt đầu trò chuyện
           </div>
         ) : (
-          messages.map((msg) => (
-            <ChatMessage key={msg.id} message={msg} />
-          ))
+          messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)
         )}
         {isLoading && (
-          <div className="text-gray-500 animate-pulse">
-            Đang suy nghĩ...
-          </div>
+          <div className="text-gray-500 animate-pulse">Đang suy nghĩ...</div>
         )}
       </div>
 
@@ -367,6 +360,7 @@ Tailwind CSS là utility-first CSS framework — thay vì viết CSS classes ri�
 ```
 
 Các utility class phổ biến:
+
 - **Spacing:** `p-4` (padding), `m-4` (margin), `gap-2` (gap in flex/grid)
 - **Sizing:** `w-full`, `h-screen`, `max-w-4xl`, `min-h-screen`
 - **Typography:** `text-sm`, `font-bold`, `text-gray-600`, `leading-relaxed`
@@ -388,6 +382,7 @@ Tailwind sử dụng mobile-first approach — thiết kế cho mobile trước,
 ```
 
 Breakpoints:
+
 - Mặc định (không prefix): 0px+ (mobile)
 - `sm:`: 640px+ (large phone)
 - `md:`: 768px+ (tablet)
@@ -419,9 +414,7 @@ export default function ChatLayout({
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 flex flex-col min-w-0">
-        {children}
-      </main>
+      <main className="flex-1 flex flex-col min-w-0">{children}</main>
     </div>
   );
 }
@@ -442,12 +435,8 @@ export default function Dashboard() {
 
       {/* Chat area */}
       <div className="lg:col-span-2 border rounded-lg flex flex-col">
-        <div className="flex-1 overflow-y-auto p-4">
-          {/* Messages */}
-        </div>
-        <div className="border-t p-4">
-          {/* Input */}
-        </div>
+        <div className="flex-1 overflow-y-auto p-4">{/* Messages */}</div>
+        <div className="border-t p-4">{/* Input */}</div>
       </div>
 
       {/* Info panel */}
@@ -494,10 +483,10 @@ import { ReactNode } from "react";
 export function ThemeProvider({ children }: { children: ReactNode }) {
   return (
     <NextThemesProvider
-      attribute="class"       // Thêm class "dark" vào <html>
-      defaultTheme="system"   // Theo hệ điều hành
-      enableSystem={true}     // Cho phép auto-detect system theme
-      disableTransitionOnChange  // Tránh flash khi chuyển theme
+      attribute="class" // Thêm class "dark" vào <html>
+      defaultTheme="system" // Theo hệ điều hành
+      enableSystem={true} // Cho phép auto-detect system theme
+      disableTransitionOnChange // Tránh flash khi chuyển theme
     >
       {children}
     </NextThemesProvider>
@@ -529,21 +518,37 @@ export default function ThemeToggle() {
 
   return (
     <button
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      onClick={() => setTheme(theme === "light" ? "dark" : "light")}
       className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
       aria-label="Chuyển đổi theme"
     >
       {theme === "dark" ? (
         // Sun icon cho dark mode
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
             d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
           />
         </svg>
       ) : (
         // Moon icon cho light mode
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
             d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
           />
         </svg>
@@ -591,8 +596,8 @@ export default function ChatMessage({ message }: { message: Message }) {
       <div
         className={`max-w-[80%] rounded-2xl px-4 py-3 ${
           isUser
-            ? "bg-blue-600 text-white"          // User message: blue
-            : "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100"  // AI message: gray
+            ? "bg-blue-600 text-white" // User message: blue
+            : "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100" // AI message: gray
         }`}
       >
         <p className="whitespace-pre-wrap">{message.content}</p>
@@ -600,7 +605,10 @@ export default function ChatMessage({ message }: { message: Message }) {
           <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
             <p className="text-xs text-gray-500 dark:text-gray-400">Nguồn:</p>
             {message.sources.map((src, i) => (
-              <p key={i} className="text-xs text-gray-400 dark:text-gray-500 truncate">
+              <p
+                key={i}
+                className="text-xs text-gray-400 dark:text-gray-500 truncate"
+              >
                 {src}
               </p>
             ))}
@@ -639,9 +647,7 @@ export interface ChatResponse {
   timestamp: string;
 }
 
-export async function sendMessage(
-  request: ChatRequest
-): Promise<ChatResponse> {
+export async function sendMessage(request: ChatRequest): Promise<ChatResponse> {
   const response = await fetch(`${API_BASE}/api/v1/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -702,9 +708,7 @@ export function useChat() {
       };
       setMessages((prev) => [...prev, assistantMsg]);
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Lỗi không xác định"
-      );
+      setError(err instanceof Error ? err.message : "Lỗi không xác định");
     } finally {
       setIsLoading(false);
     }
@@ -732,8 +736,16 @@ export default function ChatError({
 }) {
   return (
     <div className="flex items-center gap-3 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
-      <svg className="w-5 h-5 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+      <svg
+        className="w-5 h-5 text-red-500 shrink-0"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
           d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
         />
       </svg>
@@ -836,8 +848,10 @@ export default function ChatMessage({ message }: ChatMessageProps) {
     <div className={`flex ${isUser ? "justify-end" : "justify-start"} mb-4`}>
       {/* Avatar */}
       {!isUser && (
-        <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900
-                        flex items-center justify-center mr-2 shrink-0">
+        <div
+          className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900
+                        flex items-center justify-center mr-2 shrink-0"
+        >
           <span className="text-sm">AI</span>
         </div>
       )}
@@ -858,9 +872,13 @@ export default function ChatMessage({ message }: ChatMessageProps) {
         {/* Sources */}
         {message.sources && message.sources.length > 0 && (
           <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-xs font-medium opacity-60 mb-1">Nguồn tham khảo:</p>
+            <p className="text-xs font-medium opacity-60 mb-1">
+              Nguồn tham khảo:
+            </p>
             {message.sources.map((src, i) => (
-              <p key={i} className="text-xs opacity-50 truncate">{src}</p>
+              <p key={i} className="text-xs opacity-50 truncate">
+                {src}
+              </p>
             ))}
           </div>
         )}
@@ -989,8 +1007,8 @@ export function useStreamingChat() {
           prev.map((msg) =>
             msg.id === assistantId
               ? { ...msg, content: streamRef.current }
-              : msg
-          )
+              : msg,
+          ),
         );
       },
       // onDone
@@ -999,13 +1017,11 @@ export function useStreamingChat() {
       (error) => {
         setMessages((prev) =>
           prev.map((msg) =>
-            msg.id === assistantId
-              ? { ...msg, content: `Lỗi: ${error}` }
-              : msg
-          )
+            msg.id === assistantId ? { ...msg, content: `Lỗi: ${error}` } : msg,
+          ),
         );
         setIsStreaming(false);
-      }
+      },
     );
   }, []);
 
@@ -1102,7 +1118,7 @@ import MarkdownRenderer from "./MarkdownRenderer";
 // Trong ChatMessage, thay thế:
 // <div>{message.content}</div>
 // bằng:
-<MarkdownRenderer content={message.content} />
+<MarkdownRenderer content={message.content} />;
 ```
 
 > 🔑 **ĐIỂM CHÍNH:** Streaming display là yếu tố then chốt cho UX của AI chat. Người dùng thấy câu trả lời xuất hiện từng phần, tạo cảm giác "AI đang suy nghĩ và trả lời". Kết hợp với markdown rendering, bạn có giao diện chat chuyên nghiệp, tương tự ChatGPT.
@@ -1117,8 +1133,14 @@ import MarkdownRenderer from "./MarkdownRenderer";
 }
 
 @keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
 }
 ```
 
