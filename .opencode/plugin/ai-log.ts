@@ -1,6 +1,6 @@
 import type { Plugin } from "@opencode-ai/plugin"
 import type { UserMessage, TextPart } from "@opencode-ai/sdk"
-import { appendFileSync, mkdirSync } from "node:fs"
+import { appendFileSync, mkdirSync, readFileSync, readdirSync } from "node:fs"
 import { join } from "node:path"
 
 const VN_TZ_OFFSET_MS = 7 * 3600 * 1000
@@ -32,6 +32,29 @@ export default (async ({ directory, $ }) => {
   }
 
   const seen = new Set<string>()
+  const seed = (path: string) => {
+    let raw: string
+    try {
+      raw = readFileSync(path, "utf8")
+    } catch {
+      return
+    }
+    for (const line of raw.split("\n")) {
+      const trimmed = line.trim()
+      if (!trimmed) continue
+      try {
+        const id = JSON.parse(trimmed).entry_id
+        if (id) seen.add(id)
+      } catch {}
+    }
+  }
+  seed(logFile)
+  try {
+    const archiveDir = join(logDir, "archive")
+    for (const name of readdirSync(archiveDir)) {
+      if (name.endsWith(".jsonl")) seed(join(archiveDir, name))
+    }
+  } catch {}
 
   return {
     async "chat.message"(
@@ -41,15 +64,15 @@ export default (async ({ directory, $ }) => {
       output: { message: UserMessage; parts: TextPart[] },
     ) {
       try {
-        if (seen.has(output.message.id)) return
+        const entryId = `opencode-${output.message.id}`
+        if (seen.has(entryId)) return
         const text = (output.parts ?? [])
           .filter((p) => p.type === "text" && !p.synthetic)
           .map((p) => p.text ?? "")
           .join("\n")
           .trim()
         if (!text) return
-        if (seen.size > 1000) seen.clear()
-        seen.add(output.message.id)
+        seen.add(entryId)
 
         const branch = (await sh`git rev-parse --abbrev-ref HEAD`.quiet().text()).trim()
         const commit = (await sh`git rev-parse --short HEAD`.quiet().text()).trim()
@@ -59,7 +82,7 @@ export default (async ({ directory, $ }) => {
           ts: vnIso(),
           tool: "opencode",
           event: "UserPromptSubmit",
-          entry_id: `opencode-${output.message.id}`,
+          entry_id: entryId,
           session_id: input.sessionID,
           model: `${model?.providerID ?? ""}/${model?.modelID ?? ""}`,
           repo,
