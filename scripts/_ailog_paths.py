@@ -28,7 +28,12 @@ def repo_root() -> Path:
         out = subprocess.run(
             ["git", "rev-parse", "--show-toplevel"],
             capture_output=True,
-            text=True,
+            # git prints UTF-8. Without this, text=True decodes with the Windows
+            # code page (cp1252), so a path containing non-ASCII characters
+            # (e.g. Vietnamese folder names) comes back as mojibake that does not
+            # exist on disk, and every log script silently drops its entries.
+            encoding="utf-8",
+            errors="replace",
             timeout=10,
             cwd=str(Path(__file__).resolve().parent),
         )
