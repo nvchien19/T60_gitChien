@@ -24,7 +24,7 @@ def git(cmd):
     # silently.
     try:
         return subprocess.check_output(
-            cmd, shell=True, text=True, stderr=subprocess.DEVNULL,
+            cmd, shell=True, encoding="utf-8", errors="replace", stderr=subprocess.DEVNULL,
             cwd=str(ailog_repo_root()),
         ).strip()
     except Exception:
