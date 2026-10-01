@@ -56,6 +56,7 @@ import subprocess
 import sys
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
+from typing import Optional
 
 # Python puts this script's own directory on sys.path, so the sibling module
 # imports regardless of the working directory the hook was spawned in.
@@ -87,7 +88,7 @@ AUX_BLOCK_RE = re.compile(
 )
 
 
-def git(cmd: str, cwd: Path | None = None) -> str:
+def git(cmd: str, cwd: Optional[Path] = None) -> str:
     try:
         return subprocess.check_output(
             cmd.split(), shell=False, text=True, stderr=subprocess.DEVNULL,
@@ -97,7 +98,7 @@ def git(cmd: str, cwd: Path | None = None) -> str:
         return ""
 
 
-def repo_context(cwd: Path | None = None) -> tuple[str, str, str, str]:
+def repo_context(cwd: Optional[Path] = None) -> tuple[str, str, str, str]:
     """(repo, branch, commit, student) read from the git tree at `cwd`.
 
     Hook mode passes the workspace root explicitly: the hook process does not
@@ -237,7 +238,7 @@ def get_logged_entry_ids(log_file: Path) -> set[str]:
 # ---------------------------------------------------------------------------
 
 def iter_transcript_inputs(transcript: Path, conv_id: str,
-                           cutoff: datetime | None):
+                           cutoff: Optional[datetime]):
     """Yield the user-typed prompts recorded in one transcript.jsonl."""
     with open(transcript, encoding="utf-8") as f:
         for line in f:
@@ -273,8 +274,8 @@ def iter_transcript_inputs(transcript: Path, conv_id: str,
             }
 
 
-def iter_user_inputs(brain_dirs: list[Path], cutoff: datetime | None,
-                     only_conv: str | None, repo_root_n: str):
+def iter_user_inputs(brain_dirs: list[Path], cutoff: Optional[datetime],
+                     only_conv: Optional[str], repo_root_n: str):
     """Yield user-input dicts from every matching conversation transcript."""
     for brain in brain_dirs:
         for conv_dir in sorted(brain.iterdir()):
@@ -334,7 +335,7 @@ def build_entry(msg: dict, repo: str, branch: str, commit: str,
 # Antigravity 2.0 hook mode
 # ---------------------------------------------------------------------------
 
-def transcript_from_payload(data: dict) -> Path | None:
+def transcript_from_payload(data: dict) -> Optional[Path]:
     """The transcript this hook invocation is about.
 
     Antigravity gives us `transcriptPath` outright; `conversationId` is only a
