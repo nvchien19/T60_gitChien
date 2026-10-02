@@ -5,6 +5,10 @@ line-length = 120
 select = ["E", "F", "I", "N", "W", "UP"]
 ignore = ["E501"]
 
+[lint.per-file-ignores]
+# Cầu nối backend <-> loi AI: import `src.*` la mot chiều, khong loi
+"interface/backend/agent_adapter/__init__.py" = ["I"]
+
 [format]
 quote-style = "double"
 indent-style = "space"

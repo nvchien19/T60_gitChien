@@ -1,39 +1,14 @@
-from contextlib import asynccontextmanager
+"""Compatibility shim — `uvicorn src.main:app` hoạt động như template gốc.
 
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+App FastAPI thật nằm ở `interface/backend/main.py`. File này chỉ re-export
+nên không kéo FastAPI/SQLAlchemy vào `src/`; rule một chiều
+`interface.backend → src` (xem `ARCHITECTURE.md`) vẫn giữ nguyên về mặt code,
+dù có một import ngược duy nhất tại đây.
 
-from src.api.routes import router
-from src.config import get_settings
+Canonical entry point vẫn là:
+    uvicorn interface.backend.main:app --reload --port 8000
+"""
 
+from interface.backend.main import app
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    settings = get_settings()
-    print(f"Starting {settings.app_name} in {settings.app_env} mode")
-    yield
-    print("Shutting down...")
-
-
-app = FastAPI(
-    title="AI20K Agent",
-    description="AI Agent built with LangGraph",
-    version="1.0.0",
-    lifespan=lifespan,
-)
-
-settings = get_settings()
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.cors_origins.split(","),
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-app.include_router(router, prefix="/api/v1")
-
-
-@app.get("/health")
-async def health():
-    return {"status": "ok", "env": settings.app_env}
+__all__ = ["app"]

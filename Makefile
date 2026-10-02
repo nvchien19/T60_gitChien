@@ -1,19 +1,24 @@
 .PHONY: run test lint format typecheck check clean
 
+CORE := src/
+WEB := interface/backend/
+
 run:
-	uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
+	uvicorn interface.backend.main:app --reload --host 0.0.0.0 --port 8000
 
 test:
 	pytest tests/ -v
 
+# ruff tach 2 lop: loi rieng cho loi AI core, rieng cho loi backend web
 lint:
-	ruff check src/ tests/
+	ruff check $(CORE) tests/
+	ruff check $(WEB)
 
 format:
-	ruff format src/ tests/
+	ruff format $(CORE) $(WEB) tests/
 
 typecheck:
-	mypy src/
+	mypy $(CORE)
 
 check: lint format test
 

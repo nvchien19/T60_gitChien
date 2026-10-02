@@ -13,22 +13,27 @@ class Settings(BaseSettings):
     )
 
     # App
-    app_name: str = "AI20K Agent"
+    app_name: str = "Ra Thuoc — DDI Safety API"
     app_env: Literal["development", "production", "test"] = "development"
     app_port: int = Field(default=8000, ge=1, le=65535)
     app_host: str = "0.0.0.0"
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
     cors_origins: str = "http://localhost:3000"
 
-    # LLM
+    # LLM (chi dung cho embed / agent sau; thieu van chay exact-match)
     openai_api_key: str = ""
     model_name: str = "gpt-4o-mini"
     llm_temperature: float = Field(default=0.7, ge=0.0, le=2.0)
+    embedding_model: str = "text-embedding-3-small"
+    similarity_threshold: float = 0.75
 
-    # Database
-    database_url: str = "sqlite:///./data/app.db"
+    # Database — sqlite dev/test, postgres+pgvector prod
+    # dev:  sqlite+aiosqlite:///./data/app.db
+    # prod: postgresql+asyncpg://postgres:postgres@db:5432/rathuoc
+    database_url: str = "sqlite+aiosqlite:///./data/app.db"
+    mvp_dir: str = "data/mvp"
 
-    # Vector Store
+    # Vector Store (legacy, giu de tuong thich)
     chroma_persist_dir: str = "./data/chroma"
 
 

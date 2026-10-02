@@ -1,5 +1,5 @@
-import type { Plugin } from "@opencode-ai/plugin"
-import type { UserMessage, TextPart } from "@opencode-ai/sdk"
+import type { Hooks, PluginInput } from "@opencode-ai/plugin"
+import type { Part, TextPart, UserMessage } from "@opencode-ai/sdk"
 import { appendFileSync, mkdirSync, readFileSync, readdirSync } from "node:fs"
 import { join } from "node:path"
 
@@ -10,7 +10,7 @@ function vnIso(): string {
   return d.toISOString().replace("Z", "+07:00")
 }
 
-export default (async ({ directory, $ }) => {
+export default (async ({ directory, $ }: PluginInput) => {
   const sh = $.cwd(directory).nothrow()
 
   const root = (await sh`git rev-parse --show-toplevel`.quiet().text()).trim()
@@ -56,18 +56,19 @@ export default (async ({ directory, $ }) => {
     }
   } catch {}
 
-  return {
+  const hooks: Hooks = {
     async "chat.message"(
       input: {
         sessionID: string
       },
-      output: { message: UserMessage; parts: TextPart[] },
+      output: { message: UserMessage; parts: Part[] },
     ) {
       try {
         const entryId = `opencode-${output.message.id}`
         if (seen.has(entryId)) return
-        const text = (output.parts ?? [])
-          .filter((p) => p.type === "text" && !p.synthetic)
+        const text = output.parts
+          .filter((p): p is TextPart => p.type === "text")
+          .filter((p) => !p.synthetic)
           .map((p) => p.text ?? "")
           .join("\n")
           .trim()
@@ -95,5 +96,6 @@ export default (async ({ directory, $ }) => {
         /* never break the TUI */
       }
     },
-  } satisfies Plugin
+  }
+  return hooks
 })

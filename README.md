@@ -74,41 +74,70 @@ Chạy một lần sau khi clone. Hook ghi lại prompt khi bạn dùng Claude C
 Codex CLI, Gemini CLI, Antigravity hoặc GitHub Copilot, và cài pre-push hook để
 đẩy log lên server.
 
-### 5. Chạy server
+### 5. Chạy backend
+
+App FastAPI nằm ở `interface/backend/main.py`. `src/main.py` là shim mỏng chỉ
+re-export nên cả hai lệnh dưới đây đều chạy:
 
 ```bash
-uvicorn src.main:app --reload --port 8000
+uvicorn src.main:app --reload --host 0.0.0.0 --port 8000          # như template
+uvicorn interface.backend.main:app --reload --host 0.0.0.0 --port 8000  # canonical
+# hoặc
+make run                                                       # dùng canonical
 ```
 
-Swagger UI ở <http://localhost:8000/docs>. Hoặc dùng `make run`, `make test`,
-`make lint` — xem `Makefile`.
+Swagger UI ở <http://localhost:8000/docs>. Hoặc dùng `make test`, `make lint` —
+xem `Makefile`.
+
+### 6. Chạy giao diện
+
+Giao diện Next.js nằm ở `interface/fontend`, chạy riêng ở cổng 3000:
+
+```bash
+cd interface/fontend
+npm install
+npm run dev
+```
+
+Backend đã bật CORS cho `http://localhost:3000` (`.env` → `CORS_ORIGINS`).
+
+> Giao diện hiện vẫn chạy dữ liệu mock, chưa gọi API. Bảng ánh xạ từng màn hình
+> sang endpoint tương ứng nằm ở `docs/BE_DEVELOPMENT.md`.
 
 ## Cấu trúc thư mục
 
 ```
-src/
-  agents/            LangGraph agent
-    graph.py         State graph (nodes + edges)
-    state.py         State schema (TypedDict)
-    nodes/           Node functions
-    tools/           Agent tools (@tool)
-  api/routes.py      FastAPI endpoints
-  models/schemas.py  Pydantic schemas
-  services/llm.py    LLM client
-  config.py          Pydantic Settings
-  main.py            App entry point
-tests/               pytest suite
-scripts/             Hook ghi log AI + installer
+interface/
+  backend/            FastAPI app — entry point interface.backend.main:app
+    api/              routers: drugs, interactions, prescriptions, sources, agent
+    db/               SQLAlchemy models + async session
+    repositories/     tầng SQL duy nhất được phép truy vấn DB
+    schemas/          Pydantic I/O contracts
+    services/         business logic (check_service)
+    agent_adapter/    cầu nối duy nhất sang src/ (LangGraph)
+    config.py         Pydantic Settings
+    main.py           app entry point + CORS
+  fontend/            Next.js 16 App Router, React 19, Tailwind v4 — cổng 3000
+src/                  AI core thuần — không import FastAPI/SQLAlchemy
+  agents/             LangGraph agent (graph, state, nodes)
+  core/               guardrail rule-based
+  services/llm.py     LLM client
+  tools/              thuật toán thuần (normalize, lookup, rank)
+  main.py             shim re-export app (tương thích `uvicorn src.main:app`)
+tests/                pytest suite
+alembic/              migration script
+data/                 DDI dataset + SQLite cho dev
+scripts/              Hook ghi log AI + installer
 docs/
-  guide/             Technical Guidebook (nguồn của bản online)
-  architecture_diagram.md
-eval/                Kết quả evaluation
-presentation/        Slide và video Demo Day
+  architecture/       thiết kế kiến trúc
+  guide/              Technical Guidebook (nguồn của bản online)
+eval/                 Kết quả evaluation
+presentation/         Slide và video Demo Day
 .claude/ .codex/ .cursor/ .gemini/ .agents/ .github/hooks/
                      Config hook cho từng công cụ
-.github/workflows/   CI
-Dockerfile           Multi-stage build
-docker-compose.yml   Chạy backend bằng Docker
+.github/workflows/    CI
+Dockerfile            Multi-stage build
+docker-compose.yml    Chạy backend bằng Docker
 README_boilerplate.md  Khung README cho dự án của đội
 ```
 
@@ -151,10 +180,11 @@ bằng bất kỳ markdown viewer nào.
 
 | Lớp | Công nghệ |
 |---|---|
-| Agent | LangGraph + LangChain 0.3 |
-| Backend | FastAPI 0.115 + Uvicorn |
-| LLM | OpenAI, mặc định `gpt-4o-mini` (đổi trong `src/config.py`) |
-| Giao diện | Next.js hoặc Streamlit (đội tự chọn, hướng dẫn ở chương 6) |
+| Agent | LangGraph + LangChain 0.3 (`src/agents/`) |
+| Backend | FastAPI 0.115 + Uvicorn (`interface/backend/`) |
+| LLM | OpenAI, mặc định `gpt-4o-mini` (đổi trong `interface/backend/config.py`) |
+| Giao diện | Next.js 16 + React 19 + Tailwind v4 (`interface/fontend/`) |
+| Database | PostgreSQL 16 + pgvector, hoặc SQLite cho dev |
 | Lint / test | ruff + pytest 8 |
 | DevOps | Docker + GitHub Actions |
 

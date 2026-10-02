@@ -116,7 +116,7 @@ src/  (giữ nguyên theo template, KHÔNG tách interface/be vội)
 | `drugs` | `drugs.csv` (5.876) | `drug_id TEXT PK` (`DDInterxxx` hoặc `DAV:<khoa>`) | `name, name_vi, base_name, route_variant, drugbank_id, atc_code, drug_type, in_vn BOOL, n_products_valid, n_interactions` | DDInter tách bản ghi theo đường dùng (`ophthalmic/topical/nasal/otic/parenteral`); `base_name` là tên chung. `DAV:*` = hoạt chất chỉ có ở VN, chưa có DDI → luôn `no_record` |
 | `aliases` | `aliases.csv` (63.646) | `PK (alias, drug_id, source_id)` | `alias TEXT (đã khoa(): lowercase-bỏ dấu-chỉ giữ chữ-số), alias_type, status (ok/suggest), drug_name` | Thuốc phối hợp 1 alias → N drug_id nên **không** UNIQUE(alias). `alias_type`: `inn_en/inn_vi/brand_vi/synonym/inn_vi_auto` |
 | `products` | `products.csv` (54.883) | `product_id BIGINT PK` | `registration_no, name, active_ingredients, strength, dosage_form, route, form_group, enteric_coated, modified_release, category, manufacturer, status (valid/expired/withdrawn), expiry_date` | 1 dòng = 1 số đăng ký DAV. `route/form_group` đã suy luận sẵn |
-| `product_ingredients` | `product_ingredients.csv` (87.504) | `PK (product_id, position)` | `ingredient, strength, drug_id FK, base_drug_id, match_method, match_score, status (ok/suggest/unknown), route_match, needs_review BOOL` | Junction DAV→DDInter **đã chọn theo đường dùng**. `route_match`: `route_specific/systemic/systemic_record/other_route` |
+| `product_ingredients` | `product_ingredients.csv` (87.504) | `id SERIAL PK`, `UNIQUE (product_id, position, drug_id)` | `ingredient, strength, drug_id FK, base_drug_id, match_method, match_score, status (ok/suggest/unknown), route_match, needs_review BOOL` | Junction DAV→DDInter **đã chọn theo đường dùng**. `route_match`: `route_specific/systemic/systemic_record/other_route` |
 
 **Nhóm B — Tương tác & bằng chứng (7 bảng + 1 view logic):**
 
@@ -128,7 +128,7 @@ src/  (giữ nguyên theo template, KHÔNG tách interface/be vội)
 | `disease_interactions` | `disease_interactions.csv` (8.359) | `id SERIAL PK` | `drug_id FK, disease, mesh_id, severity, description, refs` | Thuốc–bệnh nền (P2 mới check theo bệnh, P0 chỉ hiển thị khi tra 1 thuốc) |
 | `duplication_classes` | `duplication_classes.csv` (741) | `PK (class_name, drug_id)` | `drug_name, max_concurrent (=1 hầu hết)` | Trùng nhóm điều trị: ≥2 thuốc cùng class → finding `duplicate_class` |
 | `ara_interactions` | `ara_interactions.csv` (272) | `id SERIAL PK` | `table, victim_drug_ids[], victim_form, victim_is_combination BOOL, ara_class, ara_drug_ids[], mechanism, effect, severity, recommendation, route_scope='oral'` | Lớp 2 Patel2020. **Chỉ áp dụng khi victim dùng ĐƯỜNG UỐNG.** Bảng 6 (`severity=''`) chỉ tham khảo, không hạ mức |
-| `dosage_form_rules` | `dosage_form_rules.csv` (28) | `rule_id TEXT PK` | `drug_id, drug_route, drug_form, other_drug_id, other_route, severity, action, effect_vi, management_vi, evidence, source_url` | Lớp 2 từ nhãn FDA. `action`: `raise_severity` (8 rule → `contraindicated`, áp mọi dạng) / `form_specific` / `no_interaction_for_form` (chỉ hạ khi lớp 1 ≠ contraindicated). DDInter **không có** contraindicated — mức này chỉ từ đây |
+| `dosage_form_rules` | `dosage_form_rules.csv` (28) | `PK (rule_id, other_drug_id)` | `drug_id, drug_route, drug_form, other_drug_id, other_route, severity, action, effect_vi, management_vi, evidence, source_url` | Lớp 2 từ nhãn FDA. `action`: `raise_severity` (8 rule → `contraindicated`, áp mọi dạng) / `form_specific` / `no_interaction_for_form` (chỉ hạ khi lớp 1 ≠ contraindicated). DDInter **không có** contraindicated — mức này chỉ từ đây |
 | `pk_ddi` *(evidence)* | `pk_ddi.csv` (4.277) | `PK (perpetrator_id, victim_id)` | `auc_fold_change, magnitude` | Bằng chứng định lượng bổ sung, không tự sinh severity |
 | `fda_labels` *(evidence)* | `fda_labels.csv` (4.931) | `label_set_id TEXT PK` | `effective_time, route, substances, drug_ids[], brand_names, boxed_warning, contraindications, drug_interactions, dosage_forms...` | Gộp theo (hoạt chất, route). Hiển thị ở modal bằng chứng FE |
 
@@ -190,14 +190,14 @@ CREATE INDEX ON products USING gin (to_tsvector('simple', name));
 CREATE INDEX ON products (status, route);
 
 CREATE TABLE product_ingredients (
+  id SERIAL PRIMARY KEY,   -- surrogate: 372 dong drug_id trong + 11 cap (product,position) 2 drug_id ung vien
   product_id BIGINT REFERENCES products(product_id) ON DELETE CASCADE,
   position INT NOT NULL,
   ingredient TEXT NOT NULL, strength TEXT,
-  drug_id TEXT REFERENCES drugs(drug_id),
+  drug_id TEXT REFERENCES drugs(drug_id),   -- NULL = unknown, can kiem tra
   base_drug_id TEXT, match_method TEXT, match_score INT,
-  status TEXT CHECK (status IN ('ok','suggest','unknown')),
-  route_match TEXT, needs_review BOOLEAN DEFAULT FALSE,
-  PRIMARY KEY (product_id, position)
+  status TEXT, route_match TEXT, needs_review BOOLEAN DEFAULT FALSE,
+  UNIQUE (product_id, position, drug_id)
 );
 CREATE INDEX ON product_ingredients (drug_id);
 
@@ -215,14 +215,18 @@ CREATE TABLE drug_interactions (
   interaction_id BIGINT PRIMARY KEY,
   drug_a TEXT NOT NULL REFERENCES drugs(drug_id),
   drug_b TEXT NOT NULL REFERENCES drugs(drug_id),
-  CHECK (drug_a < drug_b),
+  -- KHONG CHECK (drug_a<drug_b): CSV sap theo SO DDInter (DDInter999<DDInter1000)
+  -- nhung SQLite so TEXT ('DDInter999'>'DDInter1000'). Lookup query ca 2 chieu,
+  -- app chuan hoa ve sorted_pair() numeric truoc khi merge/rank.
   severity TEXT CHECK (severity IN ('major','moderate','minor')) NOT NULL,
   mechanism_id TEXT REFERENCES interaction_mechanisms(mechanism_id),
   mechanism_type TEXT, both_in_vn BOOLEAN DEFAULT FALSE,
   source_id TEXT REFERENCES sources(source_id) DEFAULT 'ddinter',
-  source_url TEXT,
-  UNIQUE (drug_a, drug_b, mechanism_id)           -- 1 cặp có thể 2 cơ chế
+  source_url TEXT
+  -- DDInter goc co 218 cap trung (a,b,mechanism) voi 2 interaction_id khac nhau
+  -- -> UNIQUE chi o interaction_id, khong UNIQUE (a,b,mechanism)
 );
+CREATE INDEX ix_pair_mech ON drug_interactions (drug_a, drug_b, mechanism_id);
 CREATE INDEX ON drug_interactions (drug_a, drug_b);
 CREATE INDEX ON drug_interactions (both_in_vn, severity) WHERE both_in_vn;
 
