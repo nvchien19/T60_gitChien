@@ -9,6 +9,13 @@ Nhom C: prescriptions, medications, checks, reviews.
 Portable SQLite/Postgres: mang TEXT[] -> JSON, embedding vector(1536) -> JSON
 khi chay SQLite; tren Postgres co the ALTER sang pgvector bang migration
 rieng (scripts/embed_mechanisms.py chi UPDATE JSON, repo tu cosine).
+
+Cot khop `db/mvp_schema.sql`. Lech co chu dich giu nguyen:
+  - `id` surrogate PK (product_ingredients, food/disease/ara_interactions):
+    CSV khong co cot nay va mot so cap trung nen khong dung composite PK.
+  - `interaction_mechanisms.embedding`: vector(1536) tren Postgres.
+  - `victim_drug_ids` / `ara_drug_ids` / `fda_labels.drug_ids`: TEXT phan tach
+    trong CSV -> JSON de query duoc tren ca SQLite va Postgres.
 """
 
 from datetime import datetime
@@ -53,8 +60,12 @@ class Drug(Base):
     drugbank_id: Mapped[str | None] = mapped_column(Text)
     atc_code: Mapped[str | None] = mapped_column(Text)
     drug_type: Mapped[str | None] = mapped_column(Text)
-    in_vn: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
+    source_id: Mapped[str | None] = mapped_column(
+        String, ForeignKey("sources.source_id"), default="dav"
+    )
+    n_products: Mapped[int] = mapped_column(Integer, default=0)
     n_products_valid: Mapped[int] = mapped_column(Integer, default=0)
+    in_vn: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
     n_interactions: Mapped[int] = mapped_column(Integer, default=0)
 
     __table_args__ = (
@@ -90,6 +101,7 @@ class Product(Base):
     active_ingredients: Mapped[str | None] = mapped_column(Text)
     strength: Mapped[str | None] = mapped_column(Text)
     dosage_form: Mapped[str | None] = mapped_column(Text)
+    packaging: Mapped[str | None] = mapped_column(Text)
     route: Mapped[str | None] = mapped_column(Text, index=True)
     form_group: Mapped[str | None] = mapped_column(Text)
     enteric_coated: Mapped[bool] = mapped_column(Boolean, default=False)
@@ -181,6 +193,7 @@ class FoodInteraction(Base):
     __tablename__ = "food_interactions"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     drug_id: Mapped[str | None] = mapped_column(String, ForeignKey("drugs.drug_id"))
+    drug_name: Mapped[str | None] = mapped_column(Text)
     food: Mapped[str] = mapped_column(Text, nullable=False)
     food_vi: Mapped[str | None] = mapped_column(Text)
     severity: Mapped[str | None] = mapped_column(Text)
@@ -202,6 +215,7 @@ class DiseaseInteraction(Base):
     drug_id: Mapped[str | None] = mapped_column(
         String, ForeignKey("drugs.drug_id"), index=True
     )
+    drug_name: Mapped[str | None] = mapped_column(Text)
     disease: Mapped[str | None] = mapped_column(Text)
     mesh_id: Mapped[str | None] = mapped_column(Text)
     severity: Mapped[str | None] = mapped_column(Text)
@@ -230,11 +244,13 @@ class AraInteraction(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     table_name: Mapped[str | None] = mapped_column("table", Text)
     category: Mapped[str | None] = mapped_column(Text)
+    victim: Mapped[str | None] = mapped_column(Text)
     victim_drug_ids: Mapped[list] = mapped_column(JSON, default=list)
     victim_form: Mapped[str] = mapped_column(Text, default="")
     victim_is_combination: Mapped[bool] = mapped_column(Boolean, default=False)
     ara_class: Mapped[str | None] = mapped_column(Text)
     ara_drug_ids: Mapped[list] = mapped_column(JSON, default=list)
+    ara_text: Mapped[str | None] = mapped_column(Text)
     mechanism: Mapped[str | None] = mapped_column(Text)
     effect: Mapped[str | None] = mapped_column(Text)
     severity: Mapped[str | None] = mapped_column(Text)
@@ -250,11 +266,13 @@ class DosageFormRule(Base):
     # 1 rule_id ap cho nhieu other_drug (vd R1 cho tung PPI) -> PK composite
     rule_id: Mapped[str] = mapped_column(String, primary_key=True)
     drug_id: Mapped[str | None] = mapped_column(String, ForeignKey("drugs.drug_id"))
+    drug_name: Mapped[str | None] = mapped_column(Text)
     drug_route: Mapped[str | None] = mapped_column(Text)
     drug_form: Mapped[str | None] = mapped_column(Text)
     other_drug_id: Mapped[str | None] = mapped_column(
         String, ForeignKey("drugs.drug_id"), primary_key=True, default=""
     )
+    other_drug_name: Mapped[str | None] = mapped_column(Text)
     other_route: Mapped[str | None] = mapped_column(Text)
     severity: Mapped[str | None] = mapped_column(Text)
     action: Mapped[str | None] = mapped_column(Text)
@@ -272,9 +290,13 @@ class PkDdi(Base):
     perpetrator_id: Mapped[str] = mapped_column(
         String, ForeignKey("drugs.drug_id"), primary_key=True
     )
+    perpetrator_name: Mapped[str | None] = mapped_column(Text)
+    perpetrator_drugbank: Mapped[str | None] = mapped_column(Text)
     victim_id: Mapped[str] = mapped_column(
         String, ForeignKey("drugs.drug_id"), primary_key=True
     )
+    victim_name: Mapped[str | None] = mapped_column(Text)
+    victim_drugbank: Mapped[str | None] = mapped_column(Text)
     auc_fold_change: Mapped[float | None] = mapped_column(Float)
     magnitude: Mapped[str | None] = mapped_column(Text)
     source_id: Mapped[str] = mapped_column(
@@ -286,17 +308,41 @@ class FdaLabel(Base):
     __tablename__ = "fda_labels"
     label_set_id: Mapped[str] = mapped_column(String, primary_key=True)
     effective_time: Mapped[str | None] = mapped_column(Text)
+    product_type: Mapped[str | None] = mapped_column(Text)
     route: Mapped[str | None] = mapped_column(Text)
     substances: Mapped[str | None] = mapped_column(Text)
     drug_ids: Mapped[list] = mapped_column(JSON, default=list)
+    all_substances_mapped: Mapped[bool] = mapped_column(Boolean, default=False)
     brand_names: Mapped[str | None] = mapped_column(Text)
     boxed_warning: Mapped[str | None] = mapped_column(Text)
     contraindications: Mapped[str | None] = mapped_column(Text)
     drug_interactions: Mapped[str | None] = mapped_column(Text)
+    do_not_use: Mapped[str | None] = mapped_column(Text)
+    ask_doctor_or_pharmacist: Mapped[str | None] = mapped_column(Text)
     dosage_forms_and_strengths: Mapped[str | None] = mapped_column(Text)
+    n_labels: Mapped[int] = mapped_column(Integer, default=0)
+    source_url: Mapped[str | None] = mapped_column(Text)
     source_id: Mapped[str] = mapped_column(
         String, ForeignKey("sources.source_id"), default="openfda"
     )
+
+
+class IngredientMap(Base):
+    """Khoa hoat chat -> drug_id (sinh tu CSV, dung cho buoc normalize).
+
+    CSV khong khai bao PK nen dung `key` lam PK trong model.
+    """
+
+    __tablename__ = "ingredient_map"
+    key: Mapped[str] = mapped_column(Text, primary_key=True)
+    example_name: Mapped[str] = mapped_column(Text, nullable=False)
+    n_products: Mapped[int] = mapped_column(Integer, default=0)
+    method: Mapped[str] = mapped_column(Text, nullable=False)
+    score: Mapped[int] = mapped_column(Integer, default=0)
+    status: Mapped[str] = mapped_column(Text, nullable=False)
+    drug_ids: Mapped[str | None] = mapped_column(Text)
+    drug_names: Mapped[str | None] = mapped_column(Text)
+    dav_drug_id: Mapped[str | None] = mapped_column(String, index=True)
 
 
 # ---------------- Nhom C: app ----------------
