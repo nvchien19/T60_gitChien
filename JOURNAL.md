@@ -4,16 +4,15 @@
 
 ---
 
-## Week 1: [Ngày bắt đầu] - [Ngày kết thúc]
+## Week 1: 28/09 - 1/10/2026
 
 ### Mục tiêu tuần này
-- [ ] [Mục tiêu 1]
-- [ ] [Mục tiêu 2]
-- [ ] [Mục tiêu 3]
+- [x] Tạo features và test lên khách hàng tiềm năng
+- [x] Build First UI
+- [x] Chạy demo trước mặt khách hàng tiềm năng
 
 ### Đã hoàn thành 
-- [thành quả 1]
-- [thành quả 2]
+- Tất cả các mục đề ra
 
 ### Khó khăn & Giải pháp
 | Khó khăn | Giải pháp | Kết quả |

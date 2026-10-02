@@ -1,0 +1,216 @@
+{
+  "_meta": {
+    "version": "0.1.0",
+    "created": "2026-09-30",
+    "purpose": "CSDL tham chiếu MÔ PHỎNG cho bộ golden. Mức độ (severity) theo thang enum của hệ thống (contraindicated|major|moderate|minor), mô phỏng cấu trúc DDInter 2.0. Đây là nhãn nháp — BẮT BUỘC dược sĩ đối chiếu với nguồn gốc trước khi dùng để chấm điểm chính thức.",
+    "label_status": "draft_needs_pharmacist_review",
+    "severity_to_ui": {
+      "contraindicated": "Nghiêm trọng (!!)",
+      "major": "Nghiêm trọng (!!)",
+      "moderate": "Trung bình (!)",
+      "minor": "Nhẹ (i)",
+      "duplicate": "Trùng hoạt chất (=)"
+    }
+  },
+  "sources": {
+    "SRC-DDINTER2": {
+      "name": "DDInter 2.0",
+      "url": "https://ddinter2.scbdd.com",
+      "license": "CC BY-NC 4.0",
+      "citation": "Tian Y. et al. DDInter 2.0: an enhanced drug interaction resource with expanded data coverage, new interaction types and improved user interface. Nucleic Acids Research 2025;53(D1):D1356-D1362. doi:10.1093/nar/gkae726"
+    },
+    "SRC-DAILYMED": {
+      "name": "DailyMed - nhãn thuốc được FDA phê duyệt",
+      "url": "https://dailymed.nlm.nih.gov",
+      "license": "Public domain (US Government)",
+      "citation": "U.S. National Library of Medicine. DailyMed. Tra theo tên hoạt chất."
+    },
+    "SRC-FDA-GRAPEFRUIT": {
+      "name": "FDA Consumer Update - Grapefruit Juice and Some Drugs Don't Mix",
+      "url": "https://www.fda.gov/consumers/consumer-updates/grapefruit-juice-and-some-drugs-dont-mix",
+      "license": "Public domain (US Government)",
+      "citation": "U.S. Food and Drug Administration. Grapefruit Juice and Some Drugs Don't Mix."
+    },
+    "SRC-NCCIH-GINKGO": {
+      "name": "NCCIH - Ginkgo",
+      "url": "https://www.nccih.nih.gov/health/ginkgo",
+      "license": "Public domain (US Government)",
+      "citation": "National Center for Complementary and Integrative Health. Ginkgo."
+    },
+    "SRC-NCCIH-SJW": {
+      "name": "NCCIH - St. John's Wort",
+      "url": "https://www.nccih.nih.gov/health/st-johns-wort",
+      "license": "Public domain (US Government)",
+      "citation": "National Center for Complementary and Integrative Health. St. John's Wort."
+    },
+    "SRC-DAV": {
+      "name": "Cục Quản lý Dược (DAV) - tra cứu thuốc",
+      "url": "https://dav.gov.vn",
+      "license": "Dữ liệu công khai của cơ quan quản lý",
+      "citation": "Cục Quản lý Dược, Bộ Y tế. Tra cứu số đăng ký, tên thương mại, hoạt chất."
+    }
+  },
+  "aliases": {
+    "_note": "Tên thương mại -> hoạt chất. Nguồn: SRC-DAV (cần đối chiếu số đăng ký thật).",
+    "warfarin": ["warfarin"],
+    "coumadin": ["warfarin"],
+    "aspirin": ["aspirin"],
+    "aspirin 81mg": ["aspirin"],
+    "aspirin ph8": ["aspirin"],
+    "ibuprofen": ["ibuprofen"],
+    "brufen": ["ibuprofen"],
+    "simvastatin": ["simvastatin"],
+    "simvastatin 40mg": ["simvastatin"],
+    "zocor": ["simvastatin"],
+    "klacid": ["clarithromycin"],
+    "viagra": ["sildenafil"],
+    "nitromint": ["nitroglycerin"],
+    "methotrexate": ["methotrexate"],
+    "biseptol": ["sulfamethoxazole", "trimethoprim"],
+    "prozac": ["fluoxetine"],
+    "tramadol": ["tramadol"],
+    "lanoxin": ["digoxin"],
+    "cordarone": ["amiodarone"],
+    "zyloric": ["allopurinol"],
+    "imurel": ["azathioprine"],
+    "aldactone": ["spironolactone"],
+    "kaleorid": ["potassium_chloride"],
+    "plavix": ["clopidogrel"],
+    "losec": ["omeprazole"],
+    "levothyrox": ["levothyroxine"],
+    "calcium carbonate": ["calcium_carbonate"],
+    "amlodipine": ["amlodipine"],
+    "amlor": ["amlodipine"],
+    "flagyl": ["metronidazole"],
+    "ciprobay": ["ciprofloxacin"],
+    "zoloft": ["sertraline"],
+    "ginkgo biloba": ["ginkgo_biloba"],
+    "st john's wort": ["st_johns_wort"],
+    "cỏ ban": ["st_johns_wort"],
+    "rigevidon": ["ethinylestradiol", "levonorgestrel"],
+    "ibuprofen 400mg": ["ibuprofen"],
+    "metformin": ["metformin"],
+    "glucophage": ["metformin"],
+    "propranolol": ["propranolol"],
+    "paracetamol": ["paracetamol"],
+    "panadol": ["paracetamol"],
+    "efferalgan": ["paracetamol"],
+    "hapacol": ["paracetamol"],
+    "panadol extra": ["paracetamol", "caffeine"],
+    "augmentin": ["amoxicillin", "clavulanic_acid"],
+    "lipitor": ["atorvastatin"],
+    "atorvastatin": ["atorvastatin"]
+  },
+  "interactions": [
+    {
+      "id": "KB-DDI-001", "type": "drug_drug", "pair": ["warfarin", "aspirin"], "severity": "major",
+      "mechanism": "Aspirin ức chế kết tập tiểu cầu và có thể gây tổn thương niêm mạc dạ dày; dùng cùng thuốc chống đông warfarin làm tăng nguy cơ chảy máu, kể cả xuất huyết tiêu hóa.",
+      "source_ids": ["SRC-DDINTER2", "SRC-DAILYMED"]
+    },
+    {
+      "id": "KB-DDI-002", "type": "drug_drug", "pair": ["warfarin", "ibuprofen"], "severity": "major",
+      "mechanism": "Thuốc kháng viêm không steroid (NSAID) như ibuprofen ảnh hưởng chức năng tiểu cầu và gây kích ứng dạ dày; dùng cùng warfarin làm tăng nguy cơ chảy máu, đặc biệt là xuất huyết tiêu hóa.",
+      "source_ids": ["SRC-DDINTER2", "SRC-DAILYMED"]
+    },
+    {
+      "id": "KB-DDI-003", "type": "drug_drug", "pair": ["simvastatin", "clarithromycin"], "severity": "contraindicated",
+      "mechanism": "Clarithromycin ức chế mạnh enzyme CYP3A4, làm tăng mạnh nồng độ simvastatin trong máu, tăng nguy cơ tổn thương cơ (bệnh cơ, tiêu cơ vân). Nhãn thuốc simvastatin chống chỉ định phối hợp với thuốc ức chế mạnh CYP3A4.",
+      "source_ids": ["SRC-DAILYMED", "SRC-DDINTER2"]
+    },
+    {
+      "id": "KB-DDI-004", "type": "drug_drug", "pair": ["sildenafil", "nitroglycerin"], "severity": "contraindicated",
+      "mechanism": "Cả hai thuốc đều gây giãn mạch; dùng cùng nhau có thể gây tụt huyết áp nặng, nguy hiểm tính mạng. Nhãn thuốc sildenafil chống chỉ định dùng cùng nhóm nitrat.",
+      "source_ids": ["SRC-DAILYMED", "SRC-DDINTER2"]
+    },
+    {
+      "id": "KB-DDI-005", "type": "drug_drug", "pair": ["methotrexate", "trimethoprim"], "severity": "major",
+      "mechanism": "Trimethoprim cũng có tác dụng kháng folat và làm giảm thải trừ methotrexate qua thận, làm tăng nguy cơ độc tính trên tủy xương (giảm bạch cầu, giảm tiểu cầu).",
+      "source_ids": ["SRC-DDINTER2", "SRC-DAILYMED"]
+    },
+    {
+      "id": "KB-DDI-006", "type": "drug_drug", "pair": ["fluoxetine", "tramadol"], "severity": "major",
+      "mechanism": "Cả hai thuốc đều làm tăng serotonin; phối hợp làm tăng nguy cơ hội chứng serotonin. Tramadol cũng có thể làm tăng nguy cơ co giật.",
+      "source_ids": ["SRC-DDINTER2", "SRC-DAILYMED"]
+    },
+    {
+      "id": "KB-DDI-007", "type": "drug_drug", "pair": ["digoxin", "amiodarone"], "severity": "major",
+      "mechanism": "Amiodarone làm tăng nồng độ digoxin trong máu, làm tăng nguy cơ ngộ độc digoxin như buồn nôn, rối loạn thị giác, rối loạn nhịp tim.",
+      "source_ids": ["SRC-DDINTER2", "SRC-DAILYMED"]
+    },
+    {
+      "id": "KB-DDI-008", "type": "drug_drug", "pair": ["allopurinol", "azathioprine"], "severity": "major",
+      "mechanism": "Allopurinol ức chế enzyme xanthine oxidase - enzyme tham gia chuyển hóa azathioprine; chất có hoạt tính tích lũy, làm tăng nguy cơ ức chế tủy xương.",
+      "source_ids": ["SRC-DDINTER2", "SRC-DAILYMED"]
+    },
+    {
+      "id": "KB-DDI-009", "type": "drug_drug", "pair": ["spironolactone", "potassium_chloride"], "severity": "major",
+      "mechanism": "Spironolactone là thuốc lợi tiểu giữ kali; dùng cùng chế phẩm bổ sung kali làm tăng nguy cơ tăng kali máu, có thể gây rối loạn nhịp tim.",
+      "source_ids": ["SRC-DDINTER2", "SRC-DAILYMED"]
+    },
+    {
+      "id": "KB-DDI-010", "type": "drug_drug", "pair": ["clopidogrel", "omeprazole"], "severity": "moderate",
+      "mechanism": "Omeprazole ức chế enzyme CYP2C19, làm giảm chuyển hóa clopidogrel thành dạng có hoạt tính, có thể làm giảm tác dụng chống kết tập tiểu cầu. Nhãn thuốc clopidogrel có đề cập tương tác này.",
+      "source_ids": ["SRC-DAILYMED", "SRC-DDINTER2"]
+    },
+    {
+      "id": "KB-DDI-011", "type": "drug_drug", "pair": ["levothyroxine", "calcium_carbonate"], "severity": "moderate",
+      "mechanism": "Calci carbonat có thể gắn với levothyroxine trong đường tiêu hóa, làm giảm hấp thu, khiến thuốc tuyến giáp kém hiệu quả.",
+      "source_ids": ["SRC-DAILYMED", "SRC-DDINTER2"]
+    },
+    {
+      "id": "KB-DDI-012", "type": "drug_drug", "pair": ["simvastatin", "amlodipine"], "severity": "moderate",
+      "mechanism": "Amlodipine có thể làm tăng nồng độ simvastatin trong máu, làm tăng nguy cơ tác dụng phụ trên cơ. Nhãn thuốc simvastatin có lưu ý riêng về liều khi dùng cùng amlodipine.",
+      "source_ids": ["SRC-DAILYMED", "SRC-DDINTER2"]
+    },
+    {
+      "id": "KB-DFI-001", "type": "drug_food", "pair": ["warfarin", "vitamin_k_rich_food"], "severity": "moderate",
+      "mechanism": "Vitamin K (nhiều trong rau lá xanh như cải bó xôi, cải xoăn) đối kháng tác dụng của warfarin; thay đổi đột ngột lượng rau này trong bữa ăn có thể làm thay đổi hiệu quả chống đông (chỉ số INR).",
+      "source_ids": ["SRC-DDINTER2"]
+    },
+    {
+      "id": "KB-DFI-002", "type": "drug_food", "pair": ["simvastatin", "grapefruit_juice"], "severity": "moderate",
+      "mechanism": "Nước ép bưởi chùm (grapefruit) ức chế enzyme CYP3A4 ở ruột, làm tăng nồng độ simvastatin, tăng nguy cơ tác dụng phụ trên cơ.",
+      "source_ids": ["SRC-FDA-GRAPEFRUIT", "SRC-DDINTER2"]
+    },
+    {
+      "id": "KB-DFI-003", "type": "drug_food", "pair": ["metronidazole", "alcohol"], "severity": "major",
+      "mechanism": "Uống rượu bia khi dùng metronidazole có thể gây phản ứng giống disulfiram: đỏ bừng mặt, buồn nôn, nôn, đau đầu, tim đập nhanh.",
+      "source_ids": ["SRC-DAILYMED"]
+    },
+    {
+      "id": "KB-DFI-004", "type": "drug_food", "pair": ["ciprofloxacin", "dairy_calcium"], "severity": "moderate",
+      "mechanism": "Calci trong sữa và chế phẩm từ sữa tạo phức với ciprofloxacin, làm giảm hấp thu và có thể làm giảm hiệu quả kháng sinh.",
+      "source_ids": ["SRC-DAILYMED", "SRC-DDINTER2"]
+    },
+    {
+      "id": "KB-HDI-001", "type": "herb_drug", "pair": ["warfarin", "ginkgo_biloba"], "severity": "moderate",
+      "mechanism": "Ginkgo (bạch quả) có thể ảnh hưởng đến tiểu cầu; dùng cùng thuốc chống đông có thể làm tăng nguy cơ chảy máu.",
+      "source_ids": ["SRC-NCCIH-GINKGO", "SRC-DDINTER2"]
+    },
+    {
+      "id": "KB-HDI-002", "type": "herb_drug", "pair": ["sertraline", "st_johns_wort"], "severity": "major",
+      "mechanism": "Cỏ ban (St. John's wort) làm tăng serotonin; dùng cùng thuốc chống trầm cảm nhóm SSRI như sertraline làm tăng nguy cơ hội chứng serotonin.",
+      "source_ids": ["SRC-NCCIH-SJW"]
+    },
+    {
+      "id": "KB-HDI-003", "type": "herb_drug", "pair": ["ethinylestradiol", "st_johns_wort"], "severity": "moderate",
+      "mechanism": "Cỏ ban làm tăng chuyển hóa hormone trong thuốc tránh thai, có thể làm giảm hiệu quả tránh thai và gây ra máu bất thường.",
+      "source_ids": ["SRC-NCCIH-SJW"]
+    },
+    {
+      "id": "KB-DDSI-001", "type": "drug_disease", "pair": ["ibuprofen", "peptic_ulcer"], "severity": "major",
+      "mechanism": "NSAID như ibuprofen gây tổn thương niêm mạc dạ dày; người có tiền sử hoặc đang bị loét dạ dày tá tràng có nguy cơ cao xuất huyết hoặc thủng ổ loét.",
+      "source_ids": ["SRC-DDINTER2", "SRC-DAILYMED"]
+    },
+    {
+      "id": "KB-DDSI-002", "type": "drug_disease", "pair": ["metformin", "severe_renal_impairment"], "severity": "major",
+      "mechanism": "Metformin thải trừ chủ yếu qua thận; khi chức năng thận suy giảm nặng, thuốc tích lũy làm tăng nguy cơ nhiễm toan lactic. Nhãn thuốc metformin có chống chỉ định ở suy thận nặng.",
+      "source_ids": ["SRC-DAILYMED", "SRC-DDINTER2"]
+    },
+    {
+      "id": "KB-DDSI-003", "type": "drug_disease", "pair": ["propranolol", "asthma"], "severity": "major",
+      "mechanism": "Propranolol là thuốc chẹn beta không chọn lọc, có thể gây co thắt phế quản, làm nặng cơn hen.",
+      "source_ids": ["SRC-DDINTER2", "SRC-DAILYMED"]
+    }
+  ]
+}

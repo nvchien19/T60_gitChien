@@ -1,0 +1,8 @@
+# Phụ thuộc riêng cho bộ đánh giá (không cần khi chạy app)
+# Metric tất định (eval/metrics.py) và test chỉ cần thư viện chuẩn + pydantic.
+ragas==0.4.3
+langchain-community<0.4     # ragas 0.4.3 còn import langchain_community.chat_models.vertexai, bị bỏ từ bản 0.4
+openai>=1.40
+typesafe-sdk>=0.7.2         # chỉ cần cho --judge cascade (JEV)
+python-dotenv>=1.0.0
+pandas                      # eval/golden/build_golden.py
