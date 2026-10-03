@@ -120,7 +120,7 @@ export function PrescriptionEditor({ initialName = '', onClose, onSave }: {
         {needsReview && <label className="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900"><input type="checkbox" checked={reviewed} onChange={event => setReviewed(event.target.checked)} className="mt-1" />Tôi đã đối chiếu ảnh gốc, kiểm tra tên thuốc, hàm lượng, cách dùng và bổ sung các thuốc còn thiếu.</label>}
         {error && <p role="alert" className="text-sm text-rose-600">{error}</p>}
       </div>
-      <footer className="flex items-center justify-end gap-2 border-t border-slate-100 p-5"><Button type="button" variant="outline" onClick={onClose}>Hủy</Button><Button type="submit" disabled={busy || (needsReview && !reviewed)} className="bg-sky-500 hover:bg-sky-600">{initialName ? 'Lưu thuốc vào đơn' : 'Lưu đơn thuốc'}</Button></footer>
+      <footer className="flex flex-col-reverse gap-2 border-t border-slate-100 p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] sm:flex-row sm:items-center sm:justify-end sm:p-5"><Button type="button" variant="outline" onClick={onClose} className="w-full justify-center sm:w-auto">Hủy</Button><Button type="submit" disabled={busy || (needsReview && !reviewed)} className="w-full justify-center bg-sky-500 hover:bg-sky-600 sm:w-auto">{initialName ? 'Lưu thuốc vào đơn' : 'Lưu đơn thuốc'}</Button></footer>
     </form>
   </dialog>
 }

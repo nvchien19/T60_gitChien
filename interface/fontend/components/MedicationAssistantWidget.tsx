@@ -32,7 +32,7 @@ export function MedicationAssistantWidget({ prescriptionId, open, onOpen, onClos
     }, 900)
   }
 
-  const launcher = <button onClick={() => { setMinimized(false); onOpen() }} aria-label="Mở trợ lý An toàn Thuốc" className="fixed bottom-20 right-5 z-[9999] flex items-center gap-2 rounded-full bg-slate-900 px-4 py-3 text-xs font-bold text-white shadow-[0_12px_30px_rgba(15,23,42,0.2)] transition hover:-translate-y-0.5 hover:bg-slate-800 lg:bottom-7 lg:right-8"><Bot className="size-4" /> Hỏi trợ lý</button>
+  const launcher = <button onClick={() => { setMinimized(false); onOpen() }} aria-label="Mở trợ lý An toàn Thuốc" className="fixed bottom-24 right-4 z-[9999] flex min-h-[48px] items-center gap-2 rounded-full bg-slate-900 px-4 py-3 text-xs font-bold text-white shadow-[0_12px_30px_rgba(15,23,42,0.2)] transition hover:-translate-y-0.5 hover:bg-slate-800 active:bg-slate-700 sm:right-5 lg:bottom-7 lg:right-8"><Bot className="size-4" /> Hỏi trợ lý</button>
   if (!open || minimized) return launcher
 
   return <>
