@@ -167,7 +167,7 @@ export default async function PatientLayout({ children }: { children: React.Reac
 Bố cục 2 cột trên desktop, 1 cột xếp dọc trên mobile.
 
 **Cột tráp — nhập thuốc:**
-- Ô nhập có autocomplete. Gõ ≥ 2 ký tự → debounce 400ms → `POST /api/v1/normalize` hiển thị gợi ý.
+- Ô nhập có autocomplete. Gõ ≥ 2 ký tự → debounce 400ms → `POST /api/v1/drugs/normalize` hiển thị gợi ý.
 - Thêm thuốc vào list dưới dạng `DrugTag` với `NormalizeStatusChip`:
   - `ok` → chip xanh, tên đã chuẩn hóa.
   - `suggest` → chip vàng + nút **Đổng ý / Xem thêm** → mở `ConfirmNormalizationDialog` liệt kê các đề xuất. **Không auto-accept.**

@@ -72,7 +72,7 @@ interface/backend/
 │   ├── routes.py            # Router agent: POST /chat, GET /status
 │   └── routers/
 │       ├── drugs.py         # /drugs/normalize, /drugs/search
-│       ├── interactions.py  # /normalize, /interactions/check, /interactions/pair
+│       ├── interactions.py  # /interactions/check, /interactions/pair
 │       ├── prescriptions.py # /prescriptions/*, /checks/{id}, /reviews, /assistant/chat
 │       └── sources.py       # /sources — nguồn dữ liệu + độ phủ (S8)
 ├── db/
@@ -209,9 +209,8 @@ Base `/api/v1`.
 |---|---|---|
 | GET | `/health` | `{status, env}` |
 | POST | `/api/v1/interactions/check` | **Kiểm tra tương tác chính** |
-| POST | `/api/v1/normalize` | Chuẩn hóa danh sách thuốc |
 | GET | `/api/v1/interactions/pair?a&b` | Tra 1 cặp |
-| POST | `/api/v1/drugs/normalize` | Chuẩn hóa (contract khác) |
+| POST | `/api/v1/drugs/normalize` | Chuẩn hóa danh sách thuốc |
 | GET | `/api/v1/drugs/search?q&limit` | Tìm thuốc |
 | GET | `/api/v1/sources` | Nguồn dữ liệu + độ phủ (S8) |
 | GET | `/api/v1/prescriptions/summary` | Tổng quan đơn |
@@ -221,7 +220,9 @@ Base `/api/v1`.
 | POST | `/api/v1/prescriptions/{rx_id}/checks` | Chạy check cho đơn |
 | GET | `/api/v1/prescriptions/{rx_id}/checks` | Lịch sử check |
 | GET | `/api/v1/checks/{check_id}` | Đọc check, tái tạo findings từ snapshot |
-| POST | `/api/v1/reviews` | Gửi review HITL |
+| POST | `/api/v1/reviews` | Gửi review HITL (tự đếm `med_count` nếu thiếu) |
+| GET | `/api/v1/reviews?prescription_id=&status=` | List yêu cầu dược sĩ, mới nhất trước |
+| PATCH | `/api/v1/reviews/{review_id}` | Dược sĩ chuyển `Đang chờ` → `Đã phản hồi` |
 | POST | `/api/v1/assistant/chat` | Assistant **rule-based, không LLM** |
 | POST | `/api/v1/chat` | Chat qua agent LangGraph (503 nếu thiếu langgraph) |
 | GET | `/api/v1/status` | Trạng thái agent |

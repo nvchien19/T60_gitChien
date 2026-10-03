@@ -18,7 +18,7 @@ Cot khop `db/mvp_schema.sql`. Lech co chu dich giu nguyen:
     trong CSV -> JSON de query duoc tren ca SQLite va Postgres.
 """
 
-from datetime import datetime
+from datetime import UTC, datetime
 
 from sqlalchemy import (
     JSON,
@@ -350,6 +350,8 @@ class IngredientMap(Base):
 
 class Prescription(Base):
     __tablename__ = "prescriptions"
+    name: Mapped[str] = mapped_column(Text, default="")
+    created_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC), nullable=True)
     id: Mapped[str] = mapped_column(String, primary_key=True)
     status: Mapped[str] = mapped_column(Text, default="Chưa kiểm tra")
     highest_severity_vi: Mapped[str | None] = mapped_column(Text)
@@ -391,11 +393,28 @@ class Check(Base):
 
 
 class Review(Base):
+    """Yêu cầu trao đổi dược sĩ (HITL) — khớp FE ReviewView (danh sách yêu cầu).
+
+    `status` dùng tiếng Việt để FE hiển thị trực tiếp: 'Đang chờ' | 'Đã phản hồi'.
+    """
+
     __tablename__ = "reviews"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     prescription_id: Mapped[str | None] = mapped_column(
         String, ForeignKey("prescriptions.id")
     )
     check_id: Mapped[str | None] = mapped_column(String, ForeignKey("checks.id"))
+    patient: Mapped[str] = mapped_column(Text, default="")
+    med_count: Mapped[int] = mapped_column(Integer, default=0)
     message: Mapped[str | None] = mapped_column(Text)
-    status: Mapped[str] = mapped_column(Text, default="pending")
+    status: Mapped[str] = mapped_column(Text, default="Đang chờ")
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=datetime.utcnow
+    )
+    updated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+    __table_args__ = (
+        CheckConstraint(
+            "status IN ('Đang chờ','Đã phản hồi')", name="ck_reviews_status"
+        ),
+    )

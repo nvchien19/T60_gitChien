@@ -12,7 +12,7 @@ const inputClass = 'mt-1 w-full rounded-lg border border-slate-200 bg-white px-3
 export function PrescriptionEditor({ initialName = '', onClose, onSave }: {
   initialName?: string
   onClose: () => void
-  onSave: (name: string, medications: MedicationDraft[]) => void
+  onSave: (name: string, medications: MedicationDraft[]) => Promise<void>
 }) {
   const [name, setName] = useState(initialName)
   const [rows, setRows] = useState<MedicationDraft[]>([emptyRow()])
@@ -84,19 +84,22 @@ export function PrescriptionEditor({ initialName = '', onClose, onSave }: {
   }
 
   return <dialog ref={dialogRef} aria-labelledby="prescription-editor-title" onCancel={onClose} className="fixed inset-0 m-auto max-h-[90dvh] w-[calc(100%-2rem)] max-w-4xl overflow-y-auto rounded-2xl border border-slate-200 bg-white p-0 text-slate-900 shadow-2xl backdrop:bg-slate-950/30 backdrop:backdrop-blur-sm">
-    <form onSubmit={event => {
+    <form onSubmit={async event => {
       event.preventDefault()
       if (busy) return
       if (!name.trim() || !rows.length || rows.some(row => !row.name.trim())) { setError('Nhập tên đơn và tên cho từng thuốc. Xóa những dòng không sử dụng.'); return }
       if (needsReview && !reviewed) { setError('Vui lòng đối chiếu nội dung nhận dạng và xác nhận đã kiểm tra.'); return }
-      onSave(name.trim(), rows.map(row => ({ name: row.name.trim(), dose: row.dose.trim(), frequency: row.frequency.trim() })))
+      setBusy(true); setError('')
+      try { await onSave(name.trim(), rows.map(row => ({ name: row.name.trim(), dose: row.dose.trim(), frequency: row.frequency.trim() }))) }
+      catch (e) { if (mounted.current) setError((e as Error).message) }
+      finally { if (mounted.current) setBusy(false) }
     }}>
       <header className="flex items-start justify-between border-b border-slate-100 p-5 sm:p-6">
         <div><p className="text-xs font-bold uppercase tracking-wider text-sky-600">Medication safety</p><h2 id="prescription-editor-title" className="mt-1 text-xl font-extrabold">{initialName ? 'Thêm thuốc vào đơn' : 'Thêm đơn thuốc'}</h2><p className="mt-2 text-sm text-slate-500">Nhập thuốc hoặc đọc từ ảnh, sau đó kiểm tra trước khi lưu.</p></div>
         <button type="button" onClick={onClose} aria-label="Đóng" className="rounded-lg p-1 text-slate-400"><X className="size-5" /></button>
       </header>
       <div className="space-y-6 p-5 sm:p-6">
-        <label className="block text-sm font-bold">1. Tên đơn thuốc <span className="text-rose-500">*</span><input autoFocus required maxLength={150} value={name} onChange={event => setName(event.target.value)} placeholder="Ví dụ: Đơn tái khám tháng 10" className={inputClass} /></label>
+        <label className="block text-sm font-bold">1. Tên đơn thuốc <span className="text-rose-500">*</span><input autoFocus required maxLength={150} value={name} readOnly={Boolean(initialName)} onChange={event => setName(event.target.value)} placeholder="Ví dụ: Đơn tái khám tháng 10" className={inputClass} /></label>
         <section className="rounded-xl border border-sky-100 bg-sky-50/40 p-4">
           <h3 className="text-sm font-bold">Đọc thuốc từ ảnh đơn thuốc</h3><p className="mt-1 text-xs text-slate-500">PNG, JPG hoặc WebP · tối đa 10 MB. Ảnh được xử lý trên thiết bị. Lần đầu cần mạng để tải bộ nhận dạng.</p>
           <div className="mt-3 flex flex-wrap items-center gap-3"><label className="flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold"><Upload className="size-4 text-sky-600" /> Chọn ảnh đơn thuốc<input type="file" aria-label="Ảnh đơn thuốc" accept="image/png,image/jpeg,image/webp" disabled={busy} className="sr-only" onChange={event => {

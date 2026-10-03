@@ -9,7 +9,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from interface.backend.db.models.tables import Check, Medication, Prescription, Review
 from interface.backend.db.session import get_session
-from interface.backend.schemas.ddi import AddMedicationRequest, MedicationOut, ReviewRequest
+from interface.backend.schemas.ddi import (
+    AddMedicationRequest,
+    CreatePrescriptionRequest,
+    MedicationOut,
+    ReviewOut,
+    ReviewRequest,
+    ReviewStatusUpdate,
+)
 from interface.backend.services.check_service import normalize_list, run_check
 from src.core.guardrails import HANDOFF
 
@@ -34,26 +41,58 @@ async def summary(db: AsyncSession = Depends(get_session)):
             "needs_review": sum(1 for x in rows if x.status == "Cần xem lại")}
 
 
+def _rx_out(rx: Prescription, meds: list[Medication]) -> dict:
+    return {"id": rx.id, "name": rx.name, "status": rx.status,
+            "created_at": rx.created_at.isoformat() if rx.created_at else None,
+            "last_checked": rx.last_checked.isoformat() if rx.last_checked else None,
+            "highest_severity_vi": rx.highest_severity_vi,
+            "checks_count": rx.checks_count or 0,
+            "medications": [_med_out(m).model_dump() for m in meds]}
+
+
 @router.get("/prescriptions")
 async def list_rx(q: str = "", status: str = "", limit: int = 20, offset: int = 0,
                   db: AsyncSession = Depends(get_session)):
-    r = await db.execute(select(Prescription).offset(offset).limit(limit))
-    rows = list(r.scalars().all())
+    stmt = select(Prescription).order_by(Prescription.created_at.desc(), Prescription.id)
     if q:
-        rows = [x for x in rows if q.lower() in x.id.lower()]
+        stmt = stmt.where(Prescription.id.ilike(f"%{q}%") | Prescription.name.ilike(f"%{q}%"))
     if status and status != "Tất cả":
-        rows = [x for x in rows if x.status == status]
-    return {"items": [{"id": x.id, "status": x.status,
-                       "highest_severity_vi": x.highest_severity_vi,
-                       "checks_count": x.checks_count} for x in rows]}
+        stmt = stmt.where(Prescription.status == status)
+    r = await db.execute(stmt.offset(max(0, offset)).limit(max(1, min(limit, 100))))
+    rows = list(r.scalars().all())
+    meds = []
+    if rows:
+        r = await db.execute(select(Medication).where(Medication.prescription_id.in_([x.id for x in rows])).order_by(Medication.id))
+        meds = list(r.scalars().all())
+    return {"items": [_rx_out(x, [m for m in meds if m.prescription_id == x.id]) for x in rows]}
+
+
+async def _add_medications(db: AsyncSession, rx: Prescription, requests: list[AddMedicationRequest]):
+    normed = await normalize_list(db, [req.name for req in requests]) if requests else []
+    meds = []
+    for req, n in zip(requests, normed):
+        med = Medication(prescription_id=rx.id, name=req.name,
+                         drug_id=n.drug_id or None, ingredient=n.canonical_name or "Chưa xác minh",
+                         dose=req.dose, frequency=req.frequency, type=req.type,
+                         verified=(n.status == "ok"), norm_status=n.status, suggestions=n.suggestions)
+        db.add(med)
+        meds.append(med)
+    if requests:
+        rx.status = "Cần xem lại" if any(n.status != "ok" for n in normed) else "Chưa kiểm tra"
+        rx.highest_severity_vi = None
+        rx.last_checked = None
+    return meds
 
 
 @router.post("/prescriptions", status_code=201)
-async def create_rx(db: AsyncSession = Depends(get_session)):
-    rx_id = f"RX-{uuid.uuid4().hex[:6].upper()}"
-    db.add(Prescription(id=rx_id, status="Chưa kiểm tra"))
+async def create_rx(req: CreatePrescriptionRequest | None = None, db: AsyncSession = Depends(get_session)):
+    req = req or CreatePrescriptionRequest()
+    rx = Prescription(id=f"RX-{uuid.uuid4().hex[:6].upper()}", name=req.name, status="Chưa kiểm tra")
+    db.add(rx)
+    await db.flush()
+    meds = await _add_medications(db, rx, req.medications)
     await db.commit()
-    return {"id": rx_id, "status": "Chưa kiểm tra"}
+    return _rx_out(rx, meds)
 
 
 @router.get("/prescriptions/{rx_id}")
@@ -61,31 +100,25 @@ async def get_rx(rx_id: str, db: AsyncSession = Depends(get_session)):
     rx = await db.get(Prescription, rx_id)
     if not rx:
         raise HTTPException(404, "Không tìm thấy đơn")
-    r = await db.execute(select(Medication).where(Medication.prescription_id == rx_id))
-    meds = [_med_out(m).model_dump() for m in r.scalars().all()]
-    return {"id": rx.id, "status": rx.status, "medications": meds,
-            "checks_count": rx.checks_count}
+    r = await db.execute(select(Medication).where(Medication.prescription_id == rx_id).order_by(Medication.id))
+    return _rx_out(rx, list(r.scalars().all()))
 
 
-@router.post("/prescriptions/{rx_id}/medications", response_model=MedicationOut, status_code=201)
-async def add_med(rx_id: str, req: AddMedicationRequest,
+@router.post("/prescriptions/{rx_id}/medications", response_model=MedicationOut | list[MedicationOut], status_code=201)
+async def add_med(rx_id: str, req: AddMedicationRequest | list[AddMedicationRequest],
                   db: AsyncSession = Depends(get_session)):
     rx = await db.get(Prescription, rx_id)
     if not rx:
         raise HTTPException(404, "Không tìm thấy đơn")
-    normed = await normalize_list(db, [req.name])
-    n = normed[0]
-    med = Medication(prescription_id=rx_id, name=req.name,
-                     drug_id=n.drug_id or None, ingredient=n.canonical_name or "Chưa xác minh",
-                     dose=req.dose, frequency=req.frequency, type=req.type,
-                     verified=(n.status == "ok"), norm_status=n.status,
-                     suggestions=n.suggestions)
-    db.add(med)
-    if n.status != "ok":
-        rx.status = "Cần xem lại"  # thuoc unverified -> nhac kiem tra lai (§13.5)
+    requests = req if isinstance(req, list) else [req]
+    if not 1 <= len(requests) <= 50:
+        raise HTTPException(422, "Thêm từ 1 đến 50 thuốc mỗi lần")
+    meds = await _add_medications(db, rx, requests)
     await db.commit()
-    await db.refresh(med)
-    return _med_out(med)
+    for med in meds:
+        await db.refresh(med)
+    out = [_med_out(m) for m in meds]
+    return out if isinstance(req, list) else out[0]
 
 
 @router.post("/prescriptions/{rx_id}/checks", status_code=201)
@@ -114,7 +147,8 @@ async def run_rx_check(rx_id: str, db: AsyncSession = Depends(get_session)):
         rx.status = "Có tương tác"
         rx.highest_severity_vi = result.max_severity_vi
     else:
-        rx.status = "Đã kiểm tra"
+        rx.status = "Cần xem lại" if result.unknown else "Đã kiểm tra"
+        rx.highest_severity_vi = None
     await db.commit()
     return {"check_id": check_id, "status": "done",
             "max_severity": result.max_severity, "findings_count": len(result.findings)}
@@ -130,23 +164,70 @@ async def get_check(check_id: str, db: AsyncSession = Depends(get_session)):
     result = await run_check(db, names) if names else None
     return {"check_id": c.id, "status": c.status, "summary": c.summary,
             "max_severity": c.max_severity, "steps_done": c.steps_done,
+            "created_at": c.created_at.isoformat() if c.created_at else None,
             "findings": [f.model_dump() for f in result.findings] if result else [],
-            "disclaimer": result.disclaimer if result else ""}
+            "disclaimer": result.disclaimer if result else "",
+            "unknown": [n.model_dump() for n in result.unknown] if result else [],
+            "no_record_pairs": result.no_record_pairs if result else []}
 
 
 @router.get("/prescriptions/{rx_id}/checks")
 async def rx_checks(rx_id: str, db: AsyncSession = Depends(get_session)):
-    r = await db.execute(select(Check).where(Check.prescription_id == rx_id))
+    r = await db.execute(select(Check).where(Check.prescription_id == rx_id).order_by(Check.created_at.desc(), Check.id.desc()))
     return {"items": [{"check_id": c.id, "status": c.status, "summary": c.summary,
-                       "max_severity": c.max_severity} for c in r.scalars().all()]}
+                       "max_severity": c.max_severity,
+                       "created_at": c.created_at.isoformat() if c.created_at else None} for c in r.scalars().all()]}
+
+
+def _review_out(r: Review) -> ReviewOut:
+    return ReviewOut(id=r.id, prescription_id=r.prescription_id, check_id=r.check_id,
+                     patient=r.patient or "", med_count=r.med_count or 0,
+                     message=r.message, status=r.status,
+                     created_at=r.created_at.isoformat() if r.created_at else None)
 
 
 @router.post("/reviews", status_code=201)
 async def create_review(req: ReviewRequest, db: AsyncSession = Depends(get_session)):
-    db.add(Review(prescription_id=req.prescription_id, check_id=req.check_id or None,
-                  message=req.message, status="pending"))
+    rx = await db.get(Prescription, req.prescription_id)
+    if not rx:
+        raise HTTPException(404, "Không tìm thấy đơn")
+    med_count = req.med_count
+    if not med_count:  # FE chua gui -> dem truc tiep tu DB de snapshot dung
+        r = await db.execute(select(Medication).where(Medication.prescription_id == rx.id))
+        med_count = len(list(r.scalars().all()))
+    review = Review(prescription_id=req.prescription_id, check_id=req.check_id or None,
+                    patient=req.patient, med_count=med_count,
+                    message=req.message, status="Đang chờ")
+    db.add(review)
     await db.commit()
-    return {"status": "Đang chờ dược sĩ xem xét"}
+    await db.refresh(review)
+    return {"review_id": review.id, "status": "Đang chờ dược sĩ xem xét"}
+
+
+@router.get("/reviews")
+async def list_reviews(prescription_id: str = "", status: str = "",
+                       limit: int = 50, offset: int = 0,
+                       db: AsyncSession = Depends(get_session)):
+    stmt = select(Review).order_by(Review.created_at.desc(), Review.id.desc())
+    if prescription_id:
+        stmt = stmt.where(Review.prescription_id == prescription_id)
+    if status and status != "Tất cả":
+        stmt = stmt.where(Review.status == status)
+    r = await db.execute(stmt.offset(offset).limit(limit))
+    return {"items": [_review_out(x).model_dump() for x in r.scalars().all()]}
+
+
+@router.patch("/reviews/{review_id}", response_model=ReviewOut)
+async def update_review(review_id: int, req: ReviewStatusUpdate,
+                        db: AsyncSession = Depends(get_session)):
+    review = await db.get(Review, review_id)
+    if not review:
+        raise HTTPException(404, "Không tìm thấy yêu cầu")
+    review.status = req.status
+    review.updated_at = datetime.now(UTC)
+    await db.commit()
+    await db.refresh(review)
+    return _review_out(review)
 
 
 @router.post("/assistant/chat")

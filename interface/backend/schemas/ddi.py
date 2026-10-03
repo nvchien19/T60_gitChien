@@ -61,6 +61,11 @@ class AddMedicationRequest(BaseModel):
     type: str = "OTC"
 
 
+class CreatePrescriptionRequest(BaseModel):
+    name: str = Field(default="", max_length=150)
+    medications: list[AddMedicationRequest] = Field(default_factory=list, max_length=50)
+
+
 class MedicationOut(BaseModel):
     id: int
     name: str
@@ -85,3 +90,20 @@ class ReviewRequest(BaseModel):
     prescription_id: str
     check_id: str = ""
     message: str = Field(min_length=1, max_length=2000)
+    patient: str = Field(default="", max_length=200)
+    med_count: int = Field(default=0, ge=0)
+
+
+class ReviewOut(BaseModel):
+    id: int
+    prescription_id: str | None = None
+    check_id: str | None = None
+    patient: str = ""
+    med_count: int = 0
+    message: str | None = None
+    status: str = "Đang chờ"
+    created_at: str | None = None
+
+
+class ReviewStatusUpdate(BaseModel):
+    status: str = Field(pattern="^(Đang chờ|Đã phản hồi)$")

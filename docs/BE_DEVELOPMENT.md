@@ -299,7 +299,10 @@ CREATE TABLE checks (
 );
 CREATE TABLE reviews (
   id SERIAL PRIMARY KEY, prescription_id TEXT REFERENCES prescriptions(id),
-  check_id TEXT REFERENCES checks(id), message TEXT, status TEXT DEFAULT 'pending'
+  check_id TEXT REFERENCES checks(id), patient TEXT DEFAULT '',
+  med_count INT DEFAULT 0, message TEXT,
+  status TEXT DEFAULT 'Đang chờ' CHECK (status IN ('Đang chờ','Đã phản hồi')),
+  created_at TIMESTAMPTZ DEFAULT now(), updated_at TIMESTAMPTZ
 );
 ```
 
@@ -397,7 +400,7 @@ Base: `/api/v1`. Lỗi theo RFC 9457 (`application/problem+json`).
 | # | Method & Path | Mô tả | Auth |
 |---|---------------|-------|------|
 | 1 | `GET /health` | Sống/chết + version (giữ ở root `/health` như template) | không |
-| 2 | `POST /api/v1/normalize` | Chuẩn hóa 1..50 tên thuốc | không (rate limit) |
+| 2 | `POST /api/v1/drugs/normalize` | Chuẩn hóa 1..50 tên thuốc | không (rate limit) |
 | 3 | `GET /api/v1/drugs/search?q=` | Autocomplete / tìm thuốc (phục vụ FE nhập) | không |
 | 4 | `POST /api/v1/interactions/check` | **Luồng chính:** nhận list tên thuốc → normalize → lookup → rank → trả findings + citations + disclaimer | không (rate limit 20/phút) |
 | 5 | `GET /api/v1/sources` | Liệt kê nguồn + độ phủ + giới hạn dữ liệu (nêu rõ MOCK) | không |
