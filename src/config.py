@@ -25,8 +25,17 @@ class Settings(BaseSettings):
     model_name: str = "gpt-4o-mini"
     llm_temperature: float = Field(default=0.7, ge=0.0, le=2.0)
 
-    # Database
-    database_url: str = "sqlite:///./data/app.db"
+    # DeepSeek: LLM giải thích tương tác thuốc (API tương thích OpenAI)
+    deepseek_api_key: str = ""
+    deepseek_base_url: str = "https://api.deepseek.com"
+    deepseek_model: str = "deepseek-chat"
+    explain_temperature: float = Field(default=0.2, ge=0.0, le=2.0)
+    explain_timeout_s: float = Field(default=60.0, gt=0)
+    # Gọi thêm một lượt LLM kiểm định từng câu có bám bằng chứng không (tắt để giảm độ trễ)
+    explain_verify: bool = True
+
+    # Database: Postgres chứa dữ liệu MVP (schema `mvp`, nạp bằng db/load_mvp.py)
+    database_url: str = "postgresql://ddi:ddi_dev_password@127.0.0.1:5432/ddi"
 
     # Vector Store
     chroma_persist_dir: str = "./data/chroma"

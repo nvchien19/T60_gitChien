@@ -38,7 +38,16 @@ def main():
             r = subprocess.run(cmd, cwd=ROOT, stdin=f, capture_output=True)
         if r.returncode:
             sys.exit(f"{t}: {r.stderr.decode('utf-8', 'replace')}")
-        print(f"{t:24s} nạp xong")
+        with open(path, encoding="utf-8-sig", newline="") as f:
+            n_csv = sum(1 for _ in csv.reader(f)) - 1
+        r = subprocess.run(PSQL[:-1] + [PSQL[-1] + f" -tA -c 'SELECT count(*) FROM mvp.{t}'"], cwd=ROOT,
+                           capture_output=True)
+        n_db = int(r.stdout.decode().strip() or -1)
+        if n_db != n_csv:
+            sys.exit(f"{t}: CSV có {n_csv} dòng nhưng Postgres có {n_db}")
+        print(f"{t:24s} {n_db:>8,} dòng")
+    subprocess.run(PSQL[:-1] + [PSQL[-1] + " -c 'ANALYZE'"], cwd=ROOT, check=True)
+    print("ANALYZE: ok")
 
 
 if __name__ == "__main__":
