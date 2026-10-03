@@ -1,26 +1,13 @@
 {
-  "version": "1.0",
   "hooks": {
     "UserPromptSubmit": [
       {
         "hooks": [
           {
-            "name": "log-prompt",
-            "type": "command",
-            "command": "scripts/_pyrun.sh scripts/log_hook.py --tool=codex",
-            "timeout": 10
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "name": "log-stop",
-            "type": "command",
-            "command": "scripts/_pyrun.sh scripts/log_hook.py --tool=codex",
-            "timeout": 10
+            "timeout": 15,
+            "commandWindows": "powershell.exe -NoLogo -NoProfile -NonInteractive -Command \"& node ((git rev-parse --show-toplevel) + '/scripts/log_codex.cjs')\"",
+            "command": "node \"$(git rev-parse --show-toplevel)/scripts/log_codex.cjs\"",
+            "type": "command"
           }
         ]
       }
