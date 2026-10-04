@@ -10,6 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from interface.backend.config import get_settings
 from interface.backend.repositories import ddi_repo
+from interface.backend.repositories.translations import localize
 from interface.backend.schemas.ddi import CheckResponse, Citation, FindingOut, NormalizedItem
 from src.core.guardrails import DISCLAIMER, NO_RECORD_MSG, guardrail_assert
 from src.tools._khoa import khoa
@@ -71,7 +72,11 @@ def _to_finding(pair_names: list[str], rec: dict) -> FindingOut:
                       summary=rec.get("summary") or rec.get("mechanism", "")[:300],
                       mechanism=rec.get("mechanism", ""),
                       management=rec.get("management", ""),
-                      citations=cites, match_type=rec.get("match_type", "exact"))
+                      citations=cites, match_type=rec.get("match_type", "exact"),
+                      untranslated_fields=rec.get("untranslated_fields", []),
+                      machine_translation=rec.get("machine_translation", False),
+                      original_mechanism=rec.get("original_mechanism", ""),
+                      original_management=rec.get("original_management", ""))
 
 
 async def fetch_interaction_records(db: AsyncSession, ok_ids: list[str],
@@ -118,7 +123,9 @@ async def fetch_interaction_records(db: AsyncSession, ok_ids: list[str],
                     records.append(applied)
 
     aras = await ddi_repo.get_ara_for(db, ok_ids)
-    for ara in aras:
+    ara_translations = await localize(db, "ara_interactions", [
+        {"id": ara.id, "fields": {"mechanism": ara.mechanism, "recommendation": ara.recommendation}} for ara in aras])
+    for ara, vi in zip(aras, ara_translations):
         for v in (ara.victim_drug_ids or []):
             if v not in routes:
                 continue
@@ -133,9 +140,13 @@ async def fetch_interaction_records(db: AsyncSession, ok_ids: list[str],
                                     "pair_names": [name_by_id.get(key[0], key[0]),
                                                    name_by_id.get(key[1], key[1])],
                                     "severity": ara.severity or "moderate",
-                                    "mechanism": ara.mechanism or "",
-                                    "management": ara.recommendation or "",
-                                    "summary": ara.recommendation or ara.mechanism or "",
+                                    "mechanism": vi["mechanism"],
+                                    "management": vi["recommendation"],
+                                    "summary": vi["recommendation"] or vi["mechanism"],
+                                    "original_mechanism": ara.mechanism or "",
+                                    "original_management": ara.recommendation or "",
+                                    "untranslated_fields": vi["untranslated_fields"],
+                                    "machine_translation": vi["machine_translation"],
                                     "citations": [{"source_id": "patel2020", "label": "Patel 2020"}],
                                     "match_type": "exact", "layer": "ara"})
 
@@ -166,13 +177,18 @@ async def run_check(db: AsyncSession, drugs: list[str],
     # food
     food_findings = []
     if include_food:
-        for row in await ddi_repo.get_food_for_drugs(db, ok_ids):
+        food_rows = await ddi_repo.get_food_for_drugs(db, ok_ids)
+        food_translations = await localize(db, "food_interactions", [
+            {"id": row.id, "fields": {"description": row.description, "management": row.management}} for row in food_rows])
+        for row, vi in zip(food_rows, food_translations):
             food_findings.append(FindingOut(
                 pair=[name_by_id.get(row.drug_id, row.drug_id), row.food_vi or row.food],
                 severity=row.severity or "moderate",
                 severity_vi=SEVERITY_VI.get(row.severity or "moderate", ""),
-                summary=row.description or "", mechanism=row.mechanism_type or "",
-                management=row.management or "",
+                summary=vi["description"], mechanism=row.mechanism_type or "",
+                management=vi["management"],
+                original_mechanism=row.description or "", original_management=row.management or "",
+                untranslated_fields=vi["untranslated_fields"], machine_translation=vi["machine_translation"],
                 citations=[Citation(source_id=row.source_id or "ddinter",
                                     source_name=SOURCE_NAMES.get(row.source_id or "", ""))],
                 match_type="exact"))

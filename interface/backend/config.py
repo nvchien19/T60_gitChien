@@ -36,6 +36,17 @@ class Settings(BaseSettings):
     # Gọi thêm một lượt LLM kiểm định từng câu có bám bằng chứng không (tắt để giảm độ trễ)
     explain_verify: bool = True
 
+    # Gemini pretranslation; credentials stay on the backend.
+    gemini_api_key: str = ""
+    google_api_key: str = ""
+    gemini_model: str = "gemini-3.5-flash"
+
+    # Offline translation job; never used during a safety check.
+    google_translation_api_key: str = ""
+    google_translation_project: str = ""
+    google_translation_location: str = "us-central1"
+    google_translation_glossary: str = ""
+
     # Database: Postgres chứa dữ liệu MVP (schema `mvp`, nạp bằng db/load_mvp.py)
     database_url: str = "postgresql://ddi:ddi_dev_password@127.0.0.1:5432/ddi"
 

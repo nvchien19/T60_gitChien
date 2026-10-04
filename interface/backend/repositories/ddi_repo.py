@@ -2,6 +2,7 @@
 
 from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from interface.backend.repositories.translations import localize
 
 from interface.backend.db.models.tables import (
     Alias,
@@ -59,12 +60,21 @@ async def get_pair_interactions(db: AsyncSession, a: str, b: str) -> list[dict]:
         .where(or_((DrugInteraction.drug_a == a) & (DrugInteraction.drug_b == b),
                    (DrugInteraction.drug_a == b) & (DrugInteraction.drug_b == a)))
     )
+    rows = r.all()
+    translated = await localize(db, "interaction_mechanisms", [
+        {"id": mech.mechanism_id if mech else "", "fields": {
+            "description": mech.description if mech else "",
+            "management": mech.management if mech else ""}} for _, mech in rows])
     out = []
-    for inter, mech in r.all():
+    for (inter, mech), vi in zip(rows, translated):
         out.append({
             "pair": [inter.drug_a, inter.drug_b], "severity": inter.severity,
-            "mechanism": (mech.description if mech else ""),
-            "management": (mech.management if mech else "") or "",
+            "mechanism": vi["description"],
+            "management": vi["management"],
+            "original_mechanism": mech.description if mech else "",
+            "original_management": (mech.management if mech else "") or "",
+            "untranslated_fields": vi["untranslated_fields"],
+            "machine_translation": vi["machine_translation"],
             "mechanism_type": inter.mechanism_type,
             "citations": [{"source_id": inter.source_id, "label": "DDInter 2.0",
                            "source_url": inter.source_url or ""}],

@@ -158,6 +158,20 @@ class InteractionMechanism(Base):
     embedding: Mapped[list | None] = mapped_column(JSON, nullable=True)
 
 
+class ContentTranslation(Base):
+    """Persistent translations; no FK so reloading source CSV preserves the cache."""
+    __tablename__ = "content_translations"
+    source_table: Mapped[str] = mapped_column(String, primary_key=True)
+    source_id: Mapped[str] = mapped_column(String, primary_key=True)
+    field: Mapped[str] = mapped_column(String, primary_key=True)
+    language: Mapped[str] = mapped_column(String, primary_key=True, default="vi")
+    source_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    translated_text: Mapped[str] = mapped_column(Text, nullable=False)
+    provider: Mapped[str] = mapped_column(String, nullable=False)
+    reviewed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
+
+
 class DrugInteraction(Base):
     __tablename__ = "drug_interactions"
     interaction_id: Mapped[int] = mapped_column(BigInteger, primary_key=True)

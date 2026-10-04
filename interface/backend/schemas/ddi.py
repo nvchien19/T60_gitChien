@@ -30,6 +30,10 @@ class CheckRequest(BaseModel):
 
 
 class FindingOut(BaseModel):
+    untranslated_fields: list[str] = Field(default_factory=list)
+    machine_translation: bool = False
+    original_mechanism: str = ""
+    original_management: str = ""
     pair: list[str]
     severity: str
     severity_vi: str = ""
@@ -59,6 +63,10 @@ class AddMedicationRequest(BaseModel):
     dose: str = ""
     frequency: str = ""
     type: str = "OTC"
+
+
+class EditMedicationRequest(AddMedicationRequest):
+    id: int | None = Field(default=None, gt=0)
 
 
 class CreatePrescriptionRequest(BaseModel):

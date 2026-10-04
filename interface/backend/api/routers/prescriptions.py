@@ -12,6 +12,7 @@ from interface.backend.db.session import get_session
 from interface.backend.schemas.ddi import (
     AddMedicationRequest,
     CreatePrescriptionRequest,
+    EditMedicationRequest,
     MedicationOut,
     ReviewOut,
     ReviewRequest,
@@ -119,6 +120,53 @@ async def add_med(rx_id: str, req: AddMedicationRequest | list[AddMedicationRequ
         await db.refresh(med)
     out = [_med_out(m) for m in meds]
     return out if isinstance(req, list) else out[0]
+
+
+@router.put("/prescriptions/{rx_id}/medications", response_model=list[MedicationOut])
+async def edit_medications(rx_id: str, requests: list[EditMedicationRequest],
+                           db: AsyncSession = Depends(get_session)):
+    result = await db.execute(select(Prescription).where(Prescription.id == rx_id).with_for_update())
+    rx = result.scalar_one_or_none()
+    if not rx:
+        raise HTTPException(404, "Không tìm thấy đơn")
+    if len(requests) > 50:
+        raise HTTPException(422, "Đơn thuốc tối đa 50 thuốc")
+    result = await db.execute(select(Medication).where(Medication.prescription_id == rx_id))
+    existing = {med.id: med for med in result.scalars().all()}
+    ids = [req.id for req in requests if req.id is not None]
+    if len(set(ids)) != len(ids) or any(med_id not in existing for med_id in ids):
+        raise HTTPException(422, "Thuốc không thuộc đơn hoặc bị lặp ID")
+    if any(not req.name.strip() for req in requests):
+        raise HTTPException(422, "Tên thuốc không được để trống")
+    changed = set(ids) != set(existing)
+    medications = []
+    for req in requests:
+        if req.id is None:
+            medications.extend(await _add_medications(db, rx, [req]))
+            changed = True
+            continue
+        med = existing[req.id]
+        if med.name != req.name:
+            normalized = (await normalize_list(db, [req.name]))[0]
+            med.drug_id = normalized.drug_id or None
+            med.ingredient = normalized.canonical_name or "Chưa xác minh"
+            med.verified = normalized.status == "ok"
+            med.norm_status = normalized.status
+            med.suggestions = normalized.suggestions
+        changed = changed or (med.name, med.dose, med.frequency, med.type) != (req.name, req.dose, req.frequency, req.type)
+        med.name, med.dose, med.frequency, med.type = req.name, req.dose, req.frequency, req.type
+        medications.append(med)
+    for med_id, med in existing.items():
+        if med_id not in ids:
+            await db.delete(med)
+    if changed:
+        rx.status = "Cần xem lại" if any(not med.verified for med in medications) else "Chưa kiểm tra"
+        rx.highest_severity_vi = None
+        rx.last_checked = None
+    await db.commit()
+    for med in medications:
+        await db.refresh(med)
+    return [_med_out(med) for med in medications]
 
 
 @router.post("/prescriptions/{rx_id}/checks", status_code=201)
