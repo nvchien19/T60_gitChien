@@ -1,14 +1,15 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
-from interface.backend.api.routers import drugs, interactions, prescriptions, sources
+from interface.backend.api.routers import auth, drugs, interactions, prescriptions, sources
 from interface.backend.api.routes import router as agent_router
 from interface.backend.config import get_settings
 from interface.backend.db.base import Base
 from interface.backend.db.models import tables  # noqa: F401  (dang ky models)
 from interface.backend.db.session import engine
+from interface.backend.services.auth_service import current_user
 
 
 @asynccontextmanager
@@ -33,6 +34,14 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+@app.middleware("http")
+async def private_api_cache(request: Request, call_next):
+    response = await call_next(request)
+    if request.url.path.startswith("/api/v1"):
+        response.headers["Cache-Control"] = "no-store"
+    return response
+
+
 settings = get_settings()
 app.add_middleware(
     CORSMiddleware,
@@ -42,11 +51,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(drugs.router, prefix="/api/v1")
-app.include_router(interactions.router, prefix="/api/v1")
-app.include_router(sources.router, prefix="/api/v1")
-app.include_router(prescriptions.router, prefix="/api/v1")
-app.include_router(agent_router, prefix="/api/v1")
+app.include_router(auth.router, prefix="/api/v1")
+
+app.include_router(drugs.router, prefix="/api/v1", dependencies=[Depends(current_user)])
+app.include_router(interactions.router, prefix="/api/v1", dependencies=[Depends(current_user)])
+app.include_router(sources.router, prefix="/api/v1", dependencies=[Depends(current_user)])
+app.include_router(prescriptions.router, prefix="/api/v1", dependencies=[Depends(current_user)])
+app.include_router(agent_router, prefix="/api/v1", dependencies=[Depends(current_user)])
 
 
 @app.get("/health")

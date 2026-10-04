@@ -429,9 +429,32 @@ class Review(Base):
         DateTime(timezone=True), default=datetime.utcnow
     )
     updated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    created_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), index=True)
+    creator_name: Mapped[str] = mapped_column(Text, default="")
+    response: Mapped[str] = mapped_column(Text, default="")
+    responded_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"))
+    responder_name: Mapped[str] = mapped_column(Text, default="")
 
     __table_args__ = (
         CheckConstraint(
             "status IN ('Đang chờ','Đã phản hồi')", name="ck_reviews_status"
         ),
     )
+
+
+class User(Base):
+    __tablename__ = "users"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    email: Mapped[str] = mapped_column(String(254), unique=True, nullable=False)
+    name: Mapped[str] = mapped_column(String(150), nullable=False)
+    role: Mapped[str] = mapped_column(String(20), nullable=False)
+    password_hash: Mapped[str] = mapped_column(Text, nullable=False)
+    active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    __table_args__ = (CheckConstraint("role IN ('doctor','pharmacist')", name="ck_users_role"),)
+
+
+class AuthSession(Base):
+    __tablename__ = "auth_sessions"
+    token_hash: Mapped[str] = mapped_column(String(64), primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)

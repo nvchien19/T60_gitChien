@@ -18,7 +18,7 @@ async def test_review_flow(client):
                           json={"prescription_id": rx_id, "message": "Xin tu van"})
     assert r.status_code == 201
     body = r.json()
-    assert body["status"] == "Đang chờ dược sĩ xem xét"
+    assert body["status"] == "Đang chờ bác sĩ xem xét"
     review_id = body["review_id"]
 
     # GET list: co ban ghi moi nhat, med_count snapshot = 1
@@ -30,9 +30,12 @@ async def test_review_flow(client):
     assert items[0]["status"] == "Đang chờ"
     assert items[0]["med_count"] == 1
 
+    await client.post("/api/v1/auth/login", json={
+        "email": "doctor@test.vn", "password": "Test-password-123",
+    })
     # PATCH sang Da phan hoi
     r = await client.patch(f"/api/v1/reviews/{review_id}",
-                           json={"status": "Đã phản hồi"})
+                           json={"status": "Đã phản hồi", "response": "Cần rà soát liều dùng."})
     assert r.status_code == 200
     assert r.json()["status"] == "Đã phản hồi"
 
@@ -40,6 +43,9 @@ async def test_review_flow(client):
     r = await client.patch(f"/api/v1/reviews/{review_id}", json={"status": "pending"})
     assert r.status_code == 422
 
+    await client.post("/api/v1/auth/login", json={
+        "email": "pharmacist@test.vn", "password": "Test-password-123",
+    })
     # don khong ton tai -> 404
     r = await client.post("/api/v1/reviews",
                           json={"prescription_id": "RX-KHONG-CO", "message": "x"})
