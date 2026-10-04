@@ -13,8 +13,8 @@ và ý nghĩa từng cột nằm ở `data/mvp/README.md` (sinh tự động m�
   (nhôm hydroxyd gel...) không nối được với nguồn tương tác.
 - Tất cả đã được sửa **trong script** (`data/clean_dav.py`, `data/build_ddi.py`), không sửa tay file CSV. Dựng lại
   cho kết quả giống hệt nhau giữa các lần chạy.
-- Bản sạch đã nạp vào Postgres (container `p-060-db-1`, CSDL `ddi`, schema `mvp`): 15 bảng, số dòng khớp CSV,
-  mọi ràng buộc khóa chính, khóa ngoại, NOT NULL đều qua.
+- Bản sạch đã nạp vào Postgres (container `p-060-db-1`, CSDL `ddi`), cả schema `public` mà backend đọc lẫn schema
+  `mvp`. Riêng `public.pk_ddi` còn trống do lỗi có sẵn của script seed (mục 8).
 - Còn 11 mục mà script kiểm tra vẫn báo. Đã xem từng mục: đều là đặc điểm của nguồn hoặc thiết kế có chủ ý, không
   phải lỗi (mục 6). Các giới hạn thật sự còn lại ghi ở mục 7.
 
@@ -25,6 +25,7 @@ crawl_dav.py  → data/dav_raw/page_*.json (111 trang) → dav_thuoc.csv (55.005
 clean_dav.py  → dav_thuoc_clean.csv (54.883 số đăng ký) + dav_hoat_chat.csv (87.604 dòng hoạt chất)
 crawl_ddi.py  → data/nguon/{ddinter, openfda, patel2020, pkddip}
 build_ddi.py  → data/mvp/*.csv (15 bảng) + data/mvp/README.md
+seed_mvp.py   → Postgres, schema public (bảng backend đọc)
 load_mvp.py   → Postgres, schema mvp (db/mvp_schema.sql)
 audit_mvp.py  → báo cáo kiểm tra độ sạch
 ```
@@ -181,12 +182,23 @@ Trạng thái nối hoạt chất (`product_ingredients.status`):
 
 ## 8. Trạng thái Database
 
-- Container `p-060-db-1` (image `pgvector/pgvector:pg16`), cổng `127.0.0.1:5432`, người dùng `ddi`, CSDL `ddi`,
-  khớp `DATABASE_URL` trong `.env`.
-- Đã nạp ngày 2026-10-04 bằng `python db/load_mvp.py`: 15 bảng, số dòng khớp CSV, `ANALYZE` xong.
-- Lưu ý: `docker-compose.yml` trong repo ghi `postgres/postgres/rathuoc`, còn container đang chạy và `.env` dùng
-  `ddi/ddi`. Volume đã tạo từ trước nên container giữ cấu hình `ddi`. Nên thống nhất lại một cấu hình.
-- Schema `mvp` chỉ chứa dữ liệu tham chiếu. Lệnh nạp xóa và tạo lại riêng schema này.
+Container `p-060-db-1` (image `pgvector/pgvector:pg16`), cổng `127.0.0.1:5432`, người dùng `ddi`, CSDL `ddi`, khớp
+`DATABASE_URL` trong `.env`. Trong CSDL này dữ liệu nằm ở **hai nơi**, vì hai phần mã nguồn đọc theo hai cách:
+
+| Nơi lưu | Nạp bằng | Ai đọc |
+|---|---|---|
+| Schema `public` (bảng của SQLAlchemy) | `python scripts/seed_mvp.py --database-url <DATABASE_URL> --fresh` | Backend đang chạy (`interface/backend`), tức là ứng dụng và agent |
+| Schema `mvp` (`db/mvp_schema.sql`, có hàm `mvp.find_drug`, `mvp.interactions_among`) | `python db/load_mvp.py` | `src/services/ddi_repository.py` (bước LLM giải thích, hiện chưa nối vào ứng dụng) |
+
+- Cả hai nơi đã được nạp bản dữ liệu sạch ngày 2026-10-04, số dòng khớp CSV.
+- **Riêng bảng `public.pk_ddi` còn trống.** `scripts/seed_mvp.py` lỗi khóa ngoại trên Postgres vì 415 dòng PK-DDIP là
+  thuốc phối hợp có mã dạng `DDInterA;DDInterB`. Lỗi này có từ trước, không do đợt làm sạch. Bảng chỉ là bằng chứng bổ
+  sung nên ứng dụng vẫn chạy; cần sửa script seed (bỏ qua hoặc tách các dòng này) để nạp đủ.
+- `docker-compose.yml` trong repo ghi `postgres/postgres/rathuoc`, còn container đang chạy và `.env` dùng `ddi/ddi`.
+  Volume đã tạo từ trước nên container giữ cấu hình `ddi`. Nên thống nhất lại một cấu hình.
+- `db/load_mvp.py` xóa và tạo lại riêng schema `mvp`. `scripts/seed_mvp.py --fresh` chỉ xóa các bảng dữ liệu tham
+  chiếu ở `public`, không đụng bảng đơn thuốc.
+- Nên gộp về một nơi lưu để tránh nạp hai lần và tránh hai bản lệch nhau.
 
 ## 9. Chạy lại từ đầu
 
@@ -200,6 +212,7 @@ python build_ddi.py      # khoảng 1-2 phút
 cd ..
 python db/audit_mvp.py data/mvp db/mvp_schema.sql
 docker compose up -d db
+python scripts/seed_mvp.py --database-url <DATABASE_URL> --fresh --only <các bảng trừ pk_ddi, xem mục 10>
 python db/load_mvp.py
 ```
 
@@ -211,30 +224,37 @@ Hai gói đã tạo sẵn trong `data/share/` (thư mục này nằm trong `data
 
 | File | Dung lượng | Dùng khi |
 |---|---|---|
-| `mvp_2026-10-04.dump` | 18 MB | Đồng đội chỉ cần Database |
-| `mvp_csv_2026-10-04.zip` | 18 MB | Đồng đội cần cả CSV (để chạy `eval/golden/build_golden.py`, backfill...) |
+| `ddi_full_2026-10-04.dump` | 36 MB | Đồng đội chỉ cần Database. Chứa cả schema `public` (backend đọc) và schema `mvp` |
+| `mvp_csv_2026-10-04.zip` | 18 MB | Đồng đội cần CSV: tự seed, chạy `eval/golden/build_golden.py`, `db/audit_mvp.py` |
 
 Gửi file qua Google Drive hoặc kênh chat của nhóm ở chế độ **chỉ thành viên nhóm xem được**. Không đưa lên nơi
 công khai (kể cả GitHub Release của repo công khai), vì PK-DDIP không ghi giấy phép và DDInter chỉ cho dùng phi
 thương mại.
 
-Đồng đội nhận file dump:
+Đồng đội nhận file dump (khôi phục vào một CSDL trống; đã thử khôi phục thành công ngày 2026-10-04):
 
 ```
 docker compose up -d db
-docker compose cp mvp_2026-10-04.dump db:/tmp/mvp.dump
-docker compose exec db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "CREATE EXTENSION IF NOT EXISTS vector; CREATE EXTENSION IF NOT EXISTS pg_trgm; CREATE EXTENSION IF NOT EXISTS unaccent; DROP SCHEMA IF EXISTS mvp CASCADE"'
-docker compose exec db sh -c 'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --no-owner /tmp/mvp.dump'
+docker compose cp ddi_full_2026-10-04.dump db:/tmp/ddi.dump
+docker compose exec db sh -c 'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --no-owner /tmp/ddi.dump'
 ```
 
-Đồng đội nhận file zip: giải nén vào `data/` để có `data/mvp/*.csv`, rồi chạy `docker compose up -d db` và
-`python db/load_mvp.py`.
+Nếu CSDL đã có bảng từ trước thì tạo CSDL mới (`createdb`) rồi khôi phục vào đó, và trỏ `DATABASE_URL` sang.
+
+Đồng đội nhận file zip: giải nén vào `data/` để có `data/mvp/*.csv`, chạy `docker compose up -d db`, rồi:
+
+```
+python scripts/seed_mvp.py --database-url <DATABASE_URL> --fresh --only sources,drugs,aliases,products,product_ingredients,interaction_mechanisms,drug_interactions,food_interactions,disease_interactions,duplication_classes,ara_interactions,fda_labels,dosage_form_rules
+python db/load_mvp.py
+```
+
+Lệnh đầu nạp các bảng backend đọc (bỏ `pk_ddi` vì lỗi nêu ở mục 8); lệnh sau nạp schema `mvp`.
 
 Tạo lại gói sau mỗi lần dựng dữ liệu:
 
 ```
-docker compose exec db sh -c 'pg_dump -U "$POSTGRES_USER" -d "$POSTGRES_DB" -n mvp -Fc --no-owner --no-privileges -f /tmp/mvp.dump'
-docker compose cp db:/tmp/mvp.dump data/share/mvp_<ngày>.dump
+docker compose exec db sh -c 'pg_dump -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Fc --no-owner --no-privileges -f /tmp/ddi.dump'
+docker compose cp db:/tmp/ddi.dump data/share/ddi_full_<ngày>.dump
 ```
 
 Script pipeline (`data/*.py`) cũng chưa nằm trong git. Muốn đồng đội dựng lại được thì gửi kèm 4 script, hoặc thêm
