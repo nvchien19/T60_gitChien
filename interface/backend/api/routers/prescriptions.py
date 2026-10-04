@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from interface.backend.db.models.tables import Check, Medication, Prescription, Review
 from interface.backend.db.session import get_session
+from interface.backend.repositories import ddi_repo
 from interface.backend.schemas.ddi import (
     AddMedicationRequest,
     CreatePrescriptionRequest,
@@ -183,9 +184,14 @@ async def run_rx_check(rx_id: str, db: AsyncSession = Depends(get_session)):
     result = await run_check(db, [m.name for m in meds])
     check_id = f"CHECK-{uuid.uuid4().hex[:6].upper()}"
     snapshot = [{"name": m.name, "drug_id": m.drug_id, "dose": m.dose} for m in meds]
+    # luu nguyen van ket qua + ngay cap nhat tung nguon: lan sau mo lai khong tra lai CSDL
+    stored = result.model_dump(mode="json")
+    stored["sources"] = {s.source_id: str(s.last_updated) if s.last_updated else ""
+                         for s in await ddi_repo.list_sources(db)}
     db.add(Check(id=check_id, prescription_id=rx_id, status="done",
                  meds_snapshot=snapshot,
                  summary={"meds_count": len(meds), "findings_count": len(result.findings)},
+                 result=stored,
                  max_severity=result.max_severity,
                  steps_done=["normalize", "ingredient", "duplicate", "drug_interaction",
                              "food", "rank", "evidence", "explain"]))
@@ -207,16 +213,23 @@ async def get_check(check_id: str, db: AsyncSession = Depends(get_session)):
     c = await db.get(Check, check_id)
     if not c:
         raise HTTPException(404, "Không tìm thấy check")
-    # tai tao findings tu snapshot (deterministic) de tra chi tiet
-    names = [m.get("name", "") for m in (c.meds_snapshot or [])]
-    result = await run_check(db, names) if names else None
+    # Lan kiem tra da luu ket qua: tra dung ban da luu. Ban ghi cu (truoc khi co cot `result`)
+    # khong co ban luu nen phai tra lai tu CSDL hien tai; `from_snapshot` cho FE biet truong hop nay.
+    data = c.result
+    if not data:
+        names = [m.get("name", "") for m in (c.meds_snapshot or [])]
+        data = (await run_check(db, names)).model_dump(mode="json") if names else {}
     return {"check_id": c.id, "status": c.status, "summary": c.summary,
             "max_severity": c.max_severity, "steps_done": c.steps_done,
             "created_at": c.created_at.isoformat() if c.created_at else None,
-            "findings": [f.model_dump() for f in result.findings] if result else [],
-            "disclaimer": result.disclaimer if result else "",
-            "unknown": [n.model_dump() for n in result.unknown] if result else [],
-            "no_record_pairs": result.no_record_pairs if result else []}
+            "from_snapshot": bool(c.result),
+            "findings": data.get("findings", []),
+            "food_findings": data.get("food_findings", []),
+            "duplicate_findings": data.get("duplicate_findings", []),
+            "disclaimer": data.get("disclaimer", ""),
+            "unknown": data.get("unknown", []),
+            "no_record_pairs": data.get("no_record_pairs", []),
+            "sources": data.get("sources", {})}
 
 
 @router.get("/prescriptions/{rx_id}/checks")

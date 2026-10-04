@@ -7,6 +7,8 @@
 ## 1. Metrics
 
 Định nghĩa, căn cứ ngưỡng và nguồn: [eval/README.md](../README.md).
+Test case thủ công kèm output thực tế: [manual_evidence.md](manual_evidence.md).
+Request/response nguyên bản của 5 lượt API ngày 2026-10-04: [manual/2026-10-04/](manual/2026-10-04/).
 
 **Lần chạy 2026-10-04** (`run_20261004-152010.json`): chấm LangGraph agent thật trên golden set 48 ca, dữ liệu đã làm
 sạch trong Postgres. Dự đoán sinh bằng `python eval/predict.py`, chấm bằng
@@ -77,6 +79,19 @@ ERROR tests/test_api/test_interactions.py
 - `python eval/predict.py` rồi `run_eval.py --pred`: agent thật trên Postgres, kết quả ở mục 1.
 - `python db/audit_mvp.py data/mvp db/mvp_schema.sql`: dữ liệu qua mọi kiểm tra cấu trúc (khóa chính, khóa ngoại,
   kiểu, NOT NULL).
+
+### Manual API run — 2026-10-04
+
+Năm lượt kiểm tra trực tiếp API đều đạt tiêu chí chức năng: Aspirin + Warfarin (major, citation), Panadol + Warfarin
+(được chuẩn hóa, moderate), tên không nhận diện được (`unknown`, không kết luận an toàn), tên gần đúng (`suggest`,
+cần xác nhận), và luồng tạo đơn → check → chi tiết có finding/citation. Output tổng hợp:
+[case-results.json](manual/2026-10-04/case-results.json); metadata nguồn:
+[sources-response.json](manual/2026-10-04/sources-response.json).
+
+Đây là smoke test API, không phải xác nhận chuyên môn lâm sàng. Confidence LLM >90% chưa được đo vì endpoint không
+trả confidence và luồng hiện tại dùng tra cứu tất định từ database. `last_updated` có ở endpoint danh sách nguồn,
+nhưng chưa gắn vào từng citation. Giao diện có popup chi tiết theo thao tác chọn finding, song browser run gặp HTTP
+403 khi tải dữ liệu qua proxy nên click end-to-end chưa được xác nhận; chưa có screenshot UI.
 
 ## 3. User Feedback
 

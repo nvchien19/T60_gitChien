@@ -49,3 +49,31 @@ async def test_prescription_flow(client):
     assert r.json()["status"] == "done"
     r = await client.get(f"/api/v1/checks/{r.json()['check_id']}")
     assert r.json()["status"] == "done" and r.json()["findings"]
+
+
+@pytest.mark.asyncio
+async def test_check_detail_is_stored_snapshot(client):
+    """Mo lai lan kiem tra cu phai thay dung canh bao luc chay, ke ca khi CSDL da doi."""
+    import sqlite3
+
+    from tests.conftest import TEST_DB
+
+    r = await client.post("/api/v1/prescriptions",
+                          json={"medications": [{"name": "warfarin"}, {"name": "aspirin"}]})
+    rx = r.json()["id"]
+    check_id = (await client.post(f"/api/v1/prescriptions/{rx}/checks")).json()["check_id"]
+    before = (await client.get(f"/api/v1/checks/{check_id}")).json()
+    assert before["from_snapshot"] and before["findings"]
+    assert before["sources"]["ddinter"] == "2026-09-30"
+
+    con = sqlite3.connect(TEST_DB)
+    try:
+        con.execute("UPDATE drug_interactions SET severity = 'minor' WHERE interaction_id = 1")
+        con.commit()
+        after = (await client.get(f"/api/v1/checks/{check_id}")).json()
+    finally:
+        con.execute("UPDATE drug_interactions SET severity = 'major' WHERE interaction_id = 1")
+        con.commit()
+        con.close()
+    assert after["findings"] == before["findings"]
+    assert after["findings"][0]["severity"] == "major"
