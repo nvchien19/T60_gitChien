@@ -385,6 +385,9 @@ class Check(Base):
     status: Mapped[str] = mapped_column(Text, default="running")
     meds_snapshot: Mapped[list] = mapped_column(JSON, nullable=False)
     summary: Mapped[dict | None] = mapped_column(JSON)
+    # Nguyên văn kết quả lúc chạy (CheckResponse + ngày cập nhật từng nguồn) để truy vết:
+    # mở lại lần kiểm tra cũ phải thấy đúng cảnh báo người dùng đã xem, kể cả khi CSDL đã đổi.
+    result: Mapped[dict | None] = mapped_column(JSON)
     max_severity: Mapped[str | None] = mapped_column(Text)
     steps_done: Mapped[list] = mapped_column(JSON, default=list)
     created_at: Mapped[datetime] = mapped_column(
