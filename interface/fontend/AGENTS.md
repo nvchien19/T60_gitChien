@@ -7,3 +7,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## Project frontend skill
+
+For work in this folder, read and apply [.agents/skills/p060-frontend/SKILL.md](.agents/skills/p060-frontend/SKILL.md). It covers this project's UI conventions and API integration. Keep the generated Next.js rules above.

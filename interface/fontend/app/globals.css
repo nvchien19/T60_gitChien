@@ -3,6 +3,7 @@
 @import 'shadcn/tailwind.css';
 @import './theme/light.css';
 @import './theme/dark.css';
+@import './login.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -55,3 +56,5 @@
     @apply bg-background text-foreground;
   }
 }
+
+.doctor-dialog::backdrop { background: rgb(2 6 23 / 40%); backdrop-filter: blur(2px); }

@@ -29,6 +29,11 @@ import { Button } from "@/components/ui/button";
 import { MedicationAssistantWidget } from "@/components/MedicationAssistantWidget";
 import { PrescriptionEditor } from "@/components/PrescriptionEditor";
 import type { EditableMedicationDraft } from "@/components/PrescriptionEditor";
+import { BrandLogo } from "@/components/BrandLogo";
+import { LogoutButton } from "@/components/LogoutButton";
+import { DoctorReviewPanel } from "@/components/DoctorWorkspace";
+import { AuthGate } from "@/components/AuthGate";
+import type { AuthUser } from "@/lib/api";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 import {
@@ -52,7 +57,7 @@ type View =
   | "Lịch sử"
   | "Yêu cầu trao đổi";
 
-const navItems: { label: View; icon: typeof Home }[] = [
+const allNavItems: { label: View; icon: typeof Home }[] = [
   { label: "Tổng quan", icon: Home },
   { label: "Đơn thuốc", icon: Pill },
   { label: "Kiểm tra an toàn", icon: ClipboardCheck },
@@ -102,6 +107,13 @@ function StatusBadge({ status }: { status: Status }) {
 }
 
 export default function Page() {
+  return <AuthGate>{(user, logout) => <ClinicalDashboard user={user} onLogout={logout} />}</AuthGate>;
+}
+
+function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () => Promise<void> }) {
+  const isDoctor = user.role === "doctor";
+  const roleLabel = isDoctor ? "Bác sĩ" : "Dược sĩ";
+  const navItems = allNavItems.filter(item => isDoctor || item.label !== "Yêu cầu trao đổi");
   const [active, setActive] = useState<View>("Tổng quan");
   const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
   const [selectedId, setSelectedId] = useState("");
@@ -206,6 +218,11 @@ export default function Page() {
     };
   }, [selectedId, selectedCheckId, checkRecords, prescriptions]);
 
+  useEffect(() => {
+    const timer = setInterval(() => { loadReviews().then(setReviewRequests).catch(e => setError(e.message)); }, 30000);
+    return () => clearInterval(timer);
+  }, []);
+
   const openPrescription = (id: string, checkId = "") => {
     setSelectedCheckId(checkId);
     setSelectedId(id);
@@ -284,9 +301,7 @@ export default function Page() {
     <div className="min-h-screen overflow-x-clip bg-[#f7faff] text-slate-900">
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-[248px] flex-col border-r border-slate-200 bg-white lg:flex">
         <div className="flex h-[76px] items-center gap-3 border-b border-slate-100 px-7">
-          <div className="flex size-9 items-center justify-center rounded-xl bg-sky-500 text-white shadow-sm shadow-sky-200">
-            <ShieldCheck className="size-5" />
-          </div>
+          <BrandLogo size={40} />
           <div>
             <p className="text-[15px] font-extrabold tracking-tight">
               Medication <span className="text-sky-500">Safety</span>
@@ -321,11 +336,12 @@ export default function Page() {
               <UserRound className="size-4" />
             </div>
             <div>
-              <p className="text-xs font-bold text-slate-700">Người dùng</p>
-              <p className="text-[10px] text-slate-400">Quản lý đơn thuốc</p>
+              <p className="text-xs font-bold text-slate-700">{user.name}</p>
+              <p className="text-[10px] text-slate-400">{roleLabel}</p>
             </div>
-            <MoreHorizontal className="ml-auto size-4 text-slate-400" />
+
           </div>
+          <LogoutButton onLogout={onLogout} onError={setError} className="w-full border border-slate-200" />
         </div>
       </aside>
       <main className="min-h-screen lg:pl-[248px]">
@@ -341,7 +357,7 @@ export default function Page() {
             </button>
             <div className="min-w-0">
               <p className="hidden truncate text-xs font-medium text-slate-400 min-[400px]:block">
-                Xin chào, Người dùng
+                Xin chào, {user.name}
               </p>
               <h1 className="truncate text-base font-extrabold sm:text-lg">
                 {active}
@@ -349,10 +365,11 @@ export default function Page() {
             </div>
           </div>
           <div className="flex shrink-0 items-center gap-2 sm:gap-4">
+            <LogoutButton onLogout={onLogout} onError={setError} compact className="lg:hidden" />
             <ThemeToggle />
             <Bell className="size-[18px] text-slate-500" />
             <div className="flex size-8 items-center justify-center rounded-full bg-sky-100 text-xs font-bold text-sky-700 sm:size-9 sm:text-sm">
-              NA
+              {user.name.trim().split(/\s+/).slice(-2).map(part => part[0]).join("").toUpperCase()}
             </div>
           </div>
         </header>
@@ -423,6 +440,7 @@ export default function Page() {
               onCheck={() => runCheck(selected.id)}
               onAdd={() => setAddMode("append")}
               onDetail={setDetail}
+              canSendReview={!isDoctor}
               onSendReview={sendReviewRequest}
               onViewRequests={() => setActive("Yêu cầu trao đổi")}
             />
@@ -434,7 +452,8 @@ export default function Page() {
               onView={openPrescription}
             />
           )}
-          {active === "Yêu cầu trao đổi" && (
+          {active === "Yêu cầu trao đổi" && isDoctor && <DoctorReviewPanel />}
+          {active === "Yêu cầu trao đổi" && !isDoctor && (
             <ReviewView
               requests={reviewRequests}
               onNew={() => setActive("Kiểm tra an toàn")}
@@ -460,7 +479,7 @@ export default function Page() {
             label === "Kiểm tra an toàn"
               ? "Kiểm tra"
               : label === "Yêu cầu trao đổi"
-                ? "Bác sĩ"
+                ? "Trao đổi"
                 : label;
           const badge =
             label === "Kiểm tra an toàn"
@@ -500,9 +519,7 @@ export default function Page() {
           <div className="absolute inset-y-0 left-0 flex w-[280px] max-w-[85vw] flex-col bg-white shadow-2xl animate-in slide-in-from-left duration-200">
             <div className="flex h-16 items-center justify-between border-b border-slate-100 px-4">
               <div className="flex items-center gap-2.5">
-                <div className="flex size-9 items-center justify-center rounded-xl bg-sky-500 text-white">
-                  <ShieldCheck className="size-5" />
-                </div>
+                <BrandLogo size={40} />
                 <p className="text-[15px] font-extrabold tracking-tight">
                   Medication <span className="text-sky-500">Safety</span>
                 </p>
@@ -546,12 +563,13 @@ export default function Page() {
                   <UserRound className="size-4" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-slate-700">Người dùng</p>
+                  <p className="text-xs font-bold text-slate-700">{user.name}</p>
                   <p className="text-[10px] text-slate-400">
-                    Quản lý đơn thuốc
+                    {roleLabel}
                   </p>
                 </div>
               </div>
+              <LogoutButton onLogout={onLogout} onError={setError} className="mt-3 w-full border border-slate-200" />
             </div>
           </div>
         </div>
@@ -903,6 +921,7 @@ function SafetyView({
   onCheck,
   onAdd,
   onDetail,
+  canSendReview,
   onSendReview,
   onViewRequests,
 }: {
@@ -915,6 +934,7 @@ function SafetyView({
   onCheck: () => void;
   onAdd: () => void;
   onDetail: (id: number) => void;
+  canSendReview: boolean;
   onSendReview: (message: string) => Promise<void>;
   onViewRequests: () => void;
 }) {
@@ -1018,12 +1038,12 @@ function SafetyView({
               prescription={prescription}
             />
           )}
-          <DoctorRequestForm
+          {canSendReview && <DoctorRequestForm
             key={prescription.id}
             prescription={prescription}
             onSend={onSendReview}
             onViewRequests={onViewRequests}
-          />
+          />}
         </>
       )}
     </>
@@ -1424,9 +1444,10 @@ function ReviewView({
                   Xem đơn thuốc
                 </button>
               </div>
-              <p className="mt-4 rounded-lg bg-slate-50 p-3 text-sm leading-relaxed text-slate-700">
+              <p className="mt-4 whitespace-pre-wrap rounded-lg bg-slate-50 p-3 text-sm leading-relaxed text-slate-700">
                 {req.message}
               </p>
+              {req.response && <div className="mt-3 rounded-lg border border-emerald-100 bg-emerald-50 p-4"><p className="text-xs font-bold text-emerald-700">Phản hồi: {req.responderName} · {req.respondedAt}</p><p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-slate-700">{req.response}</p></div>}
             </div>
           ))}
         </div>
@@ -1446,8 +1467,8 @@ function Modal({
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/25 backdrop-blur-sm sm:items-center sm:p-4">
-      <div className="max-h-[92dvh] w-full max-w-lg overflow-y-auto rounded-t-2xl border border-slate-200 bg-white p-4 shadow-2xl sm:rounded-2xl sm:p-6">
-        <div className="mb-6 flex items-start justify-between">
+      <div className="flex max-h-[92dvh] w-full max-w-lg flex-col overflow-hidden rounded-t-2xl border border-slate-200 bg-white shadow-2xl sm:rounded-2xl">
+        <div className="flex shrink-0 items-start justify-between gap-3 border-b border-slate-100 p-4 sm:p-6">
           <div>
             <p className="text-xs font-bold uppercase tracking-wider text-sky-600">
               Medication safety
@@ -1457,12 +1478,12 @@ function Modal({
           <button
             onClick={onClose}
             aria-label="Đóng"
-            className="rounded-lg p-1 text-slate-400 hover:bg-slate-50"
+            className="shrink-0 rounded-lg p-1 text-slate-400 hover:bg-slate-50"
           >
             <X className="size-5" />
           </button>
         </div>
-        {children}
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4 sm:p-6">{children}</div>
       </div>
     </div>
   );

@@ -74,6 +74,15 @@ def _seed_sync():
         (1, "DDInter1", "DDInter2", "major", "M1", "synergy", 1, "ddinter",
          "https://ddinter2.scbdd.com/server/interact/1/"),
     )
+    from interface.backend.services.auth_service import hash_password
+
+    for email, name, role in [
+        ("pharmacist@test.vn", "Dược sĩ Test", "pharmacist"),
+        ("other@test.vn", "Dược sĩ Khác", "pharmacist"),
+        ("doctor@test.vn", "Bác sĩ Test", "doctor"),
+    ]:
+        cur.execute("INSERT INTO users (email, name, role, password_hash, active) VALUES (?,?,?,?,?)",
+                    (email, name, role, hash_password("Test-password-123"), True))
     con.commit()
     con.close()
 
@@ -96,7 +105,13 @@ async def client():
 
     app.dependency_overrides[get_session] = _override
     transport = ASGITransport(app=app)
+    from interface.backend.api.routers.auth import _attempts
+    _attempts.clear()
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        result = await ac.post("/api/v1/auth/login", json={
+            "email": "pharmacist@test.vn", "password": "Test-password-123",
+        })
+        assert result.status_code == 200
         yield ac
     app.dependency_overrides.clear()
     await eng.dispose()

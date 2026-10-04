@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from interface.backend.db.models.tables import Check, Medication, Prescription, Review
+from interface.backend.db.models.tables import Check, Medication, Prescription, Review, User
 from interface.backend.db.session import get_session
 from interface.backend.schemas.ddi import (
     AddMedicationRequest,
@@ -18,6 +18,7 @@ from interface.backend.schemas.ddi import (
     ReviewRequest,
     ReviewStatusUpdate,
 )
+from interface.backend.services.auth_service import current_user, doctor, pharmacist
 from interface.backend.services.check_service import normalize_list, run_check
 from src.core.guardrails import HANDOFF
 
@@ -85,7 +86,7 @@ async def _add_medications(db: AsyncSession, rx: Prescription, requests: list[Ad
     return meds
 
 
-@router.post("/prescriptions", status_code=201)
+@router.post("/prescriptions", dependencies=[Depends(current_user)], status_code=201)
 async def create_rx(req: CreatePrescriptionRequest | None = None, db: AsyncSession = Depends(get_session)):
     req = req or CreatePrescriptionRequest()
     rx = Prescription(id=f"RX-{uuid.uuid4().hex[:6].upper()}", name=req.name, status="Chưa kiểm tra")
@@ -105,7 +106,7 @@ async def get_rx(rx_id: str, db: AsyncSession = Depends(get_session)):
     return _rx_out(rx, list(r.scalars().all()))
 
 
-@router.post("/prescriptions/{rx_id}/medications", response_model=MedicationOut | list[MedicationOut], status_code=201)
+@router.post("/prescriptions/{rx_id}/medications", dependencies=[Depends(current_user)], response_model=MedicationOut | list[MedicationOut], status_code=201)
 async def add_med(rx_id: str, req: AddMedicationRequest | list[AddMedicationRequest],
                   db: AsyncSession = Depends(get_session)):
     rx = await db.get(Prescription, rx_id)
@@ -122,7 +123,7 @@ async def add_med(rx_id: str, req: AddMedicationRequest | list[AddMedicationRequ
     return out if isinstance(req, list) else out[0]
 
 
-@router.put("/prescriptions/{rx_id}/medications", response_model=list[MedicationOut])
+@router.put("/prescriptions/{rx_id}/medications", dependencies=[Depends(current_user)], response_model=list[MedicationOut])
 async def edit_medications(rx_id: str, requests: list[EditMedicationRequest],
                            db: AsyncSession = Depends(get_session)):
     result = await db.execute(select(Prescription).where(Prescription.id == rx_id).with_for_update())
@@ -169,7 +170,7 @@ async def edit_medications(rx_id: str, requests: list[EditMedicationRequest],
     return [_med_out(med) for med in medications]
 
 
-@router.post("/prescriptions/{rx_id}/checks", status_code=201)
+@router.post("/prescriptions/{rx_id}/checks", dependencies=[Depends(current_user)], status_code=201)
 async def run_rx_check(rx_id: str, db: AsyncSession = Depends(get_session)):
     rx = await db.get(Prescription, rx_id)
     if not rx:
@@ -231,47 +232,65 @@ def _review_out(r: Review) -> ReviewOut:
     return ReviewOut(id=r.id, prescription_id=r.prescription_id, check_id=r.check_id,
                      patient=r.patient or "", med_count=r.med_count or 0,
                      message=r.message, status=r.status,
-                     created_at=r.created_at.isoformat() if r.created_at else None)
+                     created_at=r.created_at.isoformat() if r.created_at else None,
+                     created_by=r.created_by, creator_name=r.creator_name or "",
+                     response=r.response or "", responder_name=r.responder_name or "",
+                     responded_at=r.updated_at.isoformat() if r.updated_at else None)
 
 
 @router.post("/reviews", status_code=201)
-async def create_review(req: ReviewRequest, db: AsyncSession = Depends(get_session)):
+async def create_review(req: ReviewRequest, db: AsyncSession = Depends(get_session),
+                        user: User = Depends(pharmacist)):
     rx = await db.get(Prescription, req.prescription_id)
     if not rx:
         raise HTTPException(404, "Không tìm thấy đơn")
+    if req.check_id:
+        check = await db.get(Check, req.check_id)
+        if not check or check.prescription_id != rx.id:
+            raise HTTPException(422, "Kết quả kiểm tra không thuộc đơn thuốc")
     med_count = req.med_count
     if not med_count:  # FE chua gui -> dem truc tiep tu DB de snapshot dung
         r = await db.execute(select(Medication).where(Medication.prescription_id == rx.id))
         med_count = len(list(r.scalars().all()))
     review = Review(prescription_id=req.prescription_id, check_id=req.check_id or None,
                     patient=req.patient, med_count=med_count,
-                    message=req.message, status="Đang chờ")
+                    message=req.message.strip(), status="Đang chờ",
+                    created_by=user.id, creator_name=user.name)
     db.add(review)
     await db.commit()
     await db.refresh(review)
-    return {"review_id": review.id, "status": "Đang chờ dược sĩ xem xét"}
+    return {"review_id": review.id, "status": "Đang chờ bác sĩ xem xét"}
 
 
 @router.get("/reviews")
 async def list_reviews(prescription_id: str = "", status: str = "",
                        limit: int = 50, offset: int = 0,
-                       db: AsyncSession = Depends(get_session)):
+                       db: AsyncSession = Depends(get_session),
+                       user: User = Depends(current_user)):
     stmt = select(Review).order_by(Review.created_at.desc(), Review.id.desc())
+    if user.role == "pharmacist":
+        stmt = stmt.where(Review.created_by == user.id)
     if prescription_id:
         stmt = stmt.where(Review.prescription_id == prescription_id)
     if status and status != "Tất cả":
         stmt = stmt.where(Review.status == status)
-    r = await db.execute(stmt.offset(offset).limit(limit))
+    r = await db.execute(stmt.offset(max(0, offset)).limit(max(1, min(limit, 100))))
     return {"items": [_review_out(x).model_dump() for x in r.scalars().all()]}
 
 
 @router.patch("/reviews/{review_id}", response_model=ReviewOut)
 async def update_review(review_id: int, req: ReviewStatusUpdate,
-                        db: AsyncSession = Depends(get_session)):
+                        db: AsyncSession = Depends(get_session),
+                        user: User = Depends(doctor)):
     review = await db.get(Review, review_id)
     if not review:
         raise HTTPException(404, "Không tìm thấy yêu cầu")
+    if not review.created_by:
+        raise HTTPException(409, "Yêu cầu cũ chưa gắn với tài khoản dược sĩ")
     review.status = req.status
+    review.response = req.response.strip()
+    review.responded_by = user.id
+    review.responder_name = user.name
     review.updated_at = datetime.now(UTC)
     await db.commit()
     await db.refresh(review)
