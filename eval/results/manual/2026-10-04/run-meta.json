@@ -1,0 +1,6 @@
+{
+  "run_at": "2026-10-04T09:18:37.803Z",
+  "api_base": "http://127.0.0.1:8000",
+  "operator": "manual verification",
+  "note": "Synthetic medication names only; no personal data."
+}

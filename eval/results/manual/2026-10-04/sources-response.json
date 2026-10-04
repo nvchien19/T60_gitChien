@@ -1,0 +1,60 @@
+{
+  "http_status": 200,
+  "items": [
+    {
+      "source_id": "dav",
+      "name": "Cục Quản lý Dược - danh mục thuốc được cấp số đăng ký",
+      "citation": "Cổng dịch vụ công Cục Quản lý Dược (DAV)",
+      "url": "https://dichvucong.dav.gov.vn/congbothuoc/index",
+      "license": "Dữ liệu công khai của cơ quan nhà nước",
+      "last_updated": "2026-09-30"
+    },
+    {
+      "source_id": "ddinter",
+      "name": "DDInter 2.0",
+      "citation": "Tian Y, Yi J và cs. Nucleic Acids Res 2025;53(D1):D1356-D1362. doi:10.1093/nar/gkae726",
+      "url": "https://ddinter2.scbdd.com",
+      "license": "CC BY-NC-SA 4.0 - chỉ dùng phi thương mại",
+      "last_updated": "2026-09-30"
+    },
+    {
+      "source_id": "patel2020",
+      "name": "Patel 2020 - tương tác với thuốc giảm acid",
+      "citation": "Patel D, Bertz R, Ren S, Boulton DW, Någård M. Clin Pharmacokinet 2020;59(4):447-462. doi:10.1007/s40262-019-00844-3",
+      "url": "https://europepmc.org/article/PMC/PMC7109143",
+      "license": "CC BY-NC 4.0 - chỉ dùng phi thương mại",
+      "last_updated": "2020-01-01"
+    },
+    {
+      "source_id": "pkddip",
+      "name": "PK-DDIP (PK-DDI DB)",
+      "citation": "Jang HY, Song J và cs. npj Digit Med 2022;5:88. doi:10.1038/s41746-022-00639-0",
+      "url": "https://github.com/harryscpt/pk-ddip",
+      "license": "Không ghi giấy phép - chỉ dùng tham khảo nội bộ",
+      "last_updated": "2026-09-30"
+    },
+    {
+      "source_id": "openfda",
+      "name": "Nhãn thuốc FDA (openFDA drug label, DailyMed)",
+      "citation": "U.S. FDA",
+      "url": "https://open.fda.gov/apis/drug/label/",
+      "license": "Dữ liệu công (https://open.fda.gov/terms/)",
+      "last_updated": "2026-09-29"
+    },
+    {
+      "source_id": "curated",
+      "name": "Từ điển tên hoạt chất Việt - quốc tế của dự án",
+      "citation": "build_ddi.py: MANUAL, MANUAL_SUGGEST, vi_spellings()",
+      "url": "",
+      "license": "Nội bộ dự án",
+      "last_updated": "2026-10-04"
+    }
+  ],
+  "coverage": {
+    "drugs": 5619,
+    "pairs": 259860,
+    "mechanisms": 8458,
+    "foods": 857
+  },
+  "notice": "DDInter và Patel 2020 chỉ dùng phi thương mại (CC BY-NC); PK-DDIP chỉ tham khảo nội bộ."
+}

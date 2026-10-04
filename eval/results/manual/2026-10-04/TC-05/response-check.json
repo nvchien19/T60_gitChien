@@ -1,0 +1,7 @@
+{
+  "http_status": 201,
+  "check_id": "CHECK-7BAF8B",
+  "status": "done",
+  "max_severity": "major",
+  "findings_count": 1
+}
