@@ -1,225 +1,187 @@
-# AI20K Agent Template
+# Rà Thuốc (P-060)
 
-Template chính thức cho học viên VinUni AI20K Build Phase: cấu trúc dự án, code
-mẫu và hướng dẫn kỹ thuật để xây dựng một AI Agent hoàn chỉnh — từ kiến trúc,
-code, test cho đến deploy và nộp bài Demo Day.
+> Rà một đơn nhiều thuốc bằng tay vừa chậm vừa dễ sót tương tác → AI Agent tra tương tác thuốc trên CSDL có nguồn,
+> xếp mức độ và giải thích kèm trích dẫn cho **bác sĩ và dược sĩ**, những người xác nhận và quyết định cuối cùng.
 
-Technical Guidebook: <https://phoenix.note.transformerlabs.ai/technical-book>
+Dự án của đội P-060, VinUni AI20K Build Phase (cohort 4). Đề bài: [Topic.md](Topic.md).
 
-## Template có sẵn những gì
+## Vấn đề (Problem)
 
-- **Cấu trúc thư mục tách lớp** — `agents/`, `api/`, `services/`, `models/` đã
-  chia sẵn, không phải bàn lại từ đầu.
-- **Code mẫu chạy được** — LangGraph agent (state, node, tool), FastAPI routes,
-  Pydantic settings, schema.
-- **Docker và CI** — Dockerfile multi-stage, `docker-compose.yml`, workflow
-  GitHub Actions chạy `ruff` + `pytest` khi push lên `main`/`develop` và khi mở
-  pull request vào `main`.
-- **Technical Guidebook 10 chương** trong `docs/guide/`, đồng thời đọc được
-  online.
-- **Checklist 10 deliverables** của Demo Day.
-- **AI usage logging** — hook cài sẵn cho 6 công cụ AI, log tự động gửi lên
-  grading server mỗi lần `git push`.
+- **Ai gặp vấn đề:** bác sĩ và dược sĩ chịu trách nhiệm với đơn thuốc của bệnh nhân dùng nhiều thuốc cùng lúc
+  (đa bệnh, đơn từ nhiều nơi, thêm thuốc không kê đơn và thực phẩm chức năng).
+- **Tốn kém ở đâu:** phải tra thủ công từng cặp thuốc. Đơn 10 thuốc có 45 cặp cần tra, trong khi dược sĩ tại quầy
+  chỉ có vài phút cho mỗi đơn.
+- **Vì sao giải pháp hiện tại chưa đủ:**
+  - Công cụ tra cứu quốc tế dùng tên hoạt chất tiếng Anh, còn đơn ở Việt Nam ghi tên biệt dược hoặc tên Việt hóa.
+    Danh mục của Cục Quản lý Dược có 54.883 số đăng ký với rất nhiều cách viết.
+  - Chatbot LLM thuần có thể bịa tương tác hoặc liều, và không chỉ ra nguồn.
+  - Kết quả tra cứu thường chỉ báo "có tương tác", không nói rõ vì sao, dựa trên nguồn nào, cập nhật ngày nào.
 
-## Yêu cầu
+## Giải pháp (Solution)
 
-- Python 3.11 (phiên bản CI đang dùng)
-- Git
-- Docker — tuỳ chọn, chỉ cần nếu chạy `docker compose`
+Agent chạy chuỗi `normalize → lookup → rank → explain → guardrail`. Kết quả là **cảnh báo tham khảo có nguồn**; AI
+không khuyên ngưng, đổi hay kê thuốc, và không chẩn đoán.
 
-## Bắt đầu
+- **Chuẩn hóa tên thuốc:** nhận tên biệt dược, hoạt chất, cách viết Việt hóa; hỏi lại khi tên chỉ gần đúng
+  (63.572 tên tra cứu, lấy từ danh mục DAV).
+- **Tra và xếp mức tương tác:** 252.768 cặp hoạt chất từ DDInter 2.0, xếp ba mức Nghiêm trọng, Trung bình, Nhẹ. Mức
+  độ lấy thẳng từ bản ghi, không do LLM suy ra. Có cảnh báo trùng hoạt chất và quy tắc riêng theo dạng bào chế.
+- **Giải thích có nguồn:** LLM chỉ diễn giải bản ghi đã tra được; mỗi kết luận kèm nguồn và ngày cập nhật.
+- **Guardrail:** chặn lời khuyên đổi thuốc, chặn kết luận không có trích dẫn. Không có bản ghi thì ghi "chưa có bản
+  ghi trong CSDL", không dùng từ "an toàn".
+- **Con người xác nhận (HITL):** dược sĩ duyệt đơn có hỏi lại lần cuối; ca không chắc chắn chuyển bác sĩ kèm phiếu
+  bằng chứng; bác sĩ ghi kết luận.
 
-### 1. Clone repo của đội
+Chi tiết: [ARCHITECTURE.md](ARCHITECTURE.md), [docs/USER_FLOW.md](docs/USER_FLOW.md), tài liệu Gate 1 trong
+[docs/gate_01/](docs/gate_01/).
 
-Khi đội được chốt, hệ thống tự sinh repo cho đội từ template này, nằm trong org
-GitHub của khoá bạn đang học và đặt tên theo mã đội. Copy URL ở trang đội trên
-Phoenix rồi clone về:
+## Target User
+
+- **Primary:** dược sĩ cấp phát tại quầy hoặc làm dược lâm sàng, rà nhiều đơn mỗi ngày.
+- **Secondary:** bác sĩ kê đơn, đồng thời xác nhận lần cuối các ca dược sĩ chuyển lên.
+
+Bệnh nhân không đăng nhập hệ thống; đơn thuốc do bác sĩ hoặc dược sĩ đưa vào.
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| AI Agent | LangGraph + LangChain (`src/agents/`) |
+| LLM | DeepSeek `deepseek-chat` cho bước giải thích "vì sao" (`src/services/explainer.py`, chưa nối vào ứng dụng); agent hiện giải thích bằng mẫu tất định từ CSDL |
+| Backend | FastAPI + Python 3.11 (`interface/backend/`) |
+| Frontend | Next.js 16 + React 19 + Tailwind v4 + TypeScript (`interface/fontend/`) |
+| Database | PostgreSQL 16 + pgvector, pg_trgm, unaccent (schema `mvp`) |
+| Dữ liệu | DDInter 2.0, Patel 2020, PK-DDIP, nhãn openFDA, danh mục thuốc DAV |
+| Đánh giá | Golden set 48 ca, metric tất định, Ragas, LLM-as-a-judge (`eval/`) |
+| DevOps | Docker + GitHub Actions (ruff + pytest) |
+
+## Quick Start
+
+Cần Python 3.11, Node.js và Docker.
 
 ```bash
-git clone https://github.com/<ORG-CỦA-KHOÁ>/<MÃ-ĐỘI>.git
-cd <MÃ-ĐỘI>
-```
+# 1. Clone repo
+git clone https://github.com/AI20K-Build-Phase-Cohort-4/P-060.git
+cd P-060
 
-Không cần `rm -rf .git`, `git init` hay `git remote add`: repo sinh từ template
-đã bắt đầu bằng lịch sử riêng của đội và remote trỏ sẵn đúng chỗ. Chưa thấy repo
-của đội thì báo BTC — repo tự tạo nằm ngoài org sẽ không được chấm.
-
-### 2. Cài môi trường
-
-```bash
-python3.11 -m venv .venv
-source .venv/bin/activate      # Windows: .venv\Scripts\activate
+# 2. Môi trường Python
+python -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-```
 
-### 3. Cấu hình biến môi trường
-
-```bash
+# 3. Biến môi trường
 cp .env.example .env
-```
+# Điền DEEPSEEK_API_KEY (bước giải thích) và AI_LOG_API_KEY (key riêng của từng thành viên)
 
-Mở `.env` và điền `OPENAI_API_KEY`. Riêng `AI_LOG_API_KEY`, mỗi thành viên tự
-tạo key riêng tại [dashboard Phoenix](https://phoenix.note.transformerlabs.ai/api-keys)
-rồi thay vào chỗ `<get-your-api-key-from-dashboard-phoenix>` — giá trị trong
-`.env.example` chỉ là placeholder, để nguyên thì log không vào được hệ thống chấm.
+# 4. Cài hook ghi log AI (một lần sau khi clone)
+bash scripts/setup_hooks.sh        # Windows PowerShell: scripts\setup_hooks.ps1
 
-### 4. Cài hook ghi log AI
+# 5. Database (cần dữ liệu, xem ghi chú bên dưới)
+docker compose up -d db
+# Cách nhanh: khôi phục file dump nhận từ nhóm, theo mục 10 của docs/DATA_PIPELINE.md
+# Hoặc tự nạp từ data/mvp/*.csv:
+python scripts/seed_mvp.py --database-url <DATABASE_URL> --fresh   # bảng backend đọc
+python db/load_mvp.py                                             # schema mvp
 
-```bash
-bash scripts/setup_hooks.sh                                      # Linux / macOS / Git Bash
-powershell -ExecutionPolicy Bypass -File scripts\setup_hooks.ps1 # Windows PowerShell
-```
-
-Chạy một lần sau khi clone. Hook ghi lại prompt khi bạn dùng Claude Code, Cursor,
-Codex CLI, Gemini CLI, Antigravity hoặc GitHub Copilot, và cài pre-push hook để
-đẩy log lên server.
-
-### 5. Chạy backend
-
-App FastAPI nằm ở `interface/backend/main.py`. `src/main.py` là shim mỏng chỉ
-re-export nên cả hai lệnh dưới đây đều chạy:
-
-```bash
-uvicorn src.main:app --reload --host 0.0.0.0 --port 8000          # như template
-uvicorn interface.backend.main:app --reload --host 0.0.0.0 --port 8000  # canonical
-# hoặc
-make run                                                       # dùng canonical
-```
-
-Swagger UI ở <http://localhost:8000/docs>. Hoặc dùng `make test`, `make lint` —
-xem `Makefile`.
-
-### 6. Chạy giao diện
-
-Giao diện Next.js nằm ở `interface/fontend`, chạy riêng ở cổng 3000:
-
-```bash
+# 6. Chạy backend (cổng 8000) và frontend (cổng 3000) cùng lúc
 cd interface/fontend
 npm install
 npm run dev
 ```
 
-Backend đã bật CORS cho `http://localhost:3000` (`.env` → `CORS_ORIGINS`).
+- Chỉ chạy backend: `make run`, Swagger UI ở <http://localhost:8000/docs>.
+- Kiểm tra mã: `make test`, `make lint`, `make check`.
+- Đánh giá agent: `python eval/predict.py` chạy agent thật trên golden set, rồi
+  `python eval/run_eval.py --pred eval/results/predictions.jsonl` để chấm. Xem [eval/README.md](eval/README.md).
 
-> Giao diện hiện vẫn chạy dữ liệu mock, chưa gọi API. Bảng ánh xạ từng màn hình
-> sang endpoint tương ứng nằm ở `docs/BE_DEVELOPMENT.md`.
+**Về dữ liệu ở bước 5:** thư mục `data/` không nằm trong git. Xin gói dữ liệu từ thành viên phụ trách (file dump
+Postgres hoặc file zip CSV) rồi làm theo mục 10 của [docs/DATA_PIPELINE.md](docs/DATA_PIPELINE.md). `DATABASE_URL`
+trong `.env` phải khớp tài khoản của container Postgres đang chạy. Script seed hiện lỗi ở bảng `pk_ddi` trên
+Postgres; cách nạp bỏ qua bảng này cũng nằm ở mục 10.
 
-## Cấu trúc thư mục
+## Project Structure
 
 ```
-interface/
-  backend/            FastAPI app — entry point interface.backend.main:app
-    api/              routers: drugs, interactions, prescriptions, sources, agent
-    db/               SQLAlchemy models + async session
-    repositories/     tầng SQL duy nhất được phép truy vấn DB
-    schemas/          Pydantic I/O contracts
-    services/         business logic (check_service)
-    agent_adapter/    cầu nối duy nhất sang src/ (LangGraph)
-    config.py         Pydantic Settings
-    main.py           app entry point + CORS
-  fontend/            Next.js 16 App Router, React 19, Tailwind v4 — cổng 3000
-src/                  AI core thuần — không import FastAPI/SQLAlchemy
-  agents/             LangGraph agent (graph, state, nodes)
-  core/               guardrail rule-based
-  services/llm.py     LLM client
-  tools/              thuật toán thuần (normalize, lookup, rank)
-  main.py             shim re-export app (tương thích `uvicorn src.main:app`)
-tests/                pytest suite
-alembic/              migration script
-data/                 DDI dataset + SQLite cho dev
-scripts/              Hook ghi log AI + installer
-docs/
-  architecture/       thiết kế kiến trúc
-  guide/              Technical Guidebook (nguồn của bản online)
-eval/                 Kết quả evaluation
-presentation/         Slide và video Demo Day
-.claude/ .codex/ .cursor/ .gemini/ .agents/ .github/hooks/
-                     Config hook cho từng công cụ
-.github/workflows/    CI
-Dockerfile            Multi-stage build
-docker-compose.yml    Chạy backend bằng Docker
-README_boilerplate.md  Khung README cho dự án của đội
+├── src/                     # Lõi AI thuần, không import FastAPI/SQLAlchemy
+│   ├── agents/              # LangGraph: graph.py, state.py
+│   │   └── nodes/           # normalize, clarify, lookup, rank, explain, guardrail
+│   ├── tools/               # Thuật toán thuần: normalizer, lookup_core, ranker
+│   ├── core/                # Guardrail theo luật
+│   ├── services/            # ddi_repository, ddi_check, explainer, grounding, llm
+│   └── main.py              # Shim re-export app (uvicorn src.main:app)
+├── interface/
+│   ├── backend/             # FastAPI: api/routers, services, repositories, schemas, db, agent_adapter
+│   └── fontend/             # Next.js (tên thư mục giữ nguyên là "fontend")
+├── db/                      # mvp_schema.sql, load_mvp.py, audit_mvp.py, backfill_mvp_columns.py
+├── alembic/                 # Migration cho bảng nghiệp vụ
+├── data/                    # Pipeline và dữ liệu (không nằm trong git)
+├── eval/                    # Golden set, predict.py, metric, Ragas, judge, kết quả
+├── tests/                   # Pytest
+├── docs/                    # Kiến trúc, luồng người dùng, dữ liệu, Gate 1, guidebook
+├── presentation/            # Slide và video Demo Day
+├── scripts/                 # Hook ghi log AI
+├── Dockerfile
+├── docker-compose.yml
+└── .github/workflows/       # CI
 ```
 
-## Technical Guidebook
+## API Endpoints
 
-| Chương | Nội dung | Thời gian |
-|---|---|---|
-| 1 | Lời mở đầu — mục tiêu, cách sử dụng | 15 phút |
-| 2 | Khởi tạo dự án — clone, setup, git workflow | 4 giờ |
-| 3 | Thiết kế kiến trúc — 3-tier, diagram, ADR | 6 giờ |
-| 4 | LangGraph Agent — state, node, edge, tool, RAG | 8 giờ |
-| 5 | FastAPI — routes, validation, error handling, streaming | 6 giờ |
-| 6 | Giao diện — Next.js và Streamlit | 6 giờ |
-| 7 | DevOps — Docker, CI/CD, deploy, logging | 6 giờ |
-| 8 | Kiểm thử — unit test, integration test, RAGAS | 4 giờ |
-| 9 | Demo Day — 10 deliverables, checklist | 2 giờ |
-| 10 | Tài nguyên — khoá học, tài liệu, BMAD method | tham khảo |
+Tất cả nằm dưới tiền tố `/api/v1`, trừ `/health`.
 
-Đọc online tại <https://phoenix.note.transformerlabs.ai/technical-book>: đăng
-nhập bằng GitHub (đúng account đã được BTC mời vào org của khoá), chọn tab
-**Technical Book** ở sidebar trái. Bản offline nằm trong `docs/guide/`, mở được
-bằng bất kỳ markdown viewer nào.
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/health` | Kiểm tra dịch vụ |
+| POST | `/api/v1/drugs/normalize` | Chuẩn hóa tên thuốc về hoạt chất |
+| GET | `/api/v1/drugs/search` | Gợi ý tên thuốc khi nhập |
+| POST | `/api/v1/interactions/check` | Kiểm tra tương tác cho một danh sách thuốc |
+| GET | `/api/v1/interactions/pair` | Tra một cặp hoạt chất |
+| GET | `/api/v1/sources` | Nguồn dữ liệu, giấy phép, độ phủ |
+| GET, POST | `/api/v1/prescriptions` | Danh sách đơn, tạo đơn |
+| GET | `/api/v1/prescriptions/summary` | Số liệu tổng quan |
+| GET | `/api/v1/prescriptions/{rx_id}` | Chi tiết một đơn |
+| POST | `/api/v1/prescriptions/{rx_id}/medications` | Thêm thuốc vào đơn |
+| GET, POST | `/api/v1/prescriptions/{rx_id}/checks` | Lịch sử kiểm tra, chạy kiểm tra mới |
+| GET | `/api/v1/checks/{check_id}` | Kết quả một lần kiểm tra |
+| GET, POST | `/api/v1/reviews` | Ca cần người có chuyên môn xem xét |
+| PATCH | `/api/v1/reviews/{review_id}` | Ghi kết luận, đổi trạng thái ca |
+| POST | `/api/v1/assistant/chat` | Hỏi đáp về kết quả kiểm tra |
+| POST | `/api/v1/chat` | Gọi thẳng agent |
+| GET | `/api/v1/status` | Trạng thái agent |
 
-## 10 deliverables cho Demo Day
+## Deliverables Checklist
 
-| # | Deliverable | Vị trí | Template lo tới đâu |
-|---|---|---|---|
-| 1 | Source code | `src/` | Khung sẵn |
-| 2 | README | copy `README_boilerplate.md` thành `README.md` | Khung sẵn |
-| 3 | Architecture diagram | `docs/architecture_diagram.md` | Khung sẵn |
-| 4 | AI logs | LangSmith (3 biến môi trường) + auto AI usage logging | Cấu hình sẵn |
-| 5 | Live URL | deploy lên Render/Vercel | CI/CD sẵn |
-| 6 | Video demo | `presentation/` | Đội tự làm |
-| 7 | Pitch deck | `presentation/` | Đội tự làm |
-| 8 | Development journal | `JOURNAL.md` | Khung sẵn |
-| 9 | Worklog | `WORKLOG.md` | Khung sẵn |
-| 10 | Evaluation evidence | `eval/` | Đội tự làm |
+- [x] Source Code (GitHub)
+- [x] README.md
+- [x] Architecture Diagram ([docs/architecture_diagram.md](docs/architecture_diagram.md); thiết kế chi tiết ở [ARCHITECTURE.md](ARCHITECTURE.md))
+- [x] AI Logs (tự thu thập qua hook, gửi khi `git push`)
+- [ ] Live URL / Deploy
+- [ ] Video Demo
+- [ ] Pitch Deck (`presentation/`)
+- [x] Weekly Journal ([JOURNAL.md](JOURNAL.md))
+- [x] Worklog ([WORKLOG.md](WORKLOG.md))
+- [x] Evaluation Evidence ([eval/results/report.md](eval/results/report.md): đã chấm agent thật, 10/18 metric tất định đạt; chưa chạy Ragas và LLM judge)
 
-## Tech stack
+## Giới hạn hiện tại
 
-| Lớp | Công nghệ |
-|---|---|
-| Agent | LangGraph + LangChain 0.3 (`src/agents/`) |
-| Backend | FastAPI 0.115 + Uvicorn (`interface/backend/`) |
-| LLM | OpenAI, mặc định `gpt-4o-mini` (đổi trong `interface/backend/config.py`) |
-| Giao diện | Next.js 16 + React 19 + Tailwind v4 (`interface/fontend/`) |
-| Database | PostgreSQL 16 + pgvector, hoặc SQLite cho dev |
-| Lint / test | ruff + pytest 8 |
-| DevOps | Docker + GitHub Actions |
+- Dữ liệu tương tác chỉ phủ các hoạt chất có trong DDInter. Khoảng 36% dòng hoạt chất của thuốc tại Việt Nam (chủ
+  yếu dược liệu, vitamin và khoáng phối hợp) chưa có bản ghi. "Chưa có bản ghi" không có nghĩa là an toàn.
+- Chưa có dược sĩ rà soát nội dung chuyên môn của dữ liệu.
+- DDInter và Patel 2020 chỉ cho dùng phi thương mại; PK-DDIP không ghi giấy phép. Cần xử lý trước khi thương mại hóa.
+- Bản MVP không kiểm tra số đăng ký thuốc.
+- Agent chưa đạt mọi ngưỡng đánh giá: độ nhạy 0,778 (ngưỡng 0,96). Chưa xử lý đúng biệt dược phối hợp và chưa tra
+  thuốc - thức ăn, thuốc - bệnh, trùng hoạt chất trong graph. Chi tiết ở [eval/results/report.md](eval/results/report.md).
+- Giao diện đang được chỉnh theo luồng Bác sĩ và Dược sĩ của tài liệu Gate 1.
 
-## AI usage logging
+## Team
 
-Mọi prompt được ghi vào `.ai-log/session.jsonl` và tự động gửi lên grading server
-ở bước pre-push.
-
-| Công cụ | Cấu hình | Thời điểm ghi |
-|---|---|---|
-| Claude Code | `.claude/settings.json` | mỗi prompt (`UserPromptSubmit`) |
-| Cursor | `.cursor/hooks.json` | mỗi prompt và khi dừng |
-| OpenAI Codex CLI | `.codex/hooks.json` | mỗi prompt và khi dừng |
-| Gemini CLI | `.gemini/settings.json` | mỗi lượt agent chạy |
-| GitHub Copilot | `.github/hooks/hooks.json` | mỗi prompt và cuối session |
-| Antigravity IDE | `.agents/hooks.json` | mỗi prompt, kèm lần quét lại lúc `git push` |
-| opencode | `.opencode/plugin/ai-log.ts` | mỗi prompt |
-
-Dùng ChatGPT hay công cụ web khác thì log thủ công:
-
-```bash
-scripts/_pyrun.sh scripts/log_manual.py --tool chatgpt --prompt "What you asked"
-```
-
-## Đóng góp
-
-Repo này là open source. Đọc [CONTRIBUTING.md](CONTRIBUTING.md) trước khi mở PR.
-
-Nội dung trong `docs/guide/` là nguồn của Technical Book và được đồng bộ lên bản
-online, nên mọi thay đổi ở đó cần review của
-[@AI20K-Build-Phase/book-maintainers](https://github.com/orgs/AI20K-Build-Phase/teams/book-maintainers)
-— xem [.github/CODEOWNERS](.github/CODEOWNERS).
-
-Báo lỗ hổng bảo mật theo [SECURITY.md](SECURITY.md), đừng mở public issue.
+| Member | Role | Student ID |
+|--------|------|-----------|
+| Nguyễn Văn Chiến | Frontend, backend API | 2A202602926 |
+| Nguyễn Ngọc Hân | Benchmark, metric, đánh giá | 2A202602511 |
+| Nguyễn Cảnh Duy | Dữ liệu, LLM giải thích, tài liệu Gate 1 | 2A202602815 |
 
 ## License
 
-[MIT](LICENSE) — dùng tự do cho mục đích giáo dục.
+[MIT](LICENSE) cho mã nguồn. Dữ liệu tương tác thuốc giữ giấy phép của từng nguồn, xem
+[docs/DATA_PIPELINE.md](docs/DATA_PIPELINE.md).
