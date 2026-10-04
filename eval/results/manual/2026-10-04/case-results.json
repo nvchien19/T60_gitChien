@@ -1,0 +1,67 @@
+[
+  {
+    "id": "TC-01",
+    "title": "Aspirin + Warfarin: major DDI with citation",
+    "result": "PASS",
+    "facts": {
+      "http_status": 200,
+      "max_severity": "major",
+      "findings": 1,
+      "citations_present": true
+    }
+  },
+  {
+    "id": "TC-02",
+    "title": "Panadol + Warfarin: brand normalization and DDI",
+    "result": "PASS",
+    "facts": {
+      "http_status": 200,
+      "panadol_normalized_to": "Acetaminophen",
+      "max_severity": "moderate",
+      "findings": 1
+    }
+  },
+  {
+    "id": "TC-03",
+    "title": "Unknown drug must remain unknown, not safe",
+    "result": "PASS",
+    "facts": {
+      "http_status": 200,
+      "unknown_returned": true,
+      "max_severity": "unknown",
+      "claim_safe": false
+    }
+  },
+  {
+    "id": "TC-04",
+    "title": "Fuzzy medication name returns suggestion",
+    "result": "PASS",
+    "facts": {
+      "http_status": 200,
+      "status": "suggest",
+      "suggestions": 1
+    }
+  },
+  {
+    "id": "TC-05",
+    "title": "Prescription -> check -> detail with finding and citation",
+    "result": "PASS",
+    "facts": {
+      "create_status": 201,
+      "prescription_id": "RX-D81A6D",
+      "check_status": 201,
+      "check_id": "CHECK-7BAF8B",
+      "detail_status": 200,
+      "findings": 1,
+      "citation_present": true
+    }
+  },
+  {
+    "id": "SUPPORTING-SOURCES",
+    "result": "PASS",
+    "facts": {
+      "http_status": 200,
+      "sources_with_last_updated": 6
+    }
+  }
+]

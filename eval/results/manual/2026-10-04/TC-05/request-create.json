@@ -1,0 +1,17 @@
+{
+  "name": "Manual Evidence TC05 2026-10-04",
+  "medications": [
+    {
+      "name": "warfarin",
+      "dose": "",
+      "frequency": "",
+      "type": "OTC"
+    },
+    {
+      "name": "aspirin",
+      "dose": "",
+      "frequency": "",
+      "type": "OTC"
+    }
+  ]
+}

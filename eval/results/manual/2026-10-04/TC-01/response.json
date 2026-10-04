@@ -1,0 +1,116 @@
+{
+  "http_status": 200,
+  "normalized": [
+    {
+      "input": "Aspirin",
+      "canonical_name": "Acetylsalicylic acid",
+      "drug_id": "DDInter20",
+      "status": "ok",
+      "suggestions": [],
+      "note": ""
+    },
+    {
+      "input": "Warfarin",
+      "canonical_name": "Warfarin",
+      "drug_id": "DDInter1951",
+      "status": "ok",
+      "suggestions": [],
+      "note": ""
+    }
+  ],
+  "unknown": [],
+  "max_severity": "major",
+  "max_severity_vi": "Nghiêm trọng",
+  "findings": [
+    {
+      "pair": [
+        "Acetylsalicylic acid",
+        "Warfarin"
+      ],
+      "severity": "major",
+      "severity_vi": "Nghiêm trọng",
+      "symbol": "!",
+      "summary": "Aspirin, even in small doses, may increase the risk of bleeding in patients on oral anticoagulants by inhibiting platelet aggregation, prolonging bleeding time, and inducing gastrointestinal lesions. Analgesic/antipyretic doses of aspirin increase the risk of major bleeding more than low-dose aspiri",
+      "mechanism": "Aspirin, even in small doses, may increase the risk of bleeding in patients on oral anticoagulants by inhibiting platelet aggregation, prolonging bleeding time, and inducing gastrointestinal lesions. Analgesic/antipyretic doses of aspirin increase the risk of major bleeding more than low-dose aspirin; however bleeding has also occurred with low-dose aspirin.",
+      "management": "This combination, especially with analgesic/antipyretic aspirin doses, should generally be avoided unless the potential benefit outweighs the risk of bleeding. If concomitant therapy is used for additive anticoagulant effects, monitoring for excessive anticoagulation and overt and occult bleeding is recommended. The INR should be checked frequently and the dosage adjusted accordingly when aspirin is added to an anticoagulant regimen. Be cognizant that bleeding may occur without INR or prothrombin time increases. Patients should be advised to promptly report any signs of bleeding to their physician, including pain, swelling, headache, dizziness, weakness, prolonged bleeding from cuts, vaginal bleeding, nosebleeds, bleeding of gums from brushing, unusual bruising, red or brown urine, or red or black stools. Patients should also be counseled to avoid any other over-the-counter oral or topical salicylate products.",
+      "citations": [
+        {
+          "source_id": "ddinter",
+          "source_name": "DDInter 2.0",
+          "label": "DDInter 2.0",
+          "source_url": "https://ddinter2.scbdd.com/server/interact/34056/"
+        }
+      ],
+      "match_type": "exact"
+    }
+  ],
+  "no_record_pairs": [],
+  "food_findings": [
+    {
+      "pair": [
+        "Acetylsalicylic acid",
+        "rượu, bia (đồ uống có cồn)"
+      ],
+      "severity": "moderate",
+      "severity_vi": "Trung bình",
+      "symbol": "!",
+      "summary": "The concurrent use of aspirin or nonsteroidal anti-inflammatory drugs (NSAIDs) and ethanol may lead to gastrointestinal (GI) blood loss. The mechanism may be due to a combined local effect as well as inhibition of prostaglandins leading to decreased integrity of the GI lining.",
+      "mechanism": "synergy",
+      "management": "Patients should be counseled on this potential interaction and advised to refrain from alcohol consumption while taking aspirin or NSAIDs.",
+      "citations": [
+        {
+          "source_id": "ddinter",
+          "source_name": "DDInter 2.0",
+          "label": "",
+          "source_url": ""
+        }
+      ],
+      "match_type": "exact"
+    },
+    {
+      "pair": [
+        "Warfarin",
+        "rượu, bia (đồ uống có cồn)"
+      ],
+      "severity": "moderate",
+      "severity_vi": "Trung bình",
+      "symbol": "!",
+      "summary": "Enhanced hypoprothrombinemic response to warfarin has been reported in patients with acute alcohol intoxication and/or liver disease. The proposed mechanisms are inhibition of warfarin metabolism and decreased synthesis of clotting factors. Binge drinking may exacerbate liver impairment and its metabolic ability in patients with liver dysfunction.",
+      "mechanism": "synergy",
+      "management": "Patients taking oral anticoagulants should be counseled to avoid large amounts of ethanol, but moderate consumption (one to two drinks per day) are not likely to affect the response to the anticoagulant in patients with normal liver function. Frequent INR/PT monitoring is recommended, especially if alcohol intake changes considerably. It may be advisable to avoid oral anticoagulant therapy in patients with uncontrollable drinking problems. Patients should be advised to promptly report any signs of bleeding to their doctor, including pain, swelling, headache, dizziness, weakness, prolonged bleeding from cuts, increased menstrual flow, nosebleeds, bleeding of gums from brushing, unusual bleeding or bruising, red or brown urine, or red or black stools.",
+      "citations": [
+        {
+          "source_id": "ddinter",
+          "source_name": "DDInter 2.0",
+          "label": "",
+          "source_url": ""
+        }
+      ],
+      "match_type": "exact"
+    },
+    {
+      "pair": [
+        "Warfarin",
+        "thực phẩm giàu vitamin K"
+      ],
+      "severity": "moderate",
+      "severity_vi": "Trung bình",
+      "symbol": "!",
+      "summary": "Vitamin K may antagonize the hypoprothrombinemic effect of oral anticoagulants. Vitamin K is a cofactor in the synthesis of blood clotting factors that are inhibited by oral anticoagulants, thus intake of vitamin K through supplements or diet can reverse the action of oral anticoagulants. Resistance to oral anticoagulants has been associated with consumption of foods or enteral feedings high in vitamin K content. Likewise, a reduction of vitamin K intake following stabilization of anticoagulant therapy may result in elevation of the INR and bleeding complications. Foods rich in vitamin K include beef liver, broccoli, Brussels sprouts, cabbage, collard greens, endive, kale, lettuce, mustard greens, parsley, soy beans, spinach, Swiss chard, turnip greens, watercress, and other green leafy vegetables. Moderate to high levels of vitamin K are also found in other foods such as asparagus, avocados, dill pickles, green peas, green tea, canola oil, margarine, mayonnaise, olive oil, and soybean oil. Snack foods containing the fat substitute, olestra, are fortified with 80 mcg of vitamin K per each one ounce serving so as to offset any depletion of vitamin K that may occur due to olestra interference with its absorption. Whether these foods can alter the effect of oral anticoagulants has not been extensively studied. One small study found that moderate consumption (1.5 servings/day) does not significantly affect the INR after one week in patients receiving long-term anticoagulation.",
+      "mechanism": "antagonism",
+      "management": "Intake of vitamin K through supplements or diet should not vary significantly during oral anticoagulant therapy. The diet in general should remain consistent, as other foods containing little or no vitamin K such as mangos and soy milk have been reported to interact with warfarin. Some experts recommend that continuous enteral nutrition should be interrupted for one hour before and one hour after administration of the anticoagulant dose and that enteral formulas containing soy protein should be avoided. Patients should also consider avoiding or limiting the consumption of cranberry juice or other cranberry formulations (e.g., encapsulated dried cranberry powder), pomegranate juice, black currant juice, and black currant seed oil.",
+      "citations": [
+        {
+          "source_id": "ddinter",
+          "source_name": "DDInter 2.0",
+          "label": "",
+          "source_url": ""
+        }
+      ],
+      "match_type": "exact"
+    }
+  ],
+  "duplicate_findings": [],
+  "disclaimer": "Kết quả là cảnh báo tham khảo, không phải chẩn đoán hay chỉ định điều trị. Liên hệ bác sĩ/dược sĩ để được đánh giá. Mức nghiêm trọng cao cần liên hệ y tế ngay.",
+  "data_coverage": "CSDL thật: 5619 hoạt chất / 259860 cặp DDInter + 8458 cơ chế. Hoạt chất ngoài danh sách trả 'chưa có bản ghi'."
+}

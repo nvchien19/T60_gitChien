@@ -1,0 +1,19 @@
+{
+  "http_status": 200,
+  "items": [
+    {
+      "input": "asca",
+      "canonical_name": "",
+      "drug_id": "",
+      "status": "suggest",
+      "suggestions": [
+        {
+          "drug_id": "DAV:acid-salicylic",
+          "canonical_name": "Acid acetyl salicylic",
+          "score": 0.857
+        }
+      ],
+      "note": "Cần xác nhận, không tự áp dụng"
+    }
+  ]
+}

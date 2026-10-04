@@ -1,0 +1,47 @@
+{
+  "http_status": 200,
+  "check_id": "CHECK-7BAF8B",
+  "status": "done",
+  "summary": {
+    "meds_count": 2,
+    "findings_count": 1
+  },
+  "max_severity": "major",
+  "steps_done": [
+    "normalize",
+    "ingredient",
+    "duplicate",
+    "drug_interaction",
+    "food",
+    "rank",
+    "evidence",
+    "explain"
+  ],
+  "created_at": "2026-10-04T02:18:36.945072+00:00",
+  "findings": [
+    {
+      "pair": [
+        "Acetylsalicylic acid",
+        "Warfarin"
+      ],
+      "severity": "major",
+      "severity_vi": "Nghiêm trọng",
+      "symbol": "!",
+      "summary": "Aspirin, even in small doses, may increase the risk of bleeding in patients on oral anticoagulants by inhibiting platelet aggregation, prolonging bleeding time, and inducing gastrointestinal lesions. Analgesic/antipyretic doses of aspirin increase the risk of major bleeding more than low-dose aspiri",
+      "mechanism": "Aspirin, even in small doses, may increase the risk of bleeding in patients on oral anticoagulants by inhibiting platelet aggregation, prolonging bleeding time, and inducing gastrointestinal lesions. Analgesic/antipyretic doses of aspirin increase the risk of major bleeding more than low-dose aspirin; however bleeding has also occurred with low-dose aspirin.",
+      "management": "This combination, especially with analgesic/antipyretic aspirin doses, should generally be avoided unless the potential benefit outweighs the risk of bleeding. If concomitant therapy is used for additive anticoagulant effects, monitoring for excessive anticoagulation and overt and occult bleeding is recommended. The INR should be checked frequently and the dosage adjusted accordingly when aspirin is added to an anticoagulant regimen. Be cognizant that bleeding may occur without INR or prothrombin time increases. Patients should be advised to promptly report any signs of bleeding to their physician, including pain, swelling, headache, dizziness, weakness, prolonged bleeding from cuts, vaginal bleeding, nosebleeds, bleeding of gums from brushing, unusual bruising, red or brown urine, or red or black stools. Patients should also be counseled to avoid any other over-the-counter oral or topical salicylate products.",
+      "citations": [
+        {
+          "source_id": "ddinter",
+          "source_name": "DDInter 2.0",
+          "label": "DDInter 2.0",
+          "source_url": "https://ddinter2.scbdd.com/server/interact/34056/"
+        }
+      ],
+      "match_type": "exact"
+    }
+  ],
+  "disclaimer": "Kết quả là cảnh báo tham khảo, không phải chẩn đoán hay chỉ định điều trị. Liên hệ bác sĩ/dược sĩ để được đánh giá. Mức nghiêm trọng cao cần liên hệ y tế ngay.",
+  "unknown": [],
+  "no_record_pairs": []
+}
