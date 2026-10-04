@@ -4,7 +4,7 @@ Template chính thức cho học viên VinUni AI20K Build Phase: cấu trúc d�
 mẫu và hướng dẫn kỹ thuật để xây dựng một AI Agent hoàn chỉnh — từ kiến trúc,
 code, test cho đến deploy và nộp bài Demo Day.
 
-Technical Guidebook: <https://phoenix.note.transformerlabs.ai/technical-book>
+Technical Guidebook: <https://phoenix.note.transformerlabs.ai/technical-book>.
 
 ## Template có sẵn những gì
 
