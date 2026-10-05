@@ -29,11 +29,8 @@ Làm theo thứ tự này:
 
 - **Không bao giờ** đặt key thật vào `.env.example` — file đó được commit.
   Key thật đặt trong `.env` (đã có trong `.gitignore`).
-- `AI_LOG_API_KEY` là key **riêng của từng đội**, lấy từ link mời của BTC.
-  Không chia sẻ, không commit.
+- Mọi API key là key **riêng**, không chia sẻ, không commit.
 - Trước khi push, tự kiểm tra nhanh:
   ```bash
   git diff --cached | grep -iE "api[_-]?key|secret|token|password"
   ```
-- Thư mục `.ai-log/` chứa nội dung prompt của bạn. Kiểm tra trước khi public
-  một repo có sẵn log — prompt có thể vô tình chứa dữ liệu nhạy cảm.

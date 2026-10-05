@@ -85,19 +85,16 @@ pip install -r requirements.txt
 
 # 3. Biến môi trường
 cp .env.example .env
-# Điền DEEPSEEK_API_KEY (bước giải thích) và AI_LOG_API_KEY (key riêng của từng thành viên)
+# Điền DEEPSEEK_API_KEY (bước giải thích)
 
-# 4. Cài hook ghi log AI (một lần sau khi clone)
-bash scripts/setup_hooks.sh        # Windows PowerShell: scripts\setup_hooks.ps1
-
-# 5. Database (cần dữ liệu, xem ghi chú bên dưới)
+# 4. Database (cần dữ liệu, xem ghi chú bên dưới)
 docker compose up -d db
 # Cách nhanh: khôi phục file dump nhận từ nhóm, theo mục 10 của docs/DATA_PIPELINE.md
 # Hoặc tự nạp từ data/mvp/*.csv:
 python scripts/seed_mvp.py --database-url <DATABASE_URL> --fresh   # bảng backend đọc
 python db/load_mvp.py                                             # schema mvp
 
-# 6. Chạy backend (cổng 8000) và frontend (cổng 3000) cùng lúc
+# 5. Chạy backend (cổng 8000) và frontend (cổng 3000) cùng lúc
 cd interface/fontend
 npm install
 npm run dev
@@ -120,8 +117,6 @@ Chép `.env.example` thành `.env` rồi điền. File `.env` không đưa vào 
 | Biến | Bắt buộc | Mặc định | Dùng để |
 |---|---|---|---|
 | `DATABASE_URL` | Có | `postgresql://ddi:ddi_dev_password@127.0.0.1:5432/ddi` | Kết nối Postgres. Dùng `127.0.0.1` thay cho `localhost` trên Windows |
-| `AI_LOG_API_KEY` | Có (mỗi thành viên một key) | — | Hook gửi log sử dụng AI lên máy chấm khi `git push` |
-| `AI_LOG_SERVER`, `AI_LOG_DIR` | Không | theo `.env.example` | Địa chỉ máy chấm và thư mục log tạm |
 | `DEEPSEEK_API_KEY` | Không | trống | Bước LLM giải thích (`src/services/explainer.py`). Để trống thì ứng dụng vẫn chạy, lời giải thích lấy từ CSDL |
 | `DEEPSEEK_BASE_URL`, `DEEPSEEK_MODEL` | Không | `https://api.deepseek.com`, `deepseek-chat` | Máy chủ và model của bước giải thích |
 | `EXPLAIN_TEMPERATURE`, `EXPLAIN_TIMEOUT_S`, `EXPLAIN_VERIFY` | Không | `0.2`, `60`, `true` | Nhiệt độ, thời gian chờ và bật kiểm định từng câu của bước giải thích |
