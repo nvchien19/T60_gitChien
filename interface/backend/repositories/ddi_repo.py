@@ -2,7 +2,6 @@
 
 from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from interface.backend.repositories.translations import localize
 
 from interface.backend.db.models.tables import (
     Alias,
@@ -18,6 +17,7 @@ from interface.backend.db.models.tables import (
     ProductIngredient,
     Source,
 )
+from interface.backend.repositories.translations import localize
 
 
 async def get_aliases_exact(db: AsyncSession, key: str, limit: int = 20) -> list[Alias]:

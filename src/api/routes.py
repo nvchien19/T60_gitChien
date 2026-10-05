@@ -3,9 +3,9 @@ import logging
 import psycopg
 from fastapi import APIRouter, Depends, HTTPException
 from langchain_core.language_models import BaseChatModel
+from src.models.schemas import ChatRequest, ChatResponse, InteractionCheckRequest, InteractionCheckResponse
 
 from src.agents.graph import agent
-from src.models.schemas import ChatRequest, ChatResponse, InteractionCheckRequest, InteractionCheckResponse
 from src.services.ddi_check import check_interactions
 from src.services.ddi_repository import DDIRepository, get_repository
 from src.services.llm import get_explainer_llm

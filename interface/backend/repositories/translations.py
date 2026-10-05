@@ -2,7 +2,9 @@
 import hashlib
 
 from sqlalchemy import select
+
 from interface.backend.db.models.tables import ContentTranslation
+
 
 def source_hash(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
