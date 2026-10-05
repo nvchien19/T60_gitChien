@@ -1,6 +1,6 @@
 """Pydantic I/O theo BE_DEVELOPMENT.md muc 7 + 13.4."""
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class Citation(BaseModel):
@@ -95,6 +95,13 @@ class PrescriptionOut(BaseModel):
 
 
 class ReviewRequest(BaseModel):
+    @field_validator("message")
+    @classmethod
+    def nonempty_message(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("Nhập nội dung yêu cầu")
+        return value.strip()
+
     prescription_id: str
     check_id: str = ""
     message: str = Field(min_length=1, max_length=2000)
@@ -111,7 +118,20 @@ class ReviewOut(BaseModel):
     message: str | None = None
     status: str = "Đang chờ"
     created_at: str | None = None
+    created_by: int | None = None
+    creator_name: str = ""
+    response: str = ""
+    responder_name: str = ""
+    responded_at: str | None = None
 
 
 class ReviewStatusUpdate(BaseModel):
-    status: str = Field(pattern="^(Đang chờ|Đã phản hồi)$")
+    status: str = Field(pattern="^Đã phản hồi$")
+    response: str = Field(min_length=1, max_length=4000)
+
+    @field_validator("response")
+    @classmethod
+    def nonempty_response(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("Nhập nội dung phản hồi")
+        return value.strip()

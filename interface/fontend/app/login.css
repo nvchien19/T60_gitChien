@@ -1,0 +1,40 @@
+/* Medical illustration built in CSS; no third-party image requests. */
+.login-scene { position:relative; isolation:isolate; display:flex; min-height:100dvh; align-items:center; justify-content:center; overflow:hidden; background:linear-gradient(125deg,#64c9ff 0%,#b3e7ff 48%,#e2f7ff 100%); padding:90px 24px 78px; color:#162337; }
+.login-art { position:absolute; inset:0; z-index:-1; overflow:hidden; background:radial-gradient(ellipse at 20% 80%,#22b6ff90,transparent 65%),radial-gradient(ellipse at 100% 5%,#ffffffcc,transparent 70%); }
+.medical-grid { position:absolute; inset:-30%; transform:rotate(30deg); background-image:linear-gradient(60deg,transparent 48.8%,#ffffff25 49%,#ffffff25 50%,transparent 50.2%),linear-gradient(-60deg,transparent 48.8%,#ffffff25 49%,#ffffff25 50%,transparent 50.2%),linear-gradient(0deg,transparent 48.8%,#ffffff25 49%,#ffffff25 50%,transparent 50.2%); background-size:260px 450px; mask-image:linear-gradient(90deg,#000,transparent 45%,#000); }
+.capsule { position:absolute; width:270px; height:96px; border-radius:100px; transform:rotate(-34deg); background:linear-gradient(180deg,#ffffff50,transparent 36%,#005d9f77 92%),linear-gradient(90deg,#00aae8 49.5%,#d3f8ff 50%); box-shadow:inset 0 4px 12px #ffffff95,inset 0 -7px 14px #00447160,0 28px 35px #087db142; }
+.capsule:after { content:""; position:absolute; top:14%; bottom:14%; left:50%; width:2px; background:#ffffff70; }
+.capsule-one { top:8%; right:10%; transform:rotate(-38deg) scale(1.5); filter:blur(3px); opacity:.85; }
+.capsule-two { bottom:20%; right:9%; transform:rotate(14deg) scale(1.03); }
+.capsule-three { top:43%; left:8%; transform:rotate(-53deg) scale(.7); filter:blur(2px); opacity:.7; }
+.capsule-four { top:7%; left:32%; transform:rotate(24deg) scale(.65); filter:blur(5px); }
+.molecule { position:absolute; width:130px; height:130px; border:16px solid #ffffff35; border-radius:50%; }
+.molecule:before,.molecule:after { content:""; position:absolute; height:15px; width:160px; background:#ffffff35; top:60px; left:72px; transform:rotate(40deg); transform-origin:left; border-radius:20px; }
+.molecule:after { top:45px; left:-145px; transform:rotate(-45deg); }
+.molecule-one { top:3%; left:4%; }.molecule-two { bottom:10%; left:-3%; transform:scale(1.4); opacity:.4; }
+.login-brand { position:absolute; top:30px; left:36px; display:flex; align-items:center; gap:10px; color:#176090; font-size:14px; font-weight:700; text-decoration:none; }
+.login-brand strong { color:#1355dd; }
+.login-card { width:100%; max-width:440px; border-radius:20px; background:#fff; padding:38px 48px 30px; box-shadow:0 24px 90px #176dab1c; border:1px solid #ffffffc9; }
+.login-symbol { position:relative; color:#5568ed; width:72px; height:72px; display:flex; align-items:center; justify-content:center; margin:0 auto 13px; }
+.login-symbol span { position:absolute; height:4px; width:26px; background:#5568ed; border-radius:5px; top:33px; left:-2px; box-shadow:7px -8px 0 #5568ed,-6px 8px 0 #5568ed; border:1px solid white; }
+.login-card h1 { margin:0; text-align:center; font-size:25px; font-weight:800; letter-spacing:-.7px; color:#1b2431; }
+.login-subtitle { margin:10px -12px 0; text-align:center; font-size:12px; line-height:1.6; color:#8590a0; }
+.login-roles { display:flex; align-items:center; justify-content:center; gap:8px; margin:20px 0 28px; }
+.login-roles span { display:flex; align-items:center; gap:6px; padding:6px 11px; border-radius:20px; background:#f1f6ff; color:#516aa4; font-size:11px; font-weight:600; }
+.login-form>label { display:block; font-size:12px; font-weight:500; margin:0 0 8px; }
+.login-form>input,.login-password { margin-bottom:20px; }
+.login-form input:not([type=checkbox]) { width:100%; border:1px solid #dfe5ef; border-radius:8px; padding:11px 12px; font-size:13px; color:#23334b; background:#fff; outline:none; transition:border-color .15s,box-shadow .15s; }
+.login-form input::placeholder { color:#a8b0c2; }
+.login-form input:focus { border-color:#5c83ed; box-shadow:0 0 0 3px #eaf0ff; }
+.login-password { position:relative; }.login-password input { padding-right:45px!important; }.login-password>button { position:absolute; top:0; right:2px; height:100%; padding:0 12px; color:#7d879a; cursor:pointer; }
+.login-options { display:flex; align-items:center; justify-content:space-between; gap:8px; margin:0 0 26px; font-size:11px; }
+.login-options label { display:flex; align-items:center; gap:7px; cursor:pointer; }.login-options input { width:15px; height:15px; accent-color:#1452e0; }
+.login-options>button { color:#1452e0; font-weight:600; text-decoration:underline; cursor:pointer; }
+.login-submit { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; background:#1552e5; color:white; font-size:13px; font-weight:700; border-radius:8px; padding:13px; cursor:pointer; box-shadow:0 4px 12px #1552e519; transition:background .2s; }.login-submit:hover { background:#1042c4; }.login-submit:disabled { opacity:.65; cursor:wait; }
+.login-note { display:flex; justify-content:center; align-items:center; gap:6px; margin-top:24px; font-size:10px; color:#929dae; }
+.login-footer { position:absolute; bottom:25px; padding:0 20px; text-align:center; font-size:11px; letter-spacing:.3px; color:#216084; }
+.login-help,.login-error { margin:-10px 0 18px; padding:12px; border-radius:8px; font-size:12px; line-height:1.6; background:#f0f5ff; color:#42618f; }.login-error { color:#b33246; background:#fff1f2; }.login-error button { display:block; margin-top:6px; text-decoration:underline; font-weight:600; cursor:pointer; }
+.login-loading { display:flex; align-items:center; gap:10px; background:white; padding:24px; border-radius:16px; font-size:14px; }
+.login-scene button:focus-visible,.login-scene a:focus-visible { outline:3px solid #7899f7; outline-offset:4px; }
+@media(max-width:600px) { .login-scene { padding:85px 18px 75px; }.login-brand { top:24px; left:24px; }.login-card { max-width:390px; padding:32px 26px 26px; }.login-card h1 { font-size:24px; }.capsule-one { right:-35%; top:13%; }.capsule-two { right:-45%; bottom:8%; opacity:.5; }.capsule-three { left:-40%; }.login-footer { font-size:10px; } }
+@media(prefers-reduced-motion:reduce) { .login-scene * { animation:none!important; transition:none!important; } }

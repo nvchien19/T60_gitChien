@@ -87,8 +87,8 @@ export function PrescriptionEditor({ initialName = '', existingMedications = [],
     setNotice(`Đã thêm ${extracted.length} dòng để kiểm tra. Đối chiếu toàn bộ ảnh, bổ sung thuốc còn thiếu và xóa dòng không phải thuốc.`)
   }
 
-  return <dialog ref={dialogRef} aria-labelledby="prescription-editor-title" onCancel={onClose} className="fixed inset-0 m-auto max-h-[90dvh] w-[calc(100%-2rem)] max-w-4xl overflow-y-auto rounded-2xl border border-slate-200 bg-white p-0 text-slate-900 shadow-2xl backdrop:bg-slate-950/30 backdrop:backdrop-blur-sm">
-    <form onSubmit={async event => {
+  return <dialog ref={dialogRef} aria-labelledby="prescription-editor-title" onCancel={onClose} className="fixed inset-0 m-auto max-h-[90dvh] w-[calc(100%-2rem)] max-w-4xl overflow-hidden rounded-2xl border border-slate-200 bg-white p-0 text-slate-900 shadow-2xl backdrop:bg-slate-950/30 backdrop:backdrop-blur-sm">
+    <form className="flex max-h-[90dvh] flex-col overflow-hidden" onSubmit={async event => {
       event.preventDefault()
       if (busy) return
       if (!name.trim() || (!initialName && !rows.length) || rows.some(row => !row.name.trim())) { setError('Nhập tên đơn và tên cho từng thuốc. Xóa những dòng không sử dụng.'); return }
@@ -98,11 +98,11 @@ export function PrescriptionEditor({ initialName = '', existingMedications = [],
       catch (e) { if (mounted.current) setError((e as Error).message) }
       finally { if (mounted.current) setBusy(false) }
     }}>
-      <header className="flex items-start justify-between border-b border-slate-100 p-5 sm:p-6">
+      <header className="flex shrink-0 items-start justify-between border-b border-slate-100 p-5 sm:p-6">
         <div><p className="text-xs font-bold uppercase tracking-wider text-sky-600">Medication safety</p><h2 id="prescription-editor-title" className="mt-1 text-xl font-extrabold">{initialName ? 'Chỉnh sửa thuốc trong đơn' : 'Thêm đơn thuốc'}</h2><p className="mt-2 text-sm text-slate-500">Nhập thuốc hoặc đọc từ ảnh, sau đó kiểm tra trước khi lưu.</p></div>
-        <button type="button" onClick={onClose} aria-label="Đóng" className="rounded-lg p-1 text-slate-400"><X className="size-5" /></button>
+        <button type="button" onClick={onClose} aria-label="Đóng" className="shrink-0 rounded-lg p-1 text-slate-400"><X className="size-5" /></button>
       </header>
-      <div className="space-y-6 p-5 sm:p-6">
+      <div className="min-h-0 flex-1 space-y-6 overflow-y-auto overscroll-contain p-5 sm:p-6">
         <label className="block text-sm font-bold">1. Tên đơn thuốc <span className="text-rose-500">*</span><input autoFocus required maxLength={150} value={name} readOnly={Boolean(initialName)} onChange={event => setName(event.target.value)} placeholder="Ví dụ: Đơn tái khám tháng 10" className={inputClass} /></label>
         <section className="rounded-xl border border-sky-100 bg-sky-50/40 p-4">
           <h3 className="text-sm font-bold">Đọc thuốc từ ảnh đơn thuốc</h3><p className="mt-1 text-xs text-slate-500">PNG, JPG hoặc WebP · tối đa 10 MB. Ảnh được tự động đọc sau khi chọn và xử lý trên thiết bị. Lần đầu cần mạng để tải bộ nhận dạng.</p>
@@ -128,7 +128,7 @@ export function PrescriptionEditor({ initialName = '', existingMedications = [],
         {needsReview && <label className="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900"><input type="checkbox" checked={reviewed} onChange={event => setReviewed(event.target.checked)} className="mt-1" />Tôi đã đối chiếu ảnh gốc, kiểm tra tên thuốc, hàm lượng, cách dùng và bổ sung các thuốc còn thiếu.</label>}
         {error && <p role="alert" className="text-sm text-rose-600">{error}</p>}
       </div>
-      <footer className="flex flex-col-reverse gap-2 border-t border-slate-100 p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] sm:flex-row sm:items-center sm:justify-end sm:p-5"><Button type="button" variant="outline" onClick={onClose} className="w-full justify-center sm:w-auto">Hủy</Button><Button type="submit" disabled={busy || (needsReview && !reviewed)} className="w-full justify-center bg-sky-500 hover:bg-sky-600 sm:w-auto">{initialName ? 'Lưu thay đổi' : 'Lưu đơn thuốc'}</Button></footer>
+      <footer className="flex shrink-0 flex-col-reverse gap-2 border-t border-slate-100 p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] sm:flex-row sm:items-center sm:justify-end sm:p-5"><Button type="button" variant="outline" onClick={onClose} className="w-full justify-center sm:w-auto">Hủy</Button><Button type="submit" disabled={busy || (needsReview && !reviewed)} className="w-full justify-center bg-sky-500 hover:bg-sky-600 sm:w-auto">{initialName ? 'Lưu thay đổi' : 'Lưu đơn thuốc'}</Button></footer>
     </form>
   </dialog>
 }
