@@ -741,8 +741,8 @@ function Overview({
           </div>
         </section>
       </div>
-      <div className="flex gap-3 rounded-xl border border-sky-100 bg-sky-50/70 p-4 text-xs leading-relaxed text-sky-800">
-        <ShieldCheck className="mt-0.5 size-4 shrink-0 text-sky-600" />
+      <div className="flex gap-3 rounded-xl border border-sky-600 bg-sky-600 p-4 text-xs leading-relaxed text-white">
+        <ShieldCheck className="mt-0.5 size-4 shrink-0 text-white" />
         <p>
           <strong>Lưu ý an toàn:</strong> Đây là công cụ hỗ trợ quyết định,
           không thay thế tư vấn y tế. Không tự ý thay đổi thuốc.
