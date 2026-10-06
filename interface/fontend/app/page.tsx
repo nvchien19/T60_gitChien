@@ -1531,7 +1531,7 @@ function InteractionModal({
         </div>
         <div>
           <h4 className="text-sm font-extrabold">Bạn nên làm gì?</h4>
-          <p className="mt-2 rounded-lg bg-sky-50 p-4 text-sm leading-relaxed text-sky-900">
+          <p className="mt-2 rounded-lg bg-sky-600 p-4 text-sm leading-relaxed text-white">
             {item.management ||
               "Hãy trao đổi với bác sĩ hoặc dược sĩ trước khi thay đổi thuốc."}
           </p>
