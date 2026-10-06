@@ -347,6 +347,7 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
       <main className="min-h-screen lg:pl-[248px]">
         <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-2 border-b border-slate-200 bg-white/95 px-4 backdrop-blur sm:h-[76px] sm:px-8">
           <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+            <BrandLogo size={32} className="shrink-0 lg:hidden" />
             <button
               onClick={() => setMobileNav(true)}
               aria-label="Mở menu"
@@ -1469,11 +1470,14 @@ function Modal({
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/25 backdrop-blur-sm sm:items-center sm:p-4">
       <div className="flex max-h-[92dvh] w-full max-w-lg flex-col overflow-hidden rounded-t-2xl border border-slate-200 bg-white shadow-2xl sm:rounded-2xl">
         <div className="flex shrink-0 items-start justify-between gap-3 border-b border-slate-100 p-4 sm:p-6">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-sky-600">
-              Medication safety
-            </p>
-            <h2 className="mt-1 text-xl font-extrabold">{title}</h2>
+          <div className="flex items-start gap-3">
+            <BrandLogo size={36} />
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wider text-sky-600">
+                Medication safety
+              </p>
+              <h2 className="mt-1 text-xl font-extrabold">{title}</h2>
+            </div>
           </div>
           <button
             onClick={onClose}
