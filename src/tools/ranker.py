@@ -44,7 +44,7 @@ def merge_severity(records: list[dict]) -> dict | None:
         cites.extend(r.get("citations", []))
     seen, uniq = set(), []
     for c in cites:
-        k = (c.get("source_id"), c.get("source_url"), c.get("label"))
+        k = (c.get("source_id"), c.get("source_url"), c.get("label"), c.get("record_id"))
         if k not in seen:
             seen.add(k)
             uniq.append(c)

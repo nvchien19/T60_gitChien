@@ -2,7 +2,7 @@
 
 Logic theo docs/BE_DEVELOPMENT.md W2 + data/mvp/README.md:
   khoa(ten) -> tra aliases exact:
-    ok -> dung luon; nhieu drug_id (combo) -> suggest de user chon
+    ok -> dung luon; nhieu drug_id (biet duoc phoi hop) -> ok, tra tung hoat chat
     suggest -> hoi xac nhan
   khong co -> rapidfuzz WRatio tren tap alias -> >=85 suggest top3 -> unknown.
 suggest KHONG auto-accept.
@@ -66,17 +66,25 @@ def normalize_name(
                 res.suggestions = [{"drug_id": uniq_ids[0], "canonical_name": res.canonical_name, "score": 1.0}]
                 res.note = "Cần xác nhận, không tự áp dụng"
             return res
-        # combo that: 1 alias -> N hoat chat khac nhau
+        names = [(drug_names or {}).get(did, next(x.drug_name for x in pool if x.drug_id == did) or did)
+                 for did in uniq_ids]
+        if oks:
+            # Biet duoc phoi hop (1 alias 'ok' -> N hoat chat): tra tuong tac cho TUNG hoat chat.
+            # Hoi lai o day lam agent dung truoc buoc lookup -> bo sot canh bao (false negative).
+            res.status = "ok"
+            res.drug_id = uniq_ids[0]
+            res.drug_ids = uniq_ids
+            res.canonical_name = " + ".join(names)
+            res.source = "+".join(sorted({f"aliases:{x.source_id}" for x in pool if x.source_id}))
+            res.note = "Thuốc phối hợp nhiều hoạt chất — kiểm tra từng hoạt chất"
+            return res
+        # alias chua duoc xac nhan (suggest) tro toi nhieu hoat chat -> van phai hoi lai
         res.status = "suggest"
         res.drug_ids = uniq_ids
         res.source = f"aliases:{pool[0].source_id}"
         res.suggestions = [
-            {
-                "drug_id": did,
-                "canonical_name": (drug_names or {}).get(did, next(x.drug_name for x in pool if x.drug_id == did) or did),
-                "score": 1.0,
-            }
-            for did in uniq_ids[:5]
+            {"drug_id": did, "canonical_name": name, "score": 1.0}
+            for did, name in list(zip(uniq_ids, names))[:5]
         ]
         res.note = "Thuốc phối hợp nhiều hoạt chất — chọn hoạt chất đúng"
         return res
@@ -89,14 +97,17 @@ def normalize_name(
         if top:
             res.status = "suggest"
             for c, s in top:
-                a = next(x for x in aliases if x.alias == c)
-                res.suggestions.append(
-                    {
-                        "drug_id": a.drug_id,
-                        "canonical_name": (drug_names or {}).get(a.drug_id, a.drug_name or a.drug_id),
-                        "score": round(s / 100, 3),
-                    }
-                )
+                # alias cua biet duoc phoi hop tro toi nhieu hoat chat: goi y du tat ca
+                for a in aliases:
+                    if a.alias != c or any(h["drug_id"] == a.drug_id for h in res.suggestions):
+                        continue
+                    res.suggestions.append(
+                        {
+                            "drug_id": a.drug_id,
+                            "canonical_name": (drug_names or {}).get(a.drug_id, a.drug_name or a.drug_id),
+                            "score": round(s / 100, 3),
+                        }
+                    )
             res.drug_ids = [h["drug_id"] for h in res.suggestions]
             res.note = "Cần xác nhận, không tự áp dụng"
             return res

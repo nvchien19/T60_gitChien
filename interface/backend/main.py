@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from interface.backend.api.routers import drugs, interactions, prescriptions, sources
+from interface.backend.api.routers import drugs, evaluation, interactions, prescriptions, sources
 from interface.backend.api.routes import router as agent_router
 from interface.backend.config import get_settings
 from interface.backend.db.base import Base
@@ -46,6 +46,7 @@ app.include_router(drugs.router, prefix="/api/v1")
 app.include_router(interactions.router, prefix="/api/v1")
 app.include_router(sources.router, prefix="/api/v1")
 app.include_router(prescriptions.router, prefix="/api/v1")
+app.include_router(evaluation.router, prefix="/api/v1")
 app.include_router(agent_router, prefix="/api/v1")
 
 

@@ -81,3 +81,21 @@ async def test_agent_error_on_empty_query():
     result = await get_agent().ainvoke({"query": "  ,  "})
     assert result["error"]
     assert result["response"]
+
+
+@pytest.mark.asyncio
+async def test_agent_keeps_food_record_and_flags_duplicate_active():
+    catalog = {
+        "aliases": [*CATALOG["aliases"],
+                    AliasRow(alias="asca", drug_id="DDInter2", source_id="dav", status="ok", drug_name="Aspirin")],
+        "drug_names": CATALOG["drug_names"],
+    }
+    food = {"kind": "food", "pair": ["DDInter1", "food:alcohol"], "pair_names": ["Warfarin", "rượu, bia"],
+            "drug_ids": ["DDInter1"], "target": "alcohol", "severity": "moderate", "summary": "x",
+            "citations": [{"source_id": "ddinter", "label": "DDInter 2.0", "record_id": "DDInter1|alcohol"}],
+            "match_type": "exact"}
+    result = await get_agent().ainvoke({"query": "warfarin, aspirin, asca", "catalog": catalog,
+                                        "interactions": [INTERACTION, food]})
+    kinds = {f.get("kind", "interaction") for f in result["ranked_findings"]}
+    assert kinds == {"interaction", "food", "duplicate_active"}
+    assert result["max_severity"] == "major"
