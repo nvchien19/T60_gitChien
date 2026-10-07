@@ -1,8 +1,9 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { recognizePrescriptionWithGemini } from '@/lib/prescription-gemini'
 import type { Worker } from 'tesseract.js'
-import { api, type Medication } from '@/lib/api'
+import { api, ApiError, type Medication } from '@/lib/api'
 import { preparePrescriptionImage, type PrescriptionImageCrop } from '@/lib/prescription-ocr'
 import { choosePrescriptionCandidate, prescriptionNeedsAnotherPass, type OcrPage } from '@/lib/prescription-layout'
 import { PrescriptionImagePreview } from '@/components/PrescriptionImagePreview'
@@ -67,9 +68,36 @@ export function PrescriptionEditor({ initialName = '', existingMedications = [],
     if (operationRef.current) return
     operationRef.current = true
     setBusy(true); setError(''); setNotice(''); setProgress(0); setConfidence(null); setCoverageWarning(''); setActivity('Đang chuẩn bị ảnh…')
-    setRows(items => items.filter(row => !row.ocrSource))
     let worker: Worker | undefined
     try {
+      try {
+        setActivity('Đang đọc ảnh đơn thuốc…')
+        const result = await recognizePrescriptionWithGemini(selected, selectedCrop)
+        if (!mounted.current) return
+        setRawText(result.raw_text); setConfidence(null)
+        if (!result.medications.length) {
+          setError('Chưa đọc được thuốc. Chọn vùng thuốc rõ hơn hoặc nhập thủ công.')
+          setUnparsedLines(result.warnings)
+          return
+        }
+        const medications = result.medications.map(row => ({
+          name: row.name, dose: row.dose,
+          frequency: [row.frequency, row.quantity ? `Số lượng: ${row.quantity}` : ''].filter(Boolean).join('; '),
+        }))
+        await fillExtracted({ name: result.name, medications, unparsedLines: [] }, selected.name.replace(/\.[^.]+$/, ''))
+        if (!mounted.current) return
+        setNormalizedText(result.raw_text)
+        setUnparsedLines([...result.warnings, ...result.medications.flatMap((row, index) => row.uncertain_fields.length ? [`Thuốc ${index + 1} (${row.name}): cần kiểm tra ${row.uncertain_fields.map(field => ({ name: 'tên thuốc', dose: 'hàm lượng', frequency: 'cách dùng', quantity: 'số lượng' }[field] || field)).join(', ')}.`] : [])])
+        setCoverageWarning(result.medications.some(row => row.uncertain_fields.length) ? 'Có trường đọc chưa chắc chắn. Đối chiếu từng thuốc với ảnh gốc trước khi lưu.' : '')
+        return
+      } catch (remoteError) {
+        const unavailable = remoteError instanceof ApiError
+          ? [429, 500, 502, 503, 504].includes(remoteError.status)
+          : remoteError instanceof Error && remoteError.message.includes('Không kết nối được backend')
+        if (!unavailable) throw remoteError
+        if (!mounted.current) return
+        setActivity('Đang thử nhận dạng ảnh bằng phương án dự phòng…')
+      }
       const image = await preparePrescriptionImage(selected, selectedCrop)
       const { createWorker, PSM } = await import('tesseract.js')
       if (!mounted.current) return
@@ -104,7 +132,7 @@ export function PrescriptionEditor({ initialName = '', existingMedications = [],
       if (candidate.text.trim()) await fillFromText(candidate.text, selected.name.replace(/\.[^.]+$/, ''))
       else setError('Chưa đọc được chữ. Hãy chọn ảnh rõ hơn hoặc nhập thuốc thủ công.')
     } catch (error) {
-      if (mounted.current) setError(error instanceof Error && error.message.includes('megapixel') ? error.message : 'Không đọc được ảnh. Thử ảnh rõ hơn hoặc dán văn bản và nhập thủ công.')
+      if (mounted.current) setError(error instanceof Error ? error.message : 'Không đọc được ảnh. Thử ảnh rõ hơn hoặc dán văn bản và nhập thủ công.')
     } finally {
       if (worker && workerRef.current === worker) workerRef.current = null
       await worker?.terminate().catch(() => {})
@@ -119,6 +147,12 @@ export function PrescriptionEditor({ initialName = '', existingMedications = [],
     const sequence = text.split(/\r?\n/).map(line => line.match(/^\s*(\d{1,2})\s*[.)]\s*\p{L}/u)).filter(Boolean).map(match => Number(match![1]))
     const lastNumber = Math.max(0, ...sequence)
     setCoverageWarning(lastNumber > extracted.medications.length && lastNumber <= 50 ? `Ảnh có số thứ tự đến ${lastNumber}, nhưng chỉ tách được ${extracted.medications.length} thuốc. Cần quét lại vùng thuốc hoặc bổ sung các dòng bị thiếu.` : '')
+    await fillExtracted(extracted, fallbackName)
+    if (mounted.current) setNormalizedText(text)
+  }
+
+  async function fillExtracted(extracted: { name: string; medications: MedicationDraft[]; unparsedLines: string[] }, fallbackName = '') {
+    setUnparsedLines(extracted.unparsedLines)
     if (!extracted.medications.length) {
       setError('Chưa tách được thuốc. Sửa văn bản, mỗi thuốc một dòng có số thứ tự hoặc hàm lượng, rồi thử lại.')
       return
@@ -129,7 +163,7 @@ export function PrescriptionEditor({ initialName = '', existingMedications = [],
     }
     if (!initialName) setName(previous => previous.trim() ? previous : (extracted.name || fallbackName).slice(0, 150))
     setRows(items => replaceOcrRows(items, extracted.medications))
-    setNeedsReview(true); setReviewed(false); setError(''); setNormalizedText(text)
+    setNeedsReview(true); setReviewed(false); setError(''); setNormalizedText(null)
     setNotice(`Đã điền ${extracted.medications.length} thuốc vào tên, hàm lượng và cách dùng. Đối chiếu ảnh trước khi lưu.`)
     setActivity('Đang đối chiếu tên thuốc với DB…')
     try {
@@ -185,15 +219,15 @@ export function PrescriptionEditor({ initialName = '', existingMedications = [],
       <div className="min-h-0 flex-1 space-y-6 overflow-y-auto overscroll-contain p-5 sm:p-6">
         <label className="block text-sm font-bold">1. Tên đơn thuốc <span className="text-rose-500">*</span><input autoFocus required maxLength={150} value={name} readOnly={Boolean(initialName)} onChange={event => setName(event.target.value)} placeholder="Ví dụ: Đơn tái khám tháng 10" className={inputClass} /></label>
         <section className="rounded-xl border border-sky-100 bg-sky-50/40 p-4">
-          <h3 className="text-sm font-bold">Đọc thuốc từ ảnh đơn thuốc</h3><p className="mt-1 text-xs text-slate-500">PNG, JPG hoặc WebP · tối đa 10 MB. Chọn ảnh rõ, chụp thẳng và đủ toàn bộ bảng thuốc để tự động điền tên thuốc, hàm lượng và cách dùng. Ảnh xử lý trên thiết bị; tên thuốc được đối chiếu với DB.</p>
+          <h3 className="text-sm font-bold">Đọc thuốc từ ảnh đơn thuốc</h3><p className="mt-1 text-xs text-slate-500">PNG, JPG hoặc WebP · tối đa 10 MB. Chọn ảnh rõ, chụp thẳng và đủ toàn bộ bảng thuốc để tự động điền tên thuốc, hàm lượng và cách dùng. Ảnh hoặc vùng đã chọn được gửi đến Google để nhận dạng. Tên thuốc được đối chiếu với danh mục thuốc. Có thể chọn riêng bảng thuốc để loại thông tin bệnh nhân.</p>
           <p className="mt-2 text-xs"><a href="/samples/don-thuoc-mau-db.png" download className="font-semibold text-sky-700 underline underline-offset-2">Tải ảnh đơn mẫu từ DB</a><span className="mx-2 text-slate-400">·</span><a href="/samples/don-thuoc-mau-db.pdf" target="_blank" rel="noreferrer" className="font-semibold text-sky-700 underline underline-offset-2">Xem bản PDF</a></p>
           <div className="mt-3 flex flex-wrap items-center gap-3"><label className="flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold"><Upload className="size-4 text-sky-600" /> Chọn ảnh đơn thuốc<input type="file" aria-label="Ảnh đơn thuốc" accept="image/png,image/jpeg,image/webp" disabled={busy} className="sr-only" onChange={event => {
             const selected = event.target.files?.[0]; event.target.value = ''
             if (!selected) return
             if (!['image/png', 'image/jpeg', 'image/webp'].includes(selected.type) || selected.size > 10 * 1024 * 1024) { setError('Chọn ảnh PNG, JPG hoặc WebP không quá 10 MB.'); return }
             setFile(selected); setCrop(undefined); setRawText(''); setNormalizedText(null); setUnparsedLines([]); setError(''); setNotice(''); setReviewed(false); setNeedsReview(true)
-            void extract(selected)
           }} /></label><span className="max-w-64 truncate text-xs text-slate-500">{file?.name}</span></div>
+          {file && !busy && <p className="mt-2 text-xs text-slate-500">Chọn vùng thuốc trên ảnh nếu cần, rồi bấm quét để nhận dạng và điền các trường.</p>}
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             {preview && <PrescriptionImagePreview key={preview} src={preview} crop={crop} disabled={busy} onCrop={setCrop} onScan={() => file && void extract(file, crop)} />}
             <div className={preview ? '' : 'sm:col-span-2'}><label className="text-xs font-bold">Văn bản nhận dạng — có thể sửa hoặc dán nội dung đơn<textarea value={rawText} disabled={busy} onChange={event => { setRawText(event.target.value); setReviewed(false); setNeedsReview(true) }} placeholder="1. Tên thuốc 500 mg&#10;Uống theo hướng dẫn ghi trên đơn…" className={`${inputClass} min-h-40 font-normal`} /></label><Button type="button" variant="outline" className="mt-2 whitespace-normal" disabled={!rawText.trim() || busy || normalizedText === rawText} onClick={() => void normalize()}>Điền các trường từ văn bản</Button><p className="mt-2 text-xs text-slate-500">Điền lại sẽ thay các dòng OCR trước đó; giữ các thuốc nhập thủ công và thuốc đã lưu.</p></div>
