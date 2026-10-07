@@ -37,3 +37,15 @@ def test_suggest_not_auto_accepted():
     assert r.status in ("suggest", "unknown")
     if r.status == "suggest":
         assert r.drug_id == ""  # khong tu ap dung
+
+
+def test_combination_brand_checks_every_ingredient():
+    aliases = [
+        AliasRow(alias="augmentin", drug_id="DDInter394", status="ok", source_id="dav", drug_name="Clavulanic acid"),
+        AliasRow(alias="augmentin", drug_id="DDInter83", status="ok", source_id="dav", drug_name="Amoxicillin"),
+    ]
+    r = normalize_name("Augmentin", aliases, {})
+    assert r.status == "ok"  # khong hoi lai: hoi lai lam agent bo sot tuong tac
+    assert r.drug_ids == ["DDInter394", "DDInter83"]
+    r = normalize_name("augmetin", aliases, {})
+    assert r.status == "suggest" and set(r.drug_ids) == {"DDInter394", "DDInter83"}

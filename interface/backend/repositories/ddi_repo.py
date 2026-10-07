@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from interface.backend.db.models.tables import (
     Alias,
     AraInteraction,
+    DiseaseInteraction,
     DosageFormRule,
     Drug,
     DrugInteraction,
@@ -88,6 +89,15 @@ async def get_food_for_drugs(db: AsyncSession, drug_ids: list[str]) -> list[Food
     if not drug_ids:
         return []
     r = await db.execute(select(FoodInteraction).where(FoodInteraction.drug_id.in_(drug_ids)))
+    return list(r.scalars().all())
+
+
+async def get_disease_for_drugs(db: AsyncSession, drug_ids: list[str],
+                                mesh_ids: list[str]) -> list[DiseaseInteraction]:
+    if not drug_ids or not mesh_ids:
+        return []
+    r = await db.execute(select(DiseaseInteraction).where(
+        DiseaseInteraction.drug_id.in_(drug_ids), DiseaseInteraction.mesh_id.in_(mesh_ids)))
     return list(r.scalars().all())
 
 

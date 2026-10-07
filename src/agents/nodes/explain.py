@@ -21,7 +21,7 @@ async def explain_node(state: AgentState) -> dict[str, Any]:
     index: dict[tuple, int] = {}
 
     def cite(c: dict[str, Any]) -> str:
-        key = (c.get("source_id"), c.get("source_url"), c.get("label"))
+        key = (c.get("source_id"), c.get("source_url"), c.get("label"), c.get("record_id"))
         if key not in index:
             index[key] = len(citations) + 1
             citations.append(c)

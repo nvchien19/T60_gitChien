@@ -14,6 +14,7 @@ class NormalizedItem(BaseModel):
     input: str
     canonical_name: str = ""
     drug_id: str = ""
+    drug_ids: list[str] = []      # biệt dược phối hợp: nhiều hoạt chất, drug_id là hoạt chất đầu
     status: str = "unknown"
     suggestions: list[dict] = []
     note: str = ""

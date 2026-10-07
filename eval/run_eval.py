@@ -125,7 +125,18 @@ def main():
     run = dict(run=stamp, predictions="oracle" if a.oracle else str(a.pred), summary=summary, cases=rows, llm_cases=llm_rows)
     (out_dir / f"run_{stamp}.json").write_text(json.dumps(run, ensure_ascii=False, indent=1, default=str), encoding="utf-8")
 
+    # Ảnh chụp gọn cho GET /api/v1/eval/metrics (trang "Chất lượng AI" của giao diện)
+    review = [dict(id=r["id"], category=r["category"], fn=r["fn"], fp=r["fp"]) for r in rows if r["fn"] or r["fp"]]
+    snapshot = dict(run=stamp, predictions=run["predictions"], n_cases=len(gold),
+                    confusion={k: summary[k] for k in ("tp", "fp", "fn", "tn")},
+                    metrics=[dict(key=n, value=v, op=op, threshold=t, passed=ok, basis=why)
+                             for n, v, op, t, ok, why in table],
+                    review_cases=review)
+    (out_dir / "metrics_latest.json").write_text(json.dumps(snapshot, ensure_ascii=False, indent=1), encoding="utf-8")
+
     lines = [f"# Kết quả đánh giá {stamp}", "", f"Dự đoán: `{run['predictions']}` · {len(gold)} ca", "",
+             f"Bảng 2x2 phát hiện tương tác: TP {summary['tp']} · FP {summary['fp']} · FN {summary['fn']} · "
+             f"TN {summary['tn']}", "",
              "| Metric | Kết quả | Ngưỡng | Đạt | Căn cứ ngưỡng |", "|---|---|---|---|---|"]
     lines += [f"| {n} | {fmt(v)} | {op} {fmt(t)} | {'—' if ok is None else '✅' if ok else '❌'} | {why} |"
               for n, v, op, t, ok, why in table]
