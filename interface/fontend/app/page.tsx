@@ -8,6 +8,7 @@ import { PrescriptionEditor } from '@/components/PrescriptionEditor'
 import { QualityView } from '@/components/QualityView'
 import type { MedicationDraft } from '@/lib/prescription-normalize'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { AuthGate } from '@/components/AuthGate'
 
 import { api, loadPrescriptions, loadReviews, findingsOf, dateLabel, type CheckRecord, type Finding, type Prescription, type ReviewRequest, type Severity, type Status } from '@/lib/api'
 
@@ -27,6 +28,10 @@ function StatusBadge({ status }: { status: Status }) {
 }
 
 export default function Page() {
+  return <AuthGate>{() => <ClinicalDashboard />}</AuthGate>
+}
+
+function ClinicalDashboard() {
   const [active, setActive] = useState<View>('Tổng quan')
   const [prescriptions, setPrescriptions] = useState<Prescription[]>([])
   const [selectedId, setSelectedId] = useState('')

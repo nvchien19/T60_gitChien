@@ -20,11 +20,11 @@ export function AuthGate({ children }: { children: (user: AuthUser, logout: () =
       .then(value => { if (!cancelled) setUser(value); })
       .catch(e => {
         if (cancelled) return;
-        if (e instanceof ApiError && e.status === 401) router.replace("/login");
+        if (e instanceof ApiError && e.status === 401) { setUser(null); router.replace("/login"); }
         else setError(e.message);
       })
       .finally(() => { if (!cancelled) setLoading(false); });
-    const expired = () => { setUser(null); router.replace("/login"); };
+    const expired = () => { cancelled = true; setUser(null); setLoading(false); router.replace("/login"); };
     window.addEventListener("session-expired", expired);
     return () => { cancelled = true; window.removeEventListener("session-expired", expired); };
   }, [retry, router]);
