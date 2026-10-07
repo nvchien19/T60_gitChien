@@ -39,6 +39,11 @@ def test_missing_major_interaction_lowers_recall():
         p["findings"] = []
     s = run({"GS-002": drop})
     assert s["severe_recall"] < 1 and s["sensitivity"] < 1
+    # bỏ sót 1 cặp: FN = 1, tỉ lệ bỏ sót = FN / (TP + FN) = 1 - recall, F1 giảm theo
+    assert s["fn"] == 1 and s["fp"] == 0
+    assert s["false_negative_rate"] == pytest.approx(1 / (s["tp"] + 1))
+    assert s["recall"] == pytest.approx(1 - s["false_negative_rate"]) and s["precision"] == 1
+    assert s["f1"] == pytest.approx(2 * s["tp"] / (2 * s["tp"] + 1))
 
 
 def test_downgraded_contraindication_is_caught():

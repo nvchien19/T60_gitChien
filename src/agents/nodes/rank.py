@@ -10,7 +10,10 @@ from src.tools.ranker import SEVERITY_VI, rank_findings
 
 
 async def rank_node(state: AgentState) -> dict[str, Any]:
-    merged, max_sev, no_record = rank_findings(state.get("interactions") or [])
+    records = state.get("interactions") or []
+    merged, max_sev, _ = rank_findings(records)
+    # hiển thị tên thuốc, không phải mã nội bộ
+    no_record = [r.get("pair_names") or r["pair"] for r in records if r.get("match_type") == "no_record"]
     for item in merged:
         item.setdefault("severity_vi", SEVERITY_VI.get(item.get("severity", ""), ""))
     return {
