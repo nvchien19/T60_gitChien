@@ -5,6 +5,7 @@ import type { Worker } from 'tesseract.js'
 import type { Medication } from '@/lib/api'
 import { Plus, Trash2, Upload, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { BrandLogo } from '@/components/BrandLogo'
 import { normalizePrescriptionText, type MedicationDraft } from '@/lib/prescription-normalize'
 
 export type EditableMedicationDraft = MedicationDraft & { id?: number; type?: Medication['type'] }
@@ -98,8 +99,8 @@ export function PrescriptionEditor({ initialName = '', existingMedications = [],
       catch (e) { if (mounted.current) setError((e as Error).message) }
       finally { if (mounted.current) setBusy(false) }
     }}>
-      <header className="flex shrink-0 items-start justify-between border-b border-slate-100 p-5 sm:p-6">
-        <div><p className="text-xs font-bold uppercase tracking-wider text-sky-600">Medication safety</p><h2 id="prescription-editor-title" className="mt-1 text-xl font-extrabold">{initialName ? 'Chỉnh sửa thuốc trong đơn' : 'Thêm đơn thuốc'}</h2><p className="mt-2 text-sm text-slate-500">Nhập thuốc hoặc đọc từ ảnh, sau đó kiểm tra trước khi lưu.</p></div>
+      <header className="flex shrink-0 items-start justify-between gap-3 border-b border-slate-100 p-5 sm:p-6">
+        <div className="flex items-start gap-3"><BrandLogo size={36} /><div><p className="text-xs font-bold uppercase tracking-wider text-sky-600">Medication safety</p><h2 id="prescription-editor-title" className="mt-1 text-xl font-extrabold">{initialName ? 'Chỉnh sửa thuốc trong đơn' : 'Thêm đơn thuốc'}</h2><p className="mt-2 text-sm text-slate-500">Nhập thuốc hoặc đọc từ ảnh, sau đó kiểm tra trước khi lưu.</p></div></div>
         <button type="button" onClick={onClose} aria-label="Đóng" className="shrink-0 rounded-lg p-1 text-slate-400"><X className="size-5" /></button>
       </header>
       <div className="min-h-0 flex-1 space-y-6 overflow-y-auto overscroll-contain p-5 sm:p-6">

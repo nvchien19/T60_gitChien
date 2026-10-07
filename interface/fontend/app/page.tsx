@@ -347,6 +347,7 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
       <main className="min-h-screen lg:pl-[248px]">
         <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-2 border-b border-slate-200 bg-white/95 px-4 backdrop-blur sm:h-[76px] sm:px-8">
           <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+            <BrandLogo size={32} className="shrink-0 lg:hidden" />
             <button
               onClick={() => setMobileNav(true)}
               aria-label="Mở menu"
@@ -740,8 +741,8 @@ function Overview({
           </div>
         </section>
       </div>
-      <div className="flex gap-3 rounded-xl border border-sky-100 bg-sky-50/70 p-4 text-xs leading-relaxed text-sky-800">
-        <ShieldCheck className="mt-0.5 size-4 shrink-0 text-sky-600" />
+      <div className="flex gap-3 rounded-xl border border-sky-600 bg-sky-600 p-4 text-xs leading-relaxed text-white">
+        <ShieldCheck className="mt-0.5 size-4 shrink-0 text-white" />
         <p>
           <strong>Lưu ý an toàn:</strong> Đây là công cụ hỗ trợ quyết định,
           không thay thế tư vấn y tế. Không tự ý thay đổi thuốc.
@@ -1469,11 +1470,14 @@ function Modal({
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/25 backdrop-blur-sm sm:items-center sm:p-4">
       <div className="flex max-h-[92dvh] w-full max-w-lg flex-col overflow-hidden rounded-t-2xl border border-slate-200 bg-white shadow-2xl sm:rounded-2xl">
         <div className="flex shrink-0 items-start justify-between gap-3 border-b border-slate-100 p-4 sm:p-6">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-sky-600">
-              Medication safety
-            </p>
-            <h2 className="mt-1 text-xl font-extrabold">{title}</h2>
+          <div className="flex items-start gap-3">
+            <BrandLogo size={36} />
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wider text-sky-600">
+                Medication safety
+              </p>
+              <h2 className="mt-1 text-xl font-extrabold">{title}</h2>
+            </div>
           </div>
           <button
             onClick={onClose}
@@ -1527,7 +1531,7 @@ function InteractionModal({
         </div>
         <div>
           <h4 className="text-sm font-extrabold">Bạn nên làm gì?</h4>
-          <p className="mt-2 rounded-lg bg-sky-50 p-4 text-sm leading-relaxed text-sky-900">
+          <p className="mt-2 rounded-lg bg-sky-600 p-4 text-sm leading-relaxed text-white">
             {item.management ||
               "Hãy trao đổi với bác sĩ hoặc dược sĩ trước khi thay đổi thuốc."}
           </p>
