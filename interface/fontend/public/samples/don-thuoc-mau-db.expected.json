@@ -1,0 +1,55 @@
+{
+  "name": "OCR-DB-001",
+  "purpose": "Kiểm thử OCR; tên, hàm lượng và dạng thuốc lấy từ DB. Bệnh nhân, số lượng và cách dùng là dữ liệu giả lập, không dùng điều trị.",
+  "database_table": "products",
+  "exported_at": "2026-10-07T14:24:10.134066+07:00",
+  "medications": [
+    {
+      "name": "Paracetamol ABA",
+      "dose": "500 mg",
+      "frequency": "Cách dùng: Sáng 1 viên; tối 1 viên. Số lượng: 10 viên."
+    },
+    {
+      "name": "Cadirizin",
+      "dose": "10 mg",
+      "frequency": "Cách dùng: Tối 1 viên. Số lượng: 5 viên."
+    },
+    {
+      "name": "Bocalex C 1000",
+      "dose": "1000 mg",
+      "frequency": "Cách dùng: Sáng 1 viên. Số lượng: 5 viên."
+    }
+  ],
+  "source_records": [
+    {
+      "product_id": 16,
+      "name": "Paracetamol ABA 500 mg",
+      "active_ingredients": "Paracetamol",
+      "strength": "500mg",
+      "dosage_form": "Viên nén bao phim",
+      "route": "oral",
+      "registration_no": "893100423724",
+      "source_id": "dav"
+    },
+    {
+      "product_id": 2116,
+      "name": "Cadirizin",
+      "active_ingredients": "Cetirizin dihydroclorid",
+      "strength": "10mg",
+      "dosage_form": "Viên nén bao phim",
+      "route": "oral",
+      "registration_no": "893100833924",
+      "source_id": "dav"
+    },
+    {
+      "product_id": 1912,
+      "name": "Bocalex C 1000",
+      "active_ingredients": "Vitamin C",
+      "strength": "1000mg",
+      "dosage_form": "Viên nén sủi bọt",
+      "route": "oral",
+      "registration_no": "893110378724",
+      "source_id": "dav"
+    }
+  ]
+}
