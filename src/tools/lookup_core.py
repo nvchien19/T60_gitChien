@@ -26,6 +26,15 @@ def all_pairs(drug_ids: list[str]) -> list[tuple[str, str]]:
     return [sorted_pair(a, b) for a, b in combinations(uniq, 2)]
 
 
+def cross_input_pairs(groups: list[list[str]]) -> list[tuple[str, str]]:
+    """Cap hoat chat giua HAI ten nhap khac nhau. `groups`: drug_ids cua tung ten nhap.
+
+    Hai hoat chat chi nam chung trong mot biet duoc phoi hop khong tao thanh cap can tra.
+    """
+    out = {sorted_pair(a, b) for g1, g2 in combinations(groups, 2) for a in g1 for b in g2 if a != b}
+    return sorted(out, key=lambda p: (_num_key(p[0]), _num_key(p[1])))
+
+
 def cosine(u: list[float], v: list[float]) -> float:
     n = min(len(u), len(v))
     if n == 0:
@@ -38,19 +47,26 @@ def cosine(u: list[float], v: list[float]) -> float:
     return dot / (nu * nv)
 
 
-def apply_dosage_rule(base_sev: str | None, rule: dict, drug_route: str = "oral") -> dict | None:
+def apply_dosage_rule(base_sev: str | None, rule: dict, drug_route: str = "oral",
+                      forms: frozenset[str] | set[str] = frozenset()) -> dict | None:
     """Tra ve finding lop2 hoac None neu rule khong ap dung.
 
     action: raise_severity (ap moi dang) / form_specific (dung form/route)
             / no_interaction_for_form (chi ha khi lop1 != contraindicated).
+    forms: dang bao che nguoi dung NEU RO (vd {"tablet"}). Rong = khong biet -> van ap dung
+           rule (thien ve canh bao, tranh bo sot).
     """
     action = rule.get("action", "")
+    want_form = rule.get("drug_form") or "any"
+    if action == "form_specific" and forms and want_form != "any" and want_form not in forms:
+        return None
     if action == "raise_severity":
         return {"severity": rule.get("severity") or "contraindicated",
                 "summary": rule.get("effect_vi", ""),
                 "management": rule.get("management_vi", ""),
                 "citations": [{"source_id": rule.get("source_id", "openfda"),
                                "label": rule.get("evidence", ""),
+                               "record_id": rule.get("rule_id", ""),
                                "source_url": rule.get("source_url", "")}],
                 "match_type": "exact", "layer": "dosage_form"}
     if action == "form_specific":
@@ -66,6 +82,7 @@ def apply_dosage_rule(base_sev: str | None, rule: dict, drug_route: str = "oral"
                 "management": rule.get("management_vi", ""),
                 "citations": [{"source_id": rule.get("source_id", "openfda"),
                                "label": rule.get("evidence", ""),
+                               "record_id": rule.get("rule_id", ""),
                                "source_url": rule.get("source_url", "")}],
                 "match_type": "exact", "layer": "dosage_form"}
     if action == "no_interaction_for_form":
@@ -74,6 +91,7 @@ def apply_dosage_rule(base_sev: str | None, rule: dict, drug_route: str = "oral"
         return {"downgrade_only": True, "severity": rule.get("severity") or "minor",
                 "citations": [{"source_id": rule.get("source_id", "openfda"),
                                "label": rule.get("evidence", ""),
+                               "record_id": rule.get("rule_id", ""),
                                "source_url": rule.get("source_url", "")}],
                 "match_type": "exact", "layer": "dosage_form"}
     return None

@@ -41,6 +41,10 @@ class Settings(BaseSettings):
     google_api_key: str = ""
     gemini_model: str = "gemini-3.5-flash"
 
+    # Prescription OCR, independent of the translation model.
+    gemini_ocr_model: str = "auto"
+    gemini_ocr_timeout_s: float = Field(default=65.0, gt=0, le=75)
+
     # Offline translation job; never used during a safety check.
     google_translation_api_key: str = ""
     google_translation_project: str = ""

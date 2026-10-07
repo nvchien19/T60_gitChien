@@ -31,7 +31,9 @@ RANKED = {"contraindicated", "major", "moderate", "minor"}
 
 
 def record_id(cite):
-    """`interaction_id` của DDInter lấy từ đường dẫn nguồn; nguồn khác dùng nhãn trích dẫn."""
+    """Mã bản ghi nếu trích dẫn có sẵn; `interaction_id` của DDInter lấy từ đường dẫn nguồn; còn lại dùng nhãn."""
+    if cite.get("record_id"):
+        return str(cite["record_id"])
     m = DDINTER_ID.search(cite.get("source_url") or "")
     return m.group(1) if m else (cite.get("label") or "")
 
@@ -47,10 +49,13 @@ def flow(state):
 def to_prediction(case_id, state, latency_ms):
     findings = []
     for f in state.get("ranked_findings") or []:
-        if f.get("severity") not in RANKED:
+        kind = f.get("kind") or "interaction"         # interaction | food | disease | duplicate_active | duplicate_class
+        dup = kind.startswith("duplicate")
+        if f.get("severity") not in RANKED and not dup:
             continue                                  # no_record không phải một phát hiện
         for c in f.get("citations") or [{}]:
-            findings.append(dict(type="interaction", drug_ids=f["pair"], severity=f["severity"],
+            findings.append(dict(type=kind, drug_ids=f.get("drug_ids") or f["pair"], target=f.get("target", ""),
+                                 severity="duplicate" if dup else f["severity"],
                                  source_id=c.get("source_id", ""), record_id=record_id(c)))
     return dict(
         id=case_id,

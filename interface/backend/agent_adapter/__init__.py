@@ -19,11 +19,15 @@ from typing import Any
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from interface.backend.services.check_service import (
+    fetch_context_records,
     fetch_interaction_records,
     load_catalog,
     normalize_list,
+    ok_groups,
 )
 from src.agents.nodes.normalize import split_drugs
+from src.tools.context_terms import detect_forms
+from src.tools.lookup_core import cross_input_pairs
 
 __all__ = ["run_agent", "get_agent", "agent_available"]
 
@@ -60,9 +64,14 @@ async def run_agent(db: AsyncSession, query: str,
     # Agent chỉ nhận `interactions` cho các cặp đã biết drug_id — chuẩn hóa ở đây
     # (backend được phép đọc DB; lõi AI thì không).
     normalized = await normalize_list(db, raw_drugs)
-    ok_ids = [n.drug_id for n in normalized if n.status == "ok" and n.drug_id]
-    name_by_id = {n.drug_id: (n.canonical_name or n.input) for n in normalized if n.drug_id}
-    records = await fetch_interaction_records(db, ok_ids, name_by_id) if len(ok_ids) >= 2 else []
+    groups, inputs_of = ok_groups(normalized)
+    ok_ids = list(inputs_of)
+    name_by_id = {i: drug_name_map.get(i) or inputs_of[i][0] for i in ok_ids}
+    pairs = cross_input_pairs(groups)
+    records = await fetch_interaction_records(
+        db, ok_ids, name_by_id, pairs=pairs, forms=detect_forms(query)) if pairs else []
+    # thực phẩm / bệnh nền nhắc tới trong câu hỏi + trùng nhóm điều trị
+    records += await fetch_context_records(db, inputs_of, name_by_id, query)
 
     state: dict[str, Any] = {
         "query": query,

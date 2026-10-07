@@ -152,6 +152,10 @@ def aggregate(rows):
     pct = lambda q: lat[min(len(lat) - 1, int(q * len(lat)))] if lat else None  # noqa: E731
     return {
         "n_cases": len(rows),
+        # Bộ chỉ số chính hiển thị trên hệ thống. recall = sensitivity, precision = ppv (cùng bảng 2x2);
+        # false_negative_rate = FN / (TP + FN) = 1 - recall: tỉ lệ tương tác có thật mà agent bỏ sót.
+        "tp": tp, "fp": fp, "fn": fn, "tn": tn,
+        "precision": ppv, "recall": sens, "false_negative_rate": ratio(fn, tp + fn),
         "sensitivity": sens, "specificity": spec, "ppv": ppv, "npv": npv,
         "composite": sum(parts) / len(parts) if parts else None,
         "f1": ratio(2 * tp, 2 * tp + fp + fn),
@@ -178,6 +182,10 @@ def aggregate(rows):
 
 # Ngưỡng đạt: (metric, so sánh, ngưỡng, căn cứ) - giải thích ở eval/README.md mục 3
 THRESHOLDS = [
+    ("recall", ">=", 0.90, "Mục tiêu dự án: bỏ sót tương tác là lỗi nặng nhất"),
+    ("false_negative_rate", "<=", 0.10, "Mục tiêu dự án (= 1 - recall)"),
+    ("precision", ">=", 0.90, "Mục tiêu dự án: hạn chế cảnh báo thừa"),
+    ("f1", ">=", 0.90, "Mục tiêu dự án: cân bằng precision và recall"),
     ("sensitivity", ">=", 0.96, "Lexicomp 0,96 (Marcath 2018)"),
     ("specificity", ">=", 0.84, "Lexicomp 0,84 (Marcath 2018)"),
     ("ppv", ">=", 0.97, "Lexicomp 0,97 (Marcath 2018)"),

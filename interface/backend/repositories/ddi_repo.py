@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from interface.backend.db.models.tables import (
     Alias,
     AraInteraction,
+    DiseaseInteraction,
     DosageFormRule,
     Drug,
     DrugInteraction,
@@ -14,6 +15,7 @@ from interface.backend.db.models.tables import (
     FoodInteraction,
     InteractionMechanism,
     PkDdi,
+    Product,
     ProductIngredient,
     Source,
 )
@@ -90,6 +92,15 @@ async def get_food_for_drugs(db: AsyncSession, drug_ids: list[str]) -> list[Food
     return list(r.scalars().all())
 
 
+async def get_disease_for_drugs(db: AsyncSession, drug_ids: list[str],
+                                mesh_ids: list[str]) -> list[DiseaseInteraction]:
+    if not drug_ids or not mesh_ids:
+        return []
+    r = await db.execute(select(DiseaseInteraction).where(
+        DiseaseInteraction.drug_id.in_(drug_ids), DiseaseInteraction.mesh_id.in_(mesh_ids)))
+    return list(r.scalars().all())
+
+
 async def get_duplication_for_drugs(db: AsyncSession, drug_ids: list[str]) -> list[DuplicationClass]:
     if not drug_ids:
         return []
@@ -156,3 +167,16 @@ async def count_coverage(db: AsyncSession) -> dict:
         r = await db.execute(select(func.count()).select_from(model))
         out[key] = r.scalar() or 0
     return out
+
+
+async def search_products(db: AsyncSession, q: str, limit: int = 20) -> list[dict]:
+    """Literal substring search: '%' and '_' in OCR are not SQL wildcards."""
+    result = await db.execute(
+        select(Product.product_id, Product.name, Product.strength,
+               Product.active_ingredients, Product.dosage_form, Product.source_id)
+        .where(Product.name.icontains(q, autoescape=True))
+        .order_by(Product.product_id)
+        .limit(limit)
+    )
+    columns = ["product_id", "name", "strength", "active_ingredients", "dosage_form", "source_id"]
+    return [dict(zip(columns, row)) for row in result.all()]

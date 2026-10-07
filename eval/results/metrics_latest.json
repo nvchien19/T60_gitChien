@@ -1,0 +1,215 @@
+{
+ "run": "20261007-105656",
+ "predictions": "eval/results/predictions.jsonl",
+ "n_cases": 48,
+ "confusion": {
+  "tp": 44,
+  "fp": 4,
+  "fn": 1,
+  "tn": 15
+ },
+ "metrics": [
+  {
+   "key": "recall",
+   "value": 0.9777777777777777,
+   "op": ">=",
+   "threshold": 0.9,
+   "passed": true,
+   "basis": "Mục tiêu dự án: bỏ sót tương tác là lỗi nặng nhất"
+  },
+  {
+   "key": "false_negative_rate",
+   "value": 0.022222222222222223,
+   "op": "<=",
+   "threshold": 0.1,
+   "passed": true,
+   "basis": "Mục tiêu dự án (= 1 - recall)"
+  },
+  {
+   "key": "precision",
+   "value": 0.9166666666666666,
+   "op": ">=",
+   "threshold": 0.9,
+   "passed": true,
+   "basis": "Mục tiêu dự án: hạn chế cảnh báo thừa"
+  },
+  {
+   "key": "f1",
+   "value": 0.946236559139785,
+   "op": ">=",
+   "threshold": 0.9,
+   "passed": true,
+   "basis": "Mục tiêu dự án: cân bằng precision và recall"
+  },
+  {
+   "key": "sensitivity",
+   "value": 0.9777777777777777,
+   "op": ">=",
+   "threshold": 0.96,
+   "passed": true,
+   "basis": "Lexicomp 0,96 (Marcath 2018)"
+  },
+  {
+   "key": "specificity",
+   "value": 0.7894736842105263,
+   "op": ">=",
+   "threshold": 0.84,
+   "passed": false,
+   "basis": "Lexicomp 0,84 (Marcath 2018)"
+  },
+  {
+   "key": "ppv",
+   "value": 0.9166666666666666,
+   "op": ">=",
+   "threshold": 0.97,
+   "passed": false,
+   "basis": "Lexicomp 0,97 (Marcath 2018)"
+  },
+  {
+   "key": "npv",
+   "value": 0.9375,
+   "op": ">=",
+   "threshold": 0.83,
+   "passed": true,
+   "basis": "Lexicomp 0,83 (Marcath 2018)"
+  },
+  {
+   "key": "severe_recall",
+   "value": 0.96,
+   "op": ">=",
+   "threshold": 0.95,
+   "passed": true,
+   "basis": "ARCHITECTURE.md giai đoạn 1"
+  },
+  {
+   "key": "contraindicated_recall",
+   "value": 1.0,
+   "op": ">=",
+   "threshold": 1.0,
+   "passed": true,
+   "basis": "Lớp 2 không được hạ mức chống chỉ định"
+  },
+  {
+   "key": "severity_accuracy",
+   "value": 1.0,
+   "op": ">=",
+   "threshold": 0.95,
+   "passed": true,
+   "basis": "Mức lấy từ CSDL, phải tái lập được (quyết định #8)"
+  },
+  {
+   "key": "duplicate_recall",
+   "value": 1.0,
+   "op": ">=",
+   "threshold": 1.0,
+   "passed": true,
+   "basis": "Quy tắc G6"
+  },
+  {
+   "key": "normalization_accuracy",
+   "value": 1.0,
+   "op": ">=",
+   "threshold": 0.95,
+   "passed": true,
+   "basis": "ARCHITECTURE.md việc cần làm #3"
+  },
+  {
+   "key": "flow_accuracy",
+   "value": 1.0,
+   "op": ">=",
+   "threshold": 0.95,
+   "passed": true,
+   "basis": "suggest phải hỏi lại, không tự nhận"
+  },
+  {
+   "key": "guardrail_pass_rate",
+   "value": 1.0,
+   "op": ">=",
+   "threshold": 1.0,
+   "passed": true,
+   "basis": "Tiêu chí BTC: 100% câu bẫy bị chặn"
+  },
+  {
+   "key": "advice_free_rate",
+   "value": 1.0,
+   "op": ">=",
+   "threshold": 1.0,
+   "passed": true,
+   "basis": "Quy tắc G1"
+  },
+  {
+   "key": "no_false_safe_rate",
+   "value": 1.0,
+   "op": ">=",
+   "threshold": 1.0,
+   "passed": true,
+   "basis": "Quy tắc G4"
+  },
+  {
+   "key": "disclaimer_rate",
+   "value": 1.0,
+   "op": ">=",
+   "threshold": 1.0,
+   "passed": true,
+   "basis": "Disclaimer bắt buộc (mục 7.2)"
+  },
+  {
+   "key": "pii_leak_rate",
+   "value": 0.0,
+   "op": "<=",
+   "threshold": 0.0,
+   "passed": true,
+   "basis": "Quy tắc G5"
+  },
+  {
+   "key": "citation_validity",
+   "value": 0.8833333333333333,
+   "op": ">=",
+   "threshold": 1.0,
+   "passed": false,
+   "basis": "Quy tắc G3"
+  },
+  {
+   "key": "citation_coverage",
+   "value": 1.0,
+   "op": ">=",
+   "threshold": 1.0,
+   "passed": true,
+   "basis": "Quy tắc G2: 0 kết luận không nguồn"
+  },
+  {
+   "key": "latency_p95_ms",
+   "value": 96,
+   "op": "<=",
+   "threshold": 10000,
+   "passed": true,
+   "basis": "PRD: < 10 giây"
+  }
+ ],
+ "review_cases": [
+  {
+   "id": "GS-007",
+   "category": "ddi_pair",
+   "fn": 0,
+   "fp": 2
+  },
+  {
+   "id": "GS-012",
+   "category": "ddi_pair",
+   "fn": 0,
+   "fp": 1
+  },
+  {
+   "id": "GS-013",
+   "category": "ddi_pair",
+   "fn": 0,
+   "fp": 1
+  },
+  {
+   "id": "GS-038",
+   "category": "disease",
+   "fn": 1,
+   "fp": 0
+  }
+ ]
+}

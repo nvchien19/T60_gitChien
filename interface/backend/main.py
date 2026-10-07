@@ -3,7 +3,15 @@ from contextlib import asynccontextmanager
 from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
-from interface.backend.api.routers import auth, drugs, interactions, prescriptions, sources
+from interface.backend.api.routers import (
+    auth,
+    drugs,
+    evaluation,
+    interactions,
+    prescription_ocr,
+    prescriptions,
+    sources,
+)
 from interface.backend.api.routes import router as agent_router
 from interface.backend.config import get_settings
 from interface.backend.db.base import Base
@@ -52,14 +60,16 @@ app.add_middleware(
 )
 
 app.include_router(auth.router, prefix="/api/v1")
-
 app.include_router(drugs.router, prefix="/api/v1", dependencies=[Depends(current_user)])
 app.include_router(interactions.router, prefix="/api/v1", dependencies=[Depends(current_user)])
 app.include_router(sources.router, prefix="/api/v1", dependencies=[Depends(current_user)])
 app.include_router(prescriptions.router, prefix="/api/v1", dependencies=[Depends(current_user)])
+app.include_router(evaluation.router, prefix="/api/v1", dependencies=[Depends(current_user)])
 app.include_router(agent_router, prefix="/api/v1", dependencies=[Depends(current_user)])
 
 
 @app.get("/health")
 async def health():
     return {"status": "ok", "env": settings.app_env}
+
+app.include_router(prescription_ocr.router, prefix="/api/v1", dependencies=[Depends(current_user)])
