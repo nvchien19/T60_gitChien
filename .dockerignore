@@ -8,7 +8,12 @@ __pycache__
 .ruff_cache
 docs/
 presentation/
-eval/
+# Ship the evaluation snapshot consumed by /api/v1/eval/metrics.
+# Keep predictions, case reports and evaluation tooling out of the image.
+eval/*
+!eval/results/
+eval/results/*
+!eval/results/metrics_latest.json
 *.md
 !requirements.txt
 .dockerignore
