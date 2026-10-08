@@ -10,6 +10,7 @@ import { QualityView } from '@/components/QualityView'
 import type { MedicationDraft } from '@/lib/prescription-normalize'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { AuthGate } from '@/components/AuthGate'
+import { LogoutButton } from '@/components/LogoutButton'
 import { BrandLogo } from '@/components/BrandLogo'
 
 import { api, loadPrescriptions, loadReviews, findingsOf, dateLabel, type CheckRecord, type Finding, type Prescription, type ReviewRequest, type Severity, type Status } from '@/lib/api'
@@ -30,10 +31,10 @@ function StatusBadge({ status }: { status: Status }) {
 }
 
 export default function Page() {
-  return <AuthGate>{() => <ClinicalDashboard />}</AuthGate>
+  return <AuthGate>{(_user, logout) => <ClinicalDashboard onLogout={logout} />}</AuthGate>
 }
 
-function ClinicalDashboard() {
+function ClinicalDashboard({ onLogout }: { onLogout: () => Promise<void> }) {
   const [active, setActive] = useState<View>('Tổng quan')
   const [prescriptions, setPrescriptions] = useState<Prescription[]>([])
   const [selectedId, setSelectedId] = useState('')
@@ -53,6 +54,7 @@ function ClinicalDashboard() {
   const [selectedCheckId, setSelectedCheckId] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [logoutError, setLogoutError] = useState('')
   const [checkRecord, setCheckRecord] = useState<CheckRecord | null>(null)
   const [checkRecords, setCheckRecords] = useState<Record<string, CheckRecord[]>>({})
   const busy = useRef(false)
@@ -107,12 +109,13 @@ function ClinicalDashboard() {
 
   return <div className="min-h-screen overflow-x-clip bg-[#f7faff] text-slate-900">
     <aside className="fixed inset-y-0 left-0 z-40 hidden w-[248px] flex-col border-r border-slate-200 bg-white lg:flex">
-      <div className="flex h-[76px] items-center gap-3 border-b border-slate-100 px-7"><div className="flex size-9 items-center justify-center rounded-xl bg-sky-500 text-white shadow-sm shadow-sky-200"><ShieldCheck className="size-5" /></div><div><p className="text-[15px] font-extrabold tracking-tight">Medication <span className="text-sky-500">Safety</span></p><p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-slate-400">Safety management tool</p></div></div>
+      <div className="flex h-[76px] items-center gap-3 border-b border-slate-100 px-7"><BrandLogo size={40} alt="Logo Medication Safety" /><div><p className="text-[15px] font-extrabold tracking-tight">Medication <span className="text-sky-500">Safety</span></p><p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-slate-400">Safety management tool</p></div></div>
       <nav className="flex-1 space-y-1 px-3 py-6" aria-label="Điều hướng chính">{navItems.map(({ label, icon: Icon }) => <button key={label} onClick={() => setActive(label)} className={`flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-[13px] font-semibold transition ${active === label ? 'bg-sky-50 text-sky-700' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800'}`}><Icon className="size-[17px]" />{label}</button>)}</nav>
       <div className="space-y-4 border-t border-slate-100 p-4"><button className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-semibold text-slate-500 hover:bg-slate-50"><Settings className="size-4" />Cài đặt</button><div className="flex items-center gap-3 rounded-xl bg-slate-50 p-3"><div className="flex size-8 items-center justify-center rounded-full bg-sky-100 text-sky-700"><UserRound className="size-4" /></div><div><p className="text-xs font-bold text-slate-700">Người dùng</p><p className="text-[10px] text-slate-400">Quản lý đơn thuốc</p></div><MoreHorizontal className="ml-auto size-4 text-slate-400" /></div></div>
     </aside>
-    <main className="min-h-screen lg:pl-[248px]"><header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-2 border-b border-slate-200 bg-white/95 px-4 backdrop-blur sm:h-[76px] sm:px-8"><div className="flex min-w-0 items-center gap-2 sm:gap-3"><BrandLogo size={32} className="shrink-0 lg:hidden" /><button onClick={() => setMobileNav(true)} aria-label="Mở menu" aria-expanded={mobileNav} className="-ml-1 min-h-[44px] min-w-[44px] rounded-lg p-2.5 text-slate-500 transition hover:bg-slate-100 active:bg-slate-200 lg:hidden"><Menu className="size-5" /></button><div className="min-w-0"><p className="hidden truncate text-xs font-medium text-slate-400 min-[400px]:block">Xin chào, Người dùng</p><h1 className="truncate text-base font-extrabold sm:text-lg">{active}</h1></div></div><div className="flex shrink-0 items-center gap-2 sm:gap-4"><ThemeToggle /><Bell className="size-[18px] text-slate-500" /><div className="flex size-8 items-center justify-center rounded-full bg-sky-100 text-xs font-bold text-sky-700 sm:size-9 sm:text-sm">NA</div></div></header>
+    <main className="min-h-screen lg:pl-[248px]"><header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-2 border-b border-slate-200 bg-white/95 px-4 backdrop-blur sm:h-[76px] sm:px-8"><div className="flex min-w-0 items-center gap-2 sm:gap-3"><BrandLogo size={32} className="shrink-0 lg:hidden" /><button onClick={() => setMobileNav(true)} aria-label="Mở menu" aria-expanded={mobileNav} className="-ml-1 min-h-[44px] min-w-[44px] rounded-lg p-2.5 text-slate-500 transition hover:bg-slate-100 active:bg-slate-200 lg:hidden"><Menu className="size-5" /></button><div className="min-w-0"><p className="hidden truncate text-xs font-medium text-slate-400 min-[400px]:block">Xin chào, Người dùng</p><h1 className="truncate text-base font-extrabold sm:text-lg">{active}</h1></div></div><div className="flex shrink-0 items-center gap-2 sm:gap-4"><LogoutButton onLogout={onLogout} onError={setLogoutError} className="min-h-11 min-w-11 px-2 sm:px-3 [&>span]:hidden sm:[&>span]:inline" /><ThemeToggle /><Bell className="size-[18px] text-slate-500" /><div className="flex size-8 items-center justify-center rounded-full bg-sky-100 text-xs font-bold text-sky-700 sm:size-9 sm:text-sm">NA</div></div></header>
       <div className="mx-auto max-w-[1280px] space-y-6 p-4 pb-28 sm:space-y-7 sm:p-8 sm:pb-8 xl:p-10">
+        {logoutError && <div role="alert" className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">{logoutError}<button type="button" onClick={() => setLogoutError('')} className="ml-3 font-bold underline">Đóng</button></div>}
         {loading && <p role="status" className="rounded-xl bg-white p-5 text-sm">Đang tải đơn thuốc…</p>}
         {error && <div role="alert" className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">{error}<button onClick={() => { setLoading(true); setError(''); reload().catch(e => setError(e.message)).finally(() => setLoading(false)) }} className="ml-3 font-bold underline">Thử lại</button></div>}
         {!loading && !error && prescriptions.length === 0 && <div className="rounded-xl border border-dashed border-slate-300 bg-white p-8 text-center"><p>Chưa có đơn thuốc. Thêm đơn để bắt đầu.</p><Button onClick={() => setAddMode('new')} className="mt-4 bg-sky-500">Thêm đơn thuốc</Button></div>}
