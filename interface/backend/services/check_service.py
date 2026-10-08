@@ -268,6 +268,7 @@ async def run_check(db: AsyncSession, drugs: list[str],
     # food
     food_findings = []
     if include_food:
+        food_sources = {source.source_id: source for source in await ddi_repo.list_sources(db)}
         food_rows = await ddi_repo.get_food_for_drugs(db, ok_ids)
         food_translations = await localize(db, "food_interactions", [
             {"id": row.id, "fields": {"description": row.description, "management": row.management}} for row in food_rows])
@@ -281,7 +282,9 @@ async def run_check(db: AsyncSession, drugs: list[str],
                 original_mechanism=row.description or "", original_management=row.management or "",
                 untranslated_fields=vi["untranslated_fields"], machine_translation=vi["machine_translation"],
                 citations=[Citation(source_id=row.source_id or "ddinter",
-                                    source_name=SOURCE_NAMES.get(row.source_id or "", ""))],
+                                    source_name=SOURCE_NAMES.get(row.source_id or "", ""),
+                                    label=row.refs or "",
+                                    source_url=(food_sources[row.source_id].url or "") if row.source_id in food_sources else "")],
                 match_type="exact"))
 
     # duplicate class
@@ -307,7 +310,7 @@ async def run_check(db: AsyncSession, drugs: list[str],
         normalized=normalized, unknown=unknown,
         max_severity=max_sev, max_severity_vi=SEVERITY_VI.get(max_sev, max_sev),
         findings=findings, no_record_pairs=no_record_pairs,
-        food_findings=food_findings[:20], duplicate_findings=dup_findings,
+        food_findings=food_findings, duplicate_findings=dup_findings,
         disclaimer=DISCLAIMER, data_coverage=coverage)
 
 
