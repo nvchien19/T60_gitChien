@@ -52,7 +52,7 @@
 .dark .bg-sky-50 { background-color: #123047 !important; }
 .dark .text-sky-700, .dark .text-sky-600 { color: #7dd3fc !important; }
 .dark .bg-amber-50 { background-color: #3a2d15 !important; }
-.dark .text-amber-800, .dark .text-amber-700 { color: #fcd34d !important; }
+.dark .text-amber-900, .dark .text-amber-800, .dark .text-amber-700 { color: #fcd34d !important; }
 .dark .border-amber-200 { border-color: #73551d !important; }
 .dark .bg-rose-50 { background-color: #3a1e28 !important; }
 .dark .text-rose-700 { color: #fda4af !important; }

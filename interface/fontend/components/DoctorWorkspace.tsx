@@ -15,6 +15,9 @@ export function DoctorReviewPanel() {
   const [rxLoading, setRxLoading] = useState(false);
   const [rxError, setRxError] = useState("");
   const [rxOpen, setRxOpen] = useState(false);
+  const [rxId, setRxId] = useState("");
+  const rxRequest = useRef(0);
+  useEffect(() => () => { rxRequest.current++; }, []);
   const rxDialog = useRef<HTMLDialogElement>(null);
   useEffect(() => { if (rxOpen) rxDialog.current?.showModal(); }, [rxOpen]);
   const selected = requests.find(r => r.id === selectedId);
@@ -29,9 +32,17 @@ export function DoctorReviewPanel() {
   }
   async function openPrescription() {
     if (!selected) return;
-    setRxOpen(true); setPrescription(null); setRxError(""); setRxLoading(true);
-    try { setPrescription(await api<Prescription>(`/prescriptions/${selected.prescriptionId}`)); }
-    catch (e) { setRxError((e as Error).message); } finally { setRxLoading(false); }
+    const id = selected.prescriptionId;
+    const request = ++rxRequest.current;
+    setRxId(id); setRxOpen(true); setPrescription(null); setRxError(""); setRxLoading(true);
+    try {
+      const result = await api<Prescription>(`/prescriptions/${id}`);
+      if (request === rxRequest.current) setPrescription(result);
+    } catch (e) {
+      if (request === rxRequest.current) setRxError((e as Error).message);
+    } finally {
+      if (request === rxRequest.current) setRxLoading(false);
+    }
   }
   const visible = requests.filter(r => filter === "Tất cả" || r.status === filter);
   const waiting = requests.filter(r => r.status === "Đang chờ").length;
@@ -55,6 +66,6 @@ export function DoctorReviewPanel() {
           <button onClick={() => void reply()} disabled={saving || !response.trim() || !selected.createdBy} className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-sky-500 px-5 py-3 text-sm font-bold text-white hover:bg-sky-600 disabled:opacity-50 sm:w-auto"><Send size={16} /> {saving ? "Đang gửi…" : "Gửi phản hồi"}</button></>}
         </section>
       </div>
-    {rxOpen && <dialog ref={rxDialog} onCancel={() => setRxOpen(false)} aria-labelledby="rx-title" className="doctor-dialog m-auto max-h-[85dvh] w-[calc(100%-32px)] max-w-2xl overflow-hidden bg-transparent p-0"><section className="flex max-h-[85dvh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white"><div className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-100 p-6"><h2 id="rx-title" className="text-lg font-extrabold">Đơn {selected?.prescriptionId}</h2><button onClick={() => setRxOpen(false)} className="shrink-0 p-2" aria-label="Đóng đơn thuốc"><X size={20} /></button></div><div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-6">{rxLoading ? <p role="status">Đang tải đơn thuốc…</p> : rxError ? <p role="alert" className="text-rose-600">{rxError}</p> : prescription && <div className="space-y-3">{prescription.medications.length ? prescription.medications.map(med => <div key={med.id} className="rounded-xl border border-slate-200 p-4"><p className="font-bold">{med.name}</p><p className="mt-1 text-sm text-slate-500">{med.ingredient} · {med.dose || "Chưa có liều"} · {med.frequency || "Chưa có tần suất"}</p></div>) : <p className="text-sm text-slate-500">Đơn chưa có thuốc.</p>}</div>}</div></section></dialog>}
+    {rxOpen && <dialog ref={rxDialog} onCancel={() => setRxOpen(false)} aria-labelledby="rx-title" className="doctor-dialog m-auto max-h-[85dvh] w-[calc(100%_-_32px)] max-w-2xl overflow-hidden bg-transparent p-0"><section className="flex max-h-[85dvh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white"><div className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-100 p-6"><h2 id="rx-title" className="text-lg font-extrabold">Đơn {rxId}</h2><button onClick={() => setRxOpen(false)} className="shrink-0 p-2" aria-label="Đóng đơn thuốc"><X size={20} /></button></div><div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-6">{rxLoading ? <p role="status">Đang tải đơn thuốc…</p> : rxError ? <p role="alert" className="text-rose-600">{rxError}</p> : prescription && <div className="space-y-3">{prescription.medications.length ? prescription.medications.map(med => <div key={med.id} className="rounded-xl border border-slate-200 p-4"><p className="font-bold">{med.name}</p><p className="mt-1 text-sm text-slate-500">{med.ingredient} · {med.dose || "Chưa có liều"} · {med.frequency || "Chưa có tần suất"}</p></div>) : <p className="text-sm text-slate-500">Đơn chưa có thuốc.</p>}</div>}</div></section></dialog>}
   </div>;
 }

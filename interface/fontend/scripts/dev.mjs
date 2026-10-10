@@ -42,7 +42,11 @@ function launch(label, command, args, cwd, env = process.env) {
   children.push(child)
   child.once('error', error => {
     console.error(`[${label}] Không khởi động được: ${error.message}`)
-    if (label === 'BE') console.error('Cài dependencies backend trong .venv hoặc đặt biến PYTHON trỏ đến Python đã cài requirements.txt.')
+    if (label === 'BE') {
+      console.error(`Python đang dùng: ${python}`)
+      console.error('Tạo .venv tại root repository và cài requirements.txt, hoặc đặt biến PYTHON trỏ đến Python đã cài dependencies.')
+      if (windows) console.error('Nếu python trỏ tới WindowsApps, hãy cài Python thật hoặc tắt App execution alias của Python trong Windows Settings.')
+    }
     void shutdown(1)
   })
   child.once('exit', (code, signal) => {

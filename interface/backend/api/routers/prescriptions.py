@@ -21,7 +21,8 @@ from interface.backend.schemas.ddi import (
 )
 from interface.backend.services.auth_service import current_user, doctor, pharmacist
 from interface.backend.services.check_service import normalize_list, run_check
-from src.core.guardrails import HANDOFF
+from interface.backend.schemas.assistant import AssistantRequest, AssistantResponse
+from interface.backend.services.assistant_service import answer
 
 router = APIRouter(tags=["prescriptions"])
 
@@ -310,16 +311,6 @@ async def update_review(review_id: int, req: ReviewStatusUpdate,
     return _review_out(review)
 
 
-@router.post("/assistant/chat")
-async def assistant_chat(payload: dict, db: AsyncSession = Depends(get_session)):
-    """P0 rule-based: chi doc findings cua check hien tai + handoff. Khong LLM."""
-    check_id = payload.get("check_id", "")
-    message = payload.get("message", "")
-    if check_id:
-        c = await db.get(Check, check_id)
-        if c and c.summary:
-            n = (c.summary.get("findings_count") or 0)
-            return {"reply": f"Đơn có {n} phát hiện (mức cao nhất: {c.max_severity}). {HANDOFF}",
-                    "mode": "rule-based"}
-    _ = message
-    return {"reply": f"Tôi chỉ tra cứu cảnh báo từ CSDL. {HANDOFF}", "mode": "rule-based"}
+@router.post("/assistant/chat", response_model=AssistantResponse)
+async def assistant_chat(payload: AssistantRequest, db: AsyncSession = Depends(get_session)):
+    return await answer(db, payload)

@@ -8,11 +8,15 @@ export type Medication = { id: number; name: string; ingredient: string; dose: s
 export type Prescription = { id: string; name?: string; patient: string; date: string; medications: Medication[]; status: Status; highest: Severity | null; lastChecked: string; checks: number }
 export type ReviewRequest = { createdBy: number | null; creatorName: string; response: string; responderName: string; respondedAt: string; id: string; prescriptionId: string; patient: string; message: string; date: string; status: 'Đang chờ' | 'Đã phản hồi'; medCount: number }
 export type Citation = { source_id: string; source_name: string; label: string; source_url: string }
-export type Finding = { id: number; severity: Severity | null; a: string; b: string; kind: string; text: string; management: string; citations: Citation[]; sources: number }
+export type Finding = { untranslatedFields: string[]; machineTranslation: boolean; id: number; severity: Severity | null; a: string; b: string; kind: string; text: string; management: string; citations: Citation[]; sources: number }
 export type CheckRecord = { check_id: string; created_at?: string | null; status: string; summary: { meds_count?: number; findings_count?: number }; max_severity: string; findings?: RawFinding[]; food_findings?: FoodFinding[]; disclaimer?: string; unknown?: unknown[]; no_record_pairs?: string[][] }
-export type FoodFinding = RawFinding & { untranslated_fields?: string[]; machine_translation?: boolean; original_management?: string; original_mechanism?: string }
 export type EvalMetrics = { run: string; n_cases: number; confusion: { tp: number; fp: number; fn: number; tn: number }; metrics: { key: string; value: number | null; op: '>=' | '<='; threshold: number; passed: boolean | null; basis: string }[]; review_cases: { id: string; category: string; fn: number; fp: number }[] }
-type RawFinding = { pair: string[]; severity_vi: string; summary: string; management: string; citations: Citation[] }
+export type EvalRun = { id: string; label: string; note: string; n_cases: number; confusion: { tp: number; fp: number; fn: number; tn: number }; review_cases: { id: string; category: string; fn: number; fp: number }[]; db_gaps: string[] }
+export type EvalAllMetric = { key: string; op: '>=' | '<=' | null; threshold: number | null; basis: string; pooled: number | null; mean: number | null; passed: boolean | null; runs: Record<string, number | null> }
+export type EvalBenchmark = { name: string; kind: 'db' | 'llm'; source: string; sensitivity?: number; specificity?: number; ppv?: number; npv?: number; accuracy?: number }
+export type EvalAll = { generated: string; n_cases: number; confusion: { tp: number; fp: number; fn: number; tn: number }; runs: EvalRun[]; metrics: EvalAllMetric[]; benchmarks: EvalBenchmark[] }
+export type FoodFinding = RawFinding & { original_management?: string; original_mechanism?: string }
+type RawFinding = { untranslated_fields?: string[]; machine_translation?: boolean; pair: string[]; severity_vi: string; summary: string; management: string; citations: Citation[] }
 type RawPrescription = { id: string; name?: string; created_at?: string | null; last_checked?: string | null; status: Status; highest_severity_vi?: string | null; checks_count: number; medications: Medication[] }
 type RawReview = { created_by?: number | null; creator_name?: string; response?: string; responder_name?: string; responded_at?: string | null; id: number; prescription_id: string; patient: string; message: string; created_at: string; status: 'Đang chờ' | 'Đã phản hồi'; med_count: number }
 export const dateLabel = (value?: string | null) => value ? new Date(/(?:Z|[+-]\d{2}:\d{2})$/.test(value) ? value : `${value}Z`).toLocaleString('vi-VN') : 'Chưa cập nhật'
@@ -54,6 +58,35 @@ export async function loadReviews(): Promise<ReviewRequest[]> {
   return rows.map(row => ({ id: String(row.id), prescriptionId: row.prescription_id, patient: row.patient || 'Chưa cập nhật bệnh nhân', message: row.message || '', date: dateLabel(row.created_at), status: row.status, medCount: row.med_count, createdBy: row.created_by ?? null, creatorName: row.creator_name || '', response: row.response || '', responderName: row.responder_name || '', respondedAt: row.responded_at ? dateLabel(row.responded_at) : '' }))
 }
 
+export type PairExplanation = { text: string; source: 'llm' | 'template' | 'none'; refs: { label: string; url: string }[] }
+type RawExplainedPair = { explanation: string; explanation_source: PairExplanation['source']; mechanisms: { source_id: string; interaction_id: number; source_url: string }[]; form_notes: { source_id: string; rule_id: string; source_url: string }[] }
+const explanations = new Map<string, Promise<PairExplanation | null>>()
+
+// Lời giải thích tiếng Việt cho một cặp thuốc; null khi CSDL chưa có bản ghi của cặp. Số [k] trong text ứng với refs[k-1].
+export function explainPair(a: string, b: string): Promise<PairExplanation | null> {
+  const key = [a, b].sort().join('|')
+  let pending = explanations.get(key)
+  if (!pending) {
+    pending = api<{ pairs: RawExplainedPair[] }>('/interactions/explain', { drugs: [a, b] }).then(({ pairs }) => pairs[0] ? { text: pairs[0].explanation, source: pairs[0].explanation_source, refs: [...pairs[0].mechanisms.map(m => ({ label: `${m.source_id} · bản ghi ${m.interaction_id}`, url: m.source_url })), ...pairs[0].form_notes.map(n => ({ label: `${n.source_id} · quy tắc ${n.rule_id}`, url: n.source_url }))] } : null)
+    explanations.set(key, pending)
+    pending.catch(() => explanations.delete(key))
+  }
+  return pending
+}
+
 export function findingsOf(record: CheckRecord): Finding[] {
-  return (record.findings || []).map((row, id) => ({ id, severity: severityLabel(row.severity_vi), a: row.pair[0] || '', b: row.pair[1] || '', kind: 'Thuốc - thuốc', text: row.summary, management: row.management, citations: row.citations, sources: row.citations.length }))
+  return (record.findings || []).map((row, id) => ({ id, untranslatedFields: row.untranslated_fields ?? [], machineTranslation: row.machine_translation ?? false, severity: severityLabel(row.severity_vi), a: row.pair[0] || '', b: row.pair[1] || '', kind: 'Thuốc - thuốc', text: row.summary, management: row.management, citations: row.citations, sources: row.citations.length }))
+}
+
+export type AssistantReply = {
+  reply: string
+  mode: 'evidence-only'
+  llm_used: boolean
+  fallback_reason: string
+  status: 'answered' | 'needs_clarification' | 'no_evidence' | 'out_of_scope'
+  check_id: string
+  findings: unknown[]
+  citations: Citation[]
+  limitations: string[]
+  disclaimer: string
 }

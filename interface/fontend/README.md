@@ -2,6 +2,17 @@
 
 Frontend sử dụng API `/api/v1` của backend FastAPI để tải và lưu dữ liệu.
 
+Có thể chạy `npm run dev` từ root repository (`D:\Work\P-060`); lệnh ở root chuyển tiếp đến frontend.
+
+Trên Windows, thiết lập backend tại root trước lần chạy đầu:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+```
+
+Lệnh `python --version` phải trả về phiên bản Python đã cài. Nếu Windows chỉ có alias trong `WindowsApps`, cài Python thật rồi mở lại terminal. Đặt `.env` tại root để backend đọc cấu hình database.
+
 Chạy `npm run dev` ngay trong thư mục `interface/fontend`: lệnh này tự khởi động backend (cổng 8000), chờ backend sẵn sàng rồi khởi động frontend (cổng 3000). Nhấn `Ctrl+C` để dừng cả hai. Backend sử dụng Python ở `.venv` của root repository; có thể đặt `PYTHON` để dùng Python khác. Cài dependencies backend từ `requirements.txt` trước khi chạy. PostgreSQL cần chạy sẵn theo cấu hình `.env` ở root.
 
 Nếu chỉ cần frontend với backend chạy riêng, dùng `npm run dev:frontend`. Có thể đặt `BACKEND_PORT` và `PORT` để đổi cổng khi chạy chung; lệnh tự cấu hình proxy tới backend tương ứng. Dừng các dịch vụ cũ trước khi chạy, tránh trùng cổng.

@@ -1,0 +1,10 @@
+{
+  "name": "P-060",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix interface/fontend run dev",
+    "dev:frontend": "npm --prefix interface/fontend run dev:frontend",
+    "build": "npm --prefix interface/fontend run build",
+    "start": "npm --prefix interface/fontend run start"
+  }
+}
