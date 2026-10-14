@@ -2,7 +2,8 @@
 
 DeepSeek receives public drug evidence and locally redacted conversational context.
 There is no shell, dynamic tool dispatcher, or user-supplied tool name here.
-The only permitted reads are prescription context and the registered source catalog.
+Permitted reads include prescription context, the catalog and fixed public label API.
+General food-source answers use a separate curated public nutrition catalog.
 """
 import re
 import unicodedata
@@ -12,12 +13,17 @@ from fastapi import HTTPException
 from pydantic import ValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from interface.backend.repositories.assistant import assistant_context
+from interface.backend.repositories.assistant import assistant_context, drug_in_catalog
 from interface.backend.repositories.ddi_repo import list_sources
 from interface.backend.schemas.assistant import AssistantRequest, AssistantResponse
 from interface.backend.schemas.ddi import Citation, FindingOut
+from interface.backend.services.assistant_external import explicit_drug_name, extract_drug_names, label_reply
+from interface.backend.services.assistant_intent import abusive_message, classify_question, rule_route
 from interface.backend.services.assistant_llm import PRIVATE, explain
+from interface.backend.services.assistant_local_labels import local_label_reply
+from interface.backend.services.assistant_nutrition import nutrition_reply
 from interface.backend.services.assistant_situations import requests_treatment, social_reply
+from interface.backend.services.assistant_usage import UsageMeter, active_usage
 from src.core.guardrails import DISCLAIMER, HANDOFF, sanitize_text
 from src.tools.ranker import SEVERITY_VI
 
@@ -46,14 +52,79 @@ def safe_url(value: str) -> str:
 
 
 async def answer(db: AsyncSession, request: AssistantRequest) -> AssistantResponse:
+    meter = UsageMeter()
+    context = active_usage.set(meter)
+    try:
+        result = await _answer(db, request)
+        result.usage = meter.summary()
+        return result
+    finally:
+        active_usage.reset(context)
+
+
+async def _answer(db: AsyncSession, request: AssistantRequest) -> AssistantResponse:
     def response(text: str, status: str, **kwargs):
-        return AssistantResponse(reply=f"{text}\n\n{HANDOFF}", status=status,
+        if request.detail == "brief":
+            # Keep two complete content sentences; handoff is the third sentence.
+            text = "\n\n".join(re.split(r"(?<=[.!?])\s+", text.strip())[:2])
+            if text and text[-1] not in ".!?":
+                text += "."
+            critical = []
+            for note in kwargs.get("limitations", []):
+                if note.startswith("Tên chưa được xác minh"):
+                    critical.append(note.split(". ", 1)[0])
+                elif note.startswith("Lần kiểm tra đã lưu chưa tìm thấy"):
+                    pairs = note.split(": ", 1)[1].split(". ", 1)[0]
+                    critical.append(f"Chưa có bản ghi tương tác cho: {pairs}; thiếu bản ghi không chứng minh phối hợp an toàn")
+            if any(c.source_id == "openfda" for c in kwargs.get("citations", [])):
+                critical.append("Thông tin nhãn không xác nhận mức độ tương tác của cặp thuốc; thiếu dữ liệu không chứng minh phối hợp an toàn")
+            if critical:
+                first = re.split(r"(?<=[.!?])\s+", text.strip())[0]
+                text = first + "\n\n" + "; ".join(critical).rstrip(".") + "."
+            handoff = "Liên hệ bác sĩ/dược sĩ để được đánh giá."
+        else:
+            handoff = HANDOFF
+        return AssistantResponse(reply=f"{text}\n\n{handoff}", status=status,
                                  disclaimer=DISCLAIMER, **kwargs)
 
     message = folded(request.message)
+    def unsafe(text):
+        return bool(PRIVATE.search(folded(text)) or UNTRUSTED_INSTRUCTION.search(folded(text)))
+
+    routed_names = []
+    explicit_lookup = bool(explicit_drug_name(request.message))
+
+    async def external_answer(names, check_id=""):
+        if explicit_lookup:
+            text, cites, found = await local_label_reply(db, names, request.message, unsafe, request.detail)
+            if text:
+                # Preserve section breaks and translation notices even in brief mode.
+                return AssistantResponse(reply=f"{text}\n\n{HANDOFF if request.detail == 'expanded' else 'Liên hệ bác sĩ/dược sĩ để được đánh giá.'}",
+                                         status="answered" if found else "no_evidence", citations=cites, check_id=check_id,
+                                         disclaimer=DISCLAIMER,
+                                         limitations=["Thông tin nhãn thuốc trong CSDL; không thay đổi kết quả kiểm tra tương tác."])
+        # Catalog membership is not evidence for a general label question.
+        # Explicit single-drug lookups must not fall back to unrelated RX pairs.
+        absent = [name for name in names if not unsafe(name)
+                  and (explicit_lookup or not await drug_in_catalog(db, name))]
+        if not absent:
+            return None
+        text, cites, found = await label_reply(absent, request.message, unsafe, detail=request.detail)
+        if not text:
+            if explicit_lookup:
+                return response("Hiện chưa thể tra cứu thông tin nhãn thuốc: chức năng tra cứu nguồn ngoài chưa khả dụng.",
+                                "no_evidence", check_id=check_id)
+            return None
+        return response(text, "answered" if found else "no_evidence", citations=cites,
+                        check_id=check_id, limitations=[
+                            "Tra cứu nhãn thuốc bên ngoài; không bổ sung hoặc thay đổi kết quả kiểm tra tương tác."])
+
     if UNTRUSTED_INSTRUCTION.search(message):
         return response("Tôi chỉ giải thích bằng chứng tương tác thuốc đã được backend xác minh.",
                         "out_of_scope")
+    if abusive_message(request.message):
+        return AssistantResponse(reply="Tôi có thể hỗ trợ câu hỏi về thuốc. Bạn vui lòng diễn đạt lại câu hỏi một cách tôn trọng để tôi tiếp tục hỗ trợ.",
+                                 status="out_of_scope", disclaimer=DISCLAIMER)
     small_talk = social_reply(request.message)
     if small_talk:
         return AssistantResponse(reply=small_talk, status="answered", disclaimer=DISCLAIMER)
@@ -61,7 +132,37 @@ async def answer(db: AsyncSession, request: AssistantRequest) -> AssistantRespon
         return response("Tôi không đưa ra chẩn đoán hoặc chỉ định điều trị, liều dùng hay thay đổi thuốc. "
                         "Tôi có thể giúp bạn hiểu bằng chứng tương tác để trao đổi với bác sĩ/dược sĩ.",
                         "out_of_scope")
+    decision = await classify_question(request.message, [turn.model_dump() for turn in request.history], unsafe)
+    if decision.moderation != "allowed":
+        return AssistantResponse(reply="Tôi không xử lý lời công kích hoặc yêu cầu vượt quy tắc. Bạn vui lòng đặt lại câu hỏi về thuốc một cách tôn trọng.",
+                                 status="out_of_scope", disclaimer=DISCLAIMER)
+    if decision.intent == "nutrition":
+        food_answer = nutrition_reply(request.message, [turn.model_dump() for turn in request.history], request.detail)
+        if food_answer:
+            return food_answer
+        return AssistantResponse(reply="Bạn muốn biết thực phẩm nào cung cấp vitamin hoặc khoáng chất nào? Hãy nêu chất dinh dưỡng bạn muốn tìm hiểu.",
+                                 status="needs_clarification", disclaimer=DISCLAIMER)
+    if decision.intent in {"out_of_scope", "treatment"}:
+        return response("Tôi chỉ hỗ trợ tra cứu thuốc, giải thích bằng chứng tương tác và nguồn thực phẩm cung cấp chất dinh dưỡng. Tôi không chẩn đoán, kê đơn hoặc chỉ định thay đổi thuốc hay liều dùng.",
+                        "out_of_scope")
+    if decision.intent == "unclear":
+        return AssistantResponse(reply="Bạn muốn tra cứu thông tin thuốc, hỏi tương tác, giải thích kết quả hay tìm thực phẩm cung cấp chất dinh dưỡng? Hãy cho biết tên thuốc, chất dinh dưỡng hoặc điểm bạn muốn làm rõ.",
+                                 status="needs_clarification", disclaimer=DISCLAIMER)
+    routed_names = decision.drug_names
+    if decision.intent == "follow_up":
+        # References select an existing user's subject, never reuse assistant facts as evidence.
+        for turn in reversed(request.history):
+            if turn.role == "user":
+                previous = rule_route(turn.content, [])
+                if previous.intent == "drug_lookup":
+                    routed_names = routed_names or previous.drug_names
+                    decision.intent = "drug_lookup"
+                break
+    explicit_lookup = decision.intent == "drug_lookup" and bool(routed_names)
     if not request.prescription_id or request.prescription_id == "chưa chọn":
+        names = routed_names or await extract_drug_names(request.message, unsafe)
+        if names and (external := await external_answer(names)):
+            return external
         return response("Hãy chọn đơn thuốc và chạy kiểm tra để tôi có bằng chứng để giải thích.",
                         "needs_clarification")
     prescription, check, medications = await assistant_context(
@@ -70,6 +171,9 @@ async def answer(db: AsyncSession, request: AssistantRequest) -> AssistantRespon
         raise HTTPException(404, "Không tìm thấy đơn thuốc")
     if request.check_id and (check is None or check.prescription_id != prescription.id):
         raise HTTPException(422, "Kết quả kiểm tra không thuộc đơn thuốc")
+    names = routed_names or await extract_drug_names(request.message, unsafe, known_names=[m.name for m in medications])
+    if check is None and names and (external := await external_answer(names)):
+        return external
     if check is None or check.status != "done" or not isinstance(check.result, dict):
         return response("Đơn thuốc chưa có kết quả kiểm tra đầy đủ. Hãy chạy kiểm tra trước.",
                         "no_evidence")
@@ -80,6 +184,8 @@ async def answer(db: AsyncSession, request: AssistantRequest) -> AssistantRespon
     if current != snapshot or prescription.last_checked is None:
         return response("Đơn thuốc đã thay đổi sau lần kiểm tra này. Hãy kiểm tra lại đơn hiện tại.",
                         "needs_clarification", check_id=check.id)
+    if names and (external := await external_answer(names, check.id)):
+        return external
     sources = {s.source_id: s for s in await list_sources(db)}
     findings = []
     explanation_findings = []
@@ -123,7 +229,7 @@ async def answer(db: AsyncSession, request: AssistantRequest) -> AssistantRespon
         finding.summary = sanitize_text(finding.summary)
         finding.mechanism = sanitize_text(finding.mechanism)
         # Public source recommendation is available for attribution, never as a directive.
-        recommendation = finding.original_management or finding.management
+        recommendation = finding.management or finding.original_management
         explanation_findings.append(finding.model_copy(update={"management": recommendation,
                                      "original_management": "", "original_mechanism": ""}))
         if is_food:
@@ -171,6 +277,18 @@ async def answer(db: AsyncSession, request: AssistantRequest) -> AssistantRespon
             "Điều này không khẳng định thuốc không có trong database. "
             "Vui lòng xác nhận tên/hoạt chất; nếu danh mục vừa được cập nhật, hãy chạy kiểm tra lại."
         )
+        relevant_names = [name for name in names if folded(name) in message]
+        drug_question = any(term in message for term in (
+            "thuoc", "tuong tac", "tac dung", "chong chi dinh", "canh bao", "dung chung", "ket hop"))
+        if relevant_names or (not findings and drug_question):
+            absent = [name for name in (relevant_names or names)
+                      if not await drug_in_catalog(db, name)]
+            external_text, external_cites, external_found = await label_reply(
+                absent, request.message, unsafe, detail=request.detail)
+        else:
+            external_text, external_cites, external_found = "", [], False
+    else:
+        external_text, external_cites, external_found = "", [], False
     missing_pairs = []
     for pair in data.get("no_record_pairs") or []:
         if isinstance(pair, list) and len(pair) == 2 and all(public_name(n) for n in pair):
@@ -202,7 +320,7 @@ async def answer(db: AsyncSession, request: AssistantRequest) -> AssistantRespon
                       if tuple(sorted(f.pair)) in food_pair_keys}
         explanation, fallback_reason = await explain(
             request.message, explanation_findings, citations,
-            history=[turn.model_dump() for turn in request.history], food_pairs=food_pairs)
+            history=[turn.model_dump() for turn in request.history], food_pairs=food_pairs, detail=request.detail)
         if explanation:
             lines = [explanation]
             llm_used = True
@@ -236,13 +354,22 @@ async def answer(db: AsyncSession, request: AssistantRequest) -> AssistantRespon
                      "Nếu bạn hỏi về thực phẩm/đồ uống, bạn vui lòng nói rõ.")
     if not lines:
         lines = ["Bạn muốn tôi giải thích điểm nào hoặc cặp thuốc nào trong kết quả kiểm tra?"]
-    lines.extend(note for note in dict.fromkeys(limitations)
+    if external_text:
+        if not findings:
+            lines = [external_text]
+        else:
+            lines.append(external_text)
+        citations.extend(c for c in external_cites if c not in citations)
+    if request.detail == "expanded":
+        lines.extend(note for note in dict.fromkeys(limitations)
                  if not llm_used or note != "Kết quả dựa trên lần kiểm tra đã lưu; không bao gồm thuốc ngoài đơn này.")
     status = "answered" if llm_used else "no_evidence"
     if (unknown and not llm_used) or fallback_reason in {"no_supported_answer", "ambiguous_question", "irrelevant_answer"}:
         status = "needs_clarification"
     if fallback_reason in {"out_of_scope_question", "treatment_request"}:
         status = "out_of_scope"
+    elif external_text and not findings:
+        status = "answered" if external_found else "no_evidence"
     return response("\n\n".join(lines), status,
                     check_id=check.id,
                     findings=findings, citations=citations,

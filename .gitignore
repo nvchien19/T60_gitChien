@@ -68,3 +68,4 @@ blob-report/
 # Build
 *.pyc
 *.pyo
+.vercel

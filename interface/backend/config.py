@@ -36,6 +36,12 @@ class Settings(BaseSettings):
     # Gọi thêm một lượt LLM kiểm định từng câu có bám bằng chứng không (tắt để giảm độ trễ)
     explain_verify: bool = True
 
+    # Public label fallback. No patient/chat content is sent to the provider.
+    external_drug_lookup_enabled: bool = True
+    assistant_intent_llm_enabled: bool = True
+    external_drug_timeout_s: float = Field(default=8.0, gt=0, le=15)
+    openfda_api_key: str = ""
+
     # Gemini pretranslation; credentials stay on the backend.
     gemini_api_key: str = ""
     google_api_key: str = ""

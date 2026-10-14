@@ -43,7 +43,7 @@ export function PrescriptionImagePreview({ src, crop, disabled, onCrop, onScan }
       <a href={src} target="_blank" rel="noreferrer" onClick={event => { if (selecting) event.preventDefault() }}>
         <img src={src} alt="Ảnh đơn thuốc đã chọn" draggable={false} className="block h-auto max-h-80 max-w-full rounded-lg border border-slate-200 bg-white" />
       </a>
-      {shown && <div aria-label="Vùng thuốc đã chọn" className="pointer-events-none absolute border-2 border-sky-500 bg-sky-400/10" style={{ left: `${shown.x * 100}%`, top: `${shown.y * 100}%`, width: `${shown.width * 100}%`, height: `${shown.height * 100}%` }} />}
+      {shown && <div aria-label="Vùng thuốc đã chọn" className="pointer-events-none absolute border-2 border-teal-500 bg-teal-400/10" style={{ left: `${shown.x * 100}%`, top: `${shown.y * 100}%`, width: `${shown.width * 100}%`, height: `${shown.height * 100}%` }} />}
     </div>
     <div className="mt-2 flex flex-wrap gap-2">
       <Button type="button" variant="outline" disabled={disabled} onClick={() => { setSelecting(previous => !previous); setHint('Kéo trên ảnh để chọn vùng chứa toàn bộ các dòng thuốc.') }}>{selecting ? 'Hủy chọn vùng' : 'Chọn vùng thuốc'}</Button>

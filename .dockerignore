@@ -14,6 +14,7 @@ eval/*
 !eval/results/
 eval/results/*
 !eval/results/metrics_latest.json
+!eval/results/metrics_all.json
 *.md
 !requirements.txt
 .dockerignore

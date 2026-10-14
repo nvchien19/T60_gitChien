@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Info } from 'lucide-react'
-import { api, type EvalAll, type EvalAllMetric, type EvalBenchmark } from '@/lib/api'
+import { loadEvaluation, type EvalAll, type EvalAllMetric, type EvalBenchmark } from '@/lib/api'
 
 type Meta = { label: string; note: string }
 // Chú thích hiện khi bấm nút (i) ở góc phải mỗi chỉ số.
@@ -56,14 +56,14 @@ const show = (key: string, value: number | null | undefined) => value === null |
 const stamp = (run: string) => run.replace(/^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})$/, '$3/$2/$1 $4:$5')
 
 function InfoButton({ open, onClick, label }: { open: boolean; onClick: () => void; label: string }) {
-  return <button type="button" onClick={onClick} aria-expanded={open} aria-label={`Chú thích: ${label}`} className={`grid size-6 shrink-0 place-items-center rounded-full transition ${open ? 'bg-sky-100 text-sky-700' : 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'}`}><Info className="size-4" /></button>
+  return <button type="button" onClick={onClick} aria-expanded={open} aria-label={`Chú thích: ${label}`} className={`grid size-6 shrink-0 place-items-center rounded-full transition ${open ? 'bg-teal-100 text-teal-700' : 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'}`}><Info className="size-4" /></button>
 }
 
 function MetricCard({ metric, runs, big }: { metric: EvalAllMetric; runs: EvalAll['runs']; big?: boolean }) {
   const [open, setOpen] = useState(false)
   const meta = META[metric.key] ?? { label: metric.key, note: 'Chưa có chú thích.' }
   const rate = !isMs(metric.key) && metric.pooled !== null
-  const fill = metric.passed === false ? 'bg-rose-500' : 'bg-sky-500'
+  const fill = metric.passed === false ? 'bg-rose-500' : 'bg-teal-500'
   return <div className="rounded-xl border border-slate-200 bg-white p-4">
     <div className="flex items-start justify-between gap-2">
       <p className="text-xs font-semibold text-slate-500">{meta.label}</p>
@@ -72,7 +72,7 @@ function MetricCard({ metric, runs, big }: { metric: EvalAllMetric; runs: EvalAl
         <InfoButton open={open} onClick={() => setOpen(!open)} label={meta.label} />
       </div>
     </div>
-    {open && <p className="mt-2 rounded-lg bg-sky-50 p-2.5 text-xs leading-relaxed text-slate-700">{meta.note}{metric.basis && <span className="mt-1 block text-slate-500">Căn cứ ngưỡng: {metric.basis}.</span>}</p>}
+    {open && <p className="mt-2 rounded-lg bg-teal-50 p-2.5 text-xs leading-relaxed text-slate-700">{meta.note}{metric.basis && <span className="mt-1 block text-slate-500">Căn cứ ngưỡng: {metric.basis}.</span>}</p>}
     <p className={`mt-2 font-extrabold ${big ? 'text-2xl' : 'text-xl'}`}>{show(metric.key, metric.pooled)}</p>
     {rate && <div className="relative mt-2 h-2 rounded-full bg-slate-100">
       <div className={`h-2 rounded-full ${fill}`} style={{ width: `${Math.max(0, Math.min(1, metric.pooled as number)) * 100}%` }} />
@@ -85,7 +85,7 @@ function MetricCard({ metric, runs, big }: { metric: EvalAllMetric; runs: EvalAl
 
 function BenchmarkChart({ label, field, ours, benchmarks }: { label: string; field: string; ours: EvalAllMetric | undefined; benchmarks: EvalBenchmark[] }) {
   const rows = [
-    ...(ours ? [{ name: 'Rà Thuốc (gộp)', value: ours.pooled, tone: 'bg-sky-500', bold: true }, { name: 'Rà Thuốc · bộ độc lập', value: ours.runs.holdout ?? null, tone: 'bg-sky-300', bold: true }] : []),
+    ...(ours ? [{ name: 'Rà Thuốc (gộp)', value: ours.pooled, tone: 'bg-teal-500', bold: true }, { name: 'Rà Thuốc · bộ độc lập', value: ours.runs.holdout ?? null, tone: 'bg-teal-300', bold: true }] : []),
     ...benchmarks.map(b => ({ name: b.name, value: (b[field as keyof EvalBenchmark] as number | undefined) ?? null, tone: b.kind === 'db' ? 'bg-slate-400' : 'bg-amber-400', bold: false })),
   ].filter(r => r.value !== null).sort((a, b) => (b.value as number) - (a.value as number))
   return <div>
@@ -102,7 +102,7 @@ export function QualityView() {
   const [data, setData] = useState<EvalAll | null>(null)
   const [error, setError] = useState('')
   const [benchInfo, setBenchInfo] = useState(false)
-  useEffect(() => { let cancelled = false; api<EvalAll>('/eval/metrics/all').then(d => { if (!cancelled) setData(d) }).catch(e => { if (!cancelled) setError(e.message) }); return () => { cancelled = true } }, [])
+  useEffect(() => { let cancelled = false; loadEvaluation().then(d => { if (!cancelled) setData(d) }).catch(e => { if (!cancelled) setError(e.message) }); return () => { cancelled = true } }, [])
 
   if (error) return <p role="alert" className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">{error}</p>
   if (!data) return <p role="status" className="rounded-xl bg-white p-5 text-sm">Đang tải chỉ số…</p>
@@ -112,7 +112,7 @@ export function QualityView() {
   const judged = data.metrics.filter(m => m.passed !== null)
   return <>
     <section>
-      <p className="mb-2 text-xs font-bold uppercase tracking-[0.12em] text-sky-600">Evaluation</p>
+      <p className="mb-2 text-xs font-bold uppercase tracking-[0.12em] text-teal-600">Evaluation</p>
       <h2 className="text-xl font-extrabold tracking-tight sm:text-2xl">Chất lượng phát hiện tương tác</h2>
       <p className="mt-1.5 text-sm text-slate-500">Gộp {data.n_cases} ca từ {data.runs.length} lượt test ({data.runs.map(r => r.label).join(' + ')}) · tính lúc {stamp(data.generated)}</p>
       <p className="mt-1 text-sm text-slate-500">Số lớn trên mỗi thẻ là kết quả gộp mọi ca; dòng dưới ghi từng lượt và trung bình cộng. Đạt {judged.length - failed.length}/{judged.length} chỉ số có ngưỡng. Bấm <Info className="inline size-3.5 align-[-2px]" /> để xem chú thích.</p>
@@ -122,10 +122,10 @@ export function QualityView() {
 
     <section className="rounded-xl border border-slate-200 bg-white p-5">
       <div className="flex items-start justify-between gap-2">
-        <div><h3 className="text-sm font-extrabold">So với benchmark đã công bố</h3><p className="mt-1 text-xs text-slate-400">Xếp từ cao xuống thấp · <span className="font-semibold text-sky-600">xanh</span>: Rà Thuốc · <span className="font-semibold text-slate-500">xám</span>: 9 phần mềm tra tương tác đang lưu hành (Marcath 2018, 145 cặp) · <span className="font-semibold text-amber-600">vàng</span>: chatbot AI (Al-Ashwal 2023, 255 cặp, chuẩn Drugs.com)</p></div>
+        <div><h3 className="text-sm font-extrabold">So với benchmark đã công bố</h3><p className="mt-1 text-xs text-slate-400">Xếp từ cao xuống thấp · <span className="font-semibold text-teal-600">xanh</span>: Rà Thuốc · <span className="font-semibold text-slate-500">xám</span>: 9 phần mềm tra tương tác đang lưu hành (Marcath 2018, 145 cặp) · <span className="font-semibold text-amber-600">vàng</span>: chatbot AI (Al-Ashwal 2023, 255 cặp, chuẩn Drugs.com)</p></div>
         <InfoButton open={benchInfo} onClick={() => setBenchInfo(!benchInfo)} label="So với benchmark" />
       </div>
-      {benchInfo && <p className="mt-3 rounded-lg bg-sky-50 p-2.5 text-xs leading-relaxed text-slate-700">Các con số tham chiếu được đo trên bộ ca khác, với đáp án do dược sĩ lâm sàng xác định. Đáp án của Rà Thuốc lấy từ chính CSDL mà agent tra cứu, nên bài đo của chúng tôi dễ hơn. Biểu đồ dùng để định vị, không phải bằng chứng rằng hệ thống tốt hơn hay kém hơn các công cụ này.</p>}
+      {benchInfo && <p className="mt-3 rounded-lg bg-teal-50 p-2.5 text-xs leading-relaxed text-slate-700">Các con số tham chiếu được đo trên bộ ca khác, với đáp án do dược sĩ lâm sàng xác định. Đáp án của Rà Thuốc lấy từ chính CSDL mà agent tra cứu, nên bài đo của chúng tôi dễ hơn. Biểu đồ dùng để định vị, không phải bằng chứng rằng hệ thống tốt hơn hay kém hơn các công cụ này.</p>}
       <div className="mt-4 grid gap-6 md:grid-cols-2 xl:grid-cols-3">{COMPARE.map(c => <BenchmarkChart key={c.key} label={c.label} field={c.key} ours={byKey[c.key]} benchmarks={data.benchmarks} />)}</div>
     </section>
 

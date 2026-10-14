@@ -16,7 +16,15 @@ type CatalogMatch = { input: string; canonical_name: string; status: string; not
 export type EditableMedicationDraft = MedicationDraft & { id?: number; type?: Medication['type']; ocrSource?: boolean; catalogMatch?: CatalogMatch }
 
 const emptyRow = (): MedicationDraft => ({ name: '', dose: '', frequency: '' })
-const inputClass = 'mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-sky-500'
+// Ảnh đơn giả trong public/samples/don-thuoc-mau; kết quả mong đợi ở docs/don_thuoc_mau/README.md.
+const SAMPLE_PRESCRIPTIONS = [
+  ['don-1-khong-tuong-tac.png', 'Đơn mẫu 1: không có tương tác'],
+  ['don-2-nghiem-trong.png', 'Đơn mẫu 2: chống chỉ định và nghiêm trọng'],
+  ['don-3-trung-thuoc.png', 'Đơn mẫu 3: trùng thuốc'],
+  ['don-4-ten-kho.png', 'Đơn mẫu 4: tên khó'],
+  ['don-5-thuc-pham-khoang-cach.png', 'Đơn mẫu 5: thực phẩm và khoảng cách uống'],
+] as const
+const inputClass = 'mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-teal-500'
 
 export function PrescriptionEditor({ initialName = '', existingMedications = [], onClose, onSave }: {
   initialName?: string
@@ -45,6 +53,23 @@ export function PrescriptionEditor({ initialName = '', existingMedications = [],
   const workerRef = useRef<Worker | null>(null)
   const mounted = useRef(true)
   const dialogRef = useRef<HTMLDialogElement>(null)
+
+  const chooseImage = (selected: File) => {
+    if (!['image/png', 'image/jpeg', 'image/webp'].includes(selected.type) || selected.size > 10 * 1024 * 1024) { setError('Chọn ảnh PNG, JPG hoặc WebP không quá 10 MB.'); return }
+    setFile(selected); setCrop(undefined); setRawText(''); setNormalizedText(null); setUnparsedLines([]); setError(''); setNotice(''); setReviewed(false); setNeedsReview(true)
+  }
+  // Đơn mẫu chỉ nạp ảnh vào khung xem trước; người dùng vẫn tự bấm quét như với ảnh tải lên.
+  const chooseSample = async (sampleFile: string) => {
+    if (!sampleFile) return
+    try {
+      const response = await fetch(`/samples/don-thuoc-mau/${sampleFile}`)
+      if (!response.ok) throw new Error()
+      const blob = await response.blob()
+      if (mounted.current) chooseImage(new File([blob], sampleFile, { type: 'image/png' }))
+    } catch {
+      if (mounted.current) setError('Không tải được ảnh đơn mẫu. Vui lòng thử lại.')
+    }
+  }
 
   useEffect(() => {
     mounted.current = true
@@ -213,34 +238,37 @@ export function PrescriptionEditor({ initialName = '', existingMedications = [],
       finally { if (mounted.current) setBusy(false) }
     }}>
       <header className="flex shrink-0 items-start justify-between gap-3 border-b border-slate-100 p-5 sm:p-6">
-        <div className="flex items-start gap-3"><BrandLogo size={36} /><div><p className="text-xs font-bold uppercase tracking-wider text-sky-600">Medication safety</p><h2 id="prescription-editor-title" className="mt-1 text-xl font-extrabold">{initialName ? 'Chỉnh sửa thuốc trong đơn' : 'Thêm đơn thuốc'}</h2><p className="mt-2 text-sm text-slate-500">Nhập thuốc hoặc đọc từ ảnh, sau đó kiểm tra trước khi lưu.</p></div></div>
+        <div className="flex items-start gap-3"><BrandLogo size={36} /><div><p className="text-xs font-bold uppercase tracking-wider text-teal-600">Medication safety</p><h2 id="prescription-editor-title" className="mt-1 text-xl font-extrabold">{initialName ? 'Chỉnh sửa thuốc trong đơn' : 'Thêm đơn thuốc'}</h2><p className="mt-2 text-sm text-slate-500">Nhập thuốc hoặc đọc từ ảnh, sau đó kiểm tra trước khi lưu.</p></div></div>
         <button type="button" onClick={onClose} aria-label="Đóng" className="shrink-0 rounded-lg p-1 text-slate-400"><X className="size-5" /></button>
       </header>
       <div className="min-h-0 flex-1 space-y-6 overflow-y-auto overscroll-contain p-5 sm:p-6">
         <label className="block text-sm font-bold">1. Tên đơn thuốc <span className="text-rose-500">*</span><input autoFocus required maxLength={150} value={name} readOnly={Boolean(initialName)} onChange={event => setName(event.target.value)} placeholder="Ví dụ: Đơn tái khám tháng 10" className={inputClass} /></label>
-        <section className="rounded-xl border border-sky-100 bg-sky-50/40 p-4">
+        <section className="rounded-xl border border-teal-100 bg-teal-50/40 p-4">
           <h3 className="text-sm font-bold">Đọc thuốc từ ảnh đơn thuốc</h3><p className="mt-1 text-xs text-slate-500">PNG, JPG hoặc WebP · tối đa 10 MB. Chọn ảnh rõ, chụp thẳng và đủ toàn bộ bảng thuốc để tự động điền tên thuốc, hàm lượng và cách dùng. Ảnh hoặc vùng đã chọn được gửi đến Google để nhận dạng. Tên thuốc được đối chiếu với danh mục thuốc. Có thể chọn riêng bảng thuốc để loại thông tin bệnh nhân.</p>
-          <p className="mt-2 text-xs"><a href="/samples/don-thuoc-mau-db.png" download className="font-semibold text-sky-700 underline underline-offset-2">Tải ảnh đơn mẫu từ DB</a><span className="mx-2 text-slate-400">·</span><a href="/samples/don-thuoc-mau-db.pdf" target="_blank" rel="noreferrer" className="font-semibold text-sky-700 underline underline-offset-2">Xem bản PDF</a></p>
-          <div className="mt-3 flex flex-wrap items-center gap-3"><label className="flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold"><Upload className="size-4 text-sky-600" /> Chọn ảnh đơn thuốc<input type="file" aria-label="Ảnh đơn thuốc" accept="image/png,image/jpeg,image/webp" disabled={busy} className="sr-only" onChange={event => {
+          <p className="mt-2 text-xs"><a href="/samples/don-thuoc-mau-db.png" download className="font-semibold text-teal-700 underline underline-offset-2">Tải ảnh đơn mẫu từ DB</a><span className="mx-2 text-slate-400">·</span><a href="/samples/don-thuoc-mau-db.pdf" target="_blank" rel="noreferrer" className="font-semibold text-teal-700 underline underline-offset-2">Xem bản PDF</a></p>
+          <div className="mt-3 flex flex-wrap items-center gap-3"><label className="flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold"><Upload className="size-4 text-teal-600" /> Chọn ảnh đơn thuốc<input type="file" aria-label="Ảnh đơn thuốc" accept="image/png,image/jpeg,image/webp" disabled={busy} className="sr-only" onChange={event => {
             const selected = event.target.files?.[0]; event.target.value = ''
-            if (!selected) return
-            if (!['image/png', 'image/jpeg', 'image/webp'].includes(selected.type) || selected.size > 10 * 1024 * 1024) { setError('Chọn ảnh PNG, JPG hoặc WebP không quá 10 MB.'); return }
-            setFile(selected); setCrop(undefined); setRawText(''); setNormalizedText(null); setUnparsedLines([]); setError(''); setNotice(''); setReviewed(false); setNeedsReview(true)
-          }} /></label><span className="max-w-64 truncate text-xs text-slate-500">{file?.name}</span></div>
+            if (selected) chooseImage(selected)
+          }} /></label>
+            <select aria-label="Đơn thuốc mẫu để thử" disabled={busy} value="" onChange={event => void chooseSample(event.target.value)} className="min-h-[40px] max-w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold">
+              <option value="">Hoặc chọn đơn mẫu để thử…</option>
+              {SAMPLE_PRESCRIPTIONS.map(([sampleFile, label]) => <option key={sampleFile} value={sampleFile}>{label}</option>)}
+            </select>
+            <span className="max-w-64 truncate text-xs text-slate-500">{file?.name}</span></div>
           {file && !busy && <p className="mt-2 text-xs text-slate-500">Chọn vùng thuốc trên ảnh nếu cần, rồi bấm quét để nhận dạng và điền các trường.</p>}
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             {preview && <PrescriptionImagePreview key={preview} src={preview} crop={crop} disabled={busy} onCrop={setCrop} onScan={() => file && void extract(file, crop)} />}
             <div className={preview ? '' : 'sm:col-span-2'}><label className="text-xs font-bold">Văn bản nhận dạng — có thể sửa hoặc dán nội dung đơn<textarea value={rawText} disabled={busy} onChange={event => { setRawText(event.target.value); setReviewed(false); setNeedsReview(true) }} placeholder="1. Tên thuốc 500 mg&#10;Uống theo hướng dẫn ghi trên đơn…" className={`${inputClass} min-h-40 font-normal`} /></label><Button type="button" variant="outline" className="mt-2 whitespace-normal" disabled={!rawText.trim() || busy || normalizedText === rawText} onClick={() => void normalize()}>Điền các trường từ văn bản</Button><p className="mt-2 text-xs text-slate-500">Điền lại sẽ thay các dòng OCR trước đó; giữ các thuốc nhập thủ công và thuốc đã lưu.</p></div>
           </div>
-          {busy && <p role="status" className="mt-3 text-xs text-sky-700">{activity} {activity.includes('nhận dạng đơn') ? `${progress}%` : ''}</p>}
+          {busy && <p role="status" className="mt-3 text-xs text-teal-700">{activity} {activity.includes('nhận dạng đơn') ? `${progress}%` : ''}</p>}
           {coverageWarning && <p role="alert" className="mt-3 text-xs text-amber-700">{coverageWarning}</p>}
           {confidence !== null && confidence < 75 && <p className="mt-3 text-xs text-amber-700">Ảnh có độ rõ thấp. Kiểm tra kỹ dấu thập phân, hàm lượng và các dòng có thể bị thiếu.</p>}
           {unparsedLines.length > 0 && <details className="mt-3 text-xs text-amber-700"><summary className="cursor-pointer">{unparsedLines.length} dòng chưa điền vào trường — mở để đối chiếu</summary><pre className="mt-2 whitespace-pre-wrap font-sans">{unparsedLines.join('\n')}</pre></details>}
-          {notice && <p role="status" className="mt-3 text-xs text-sky-800">{notice}</p>}
+          {notice && <p role="status" className="mt-3 text-xs text-teal-800">{notice}</p>}
         </section>
         <section><div className="mb-3 flex items-center justify-between gap-2"><h3 className="text-sm font-bold">2. Các thuốc trong đơn ({rows.length})</h3><Button type="button" variant="outline" disabled={busy} onClick={() => { setRows(items => [...items, emptyRow()]); setReviewed(false) }}><Plus className="size-4" /> Thêm thuốc</Button></div>
           <div className="space-y-3">{rows.map((row, index) => <div key={index} className="grid gap-3 rounded-xl border border-slate-200 bg-slate-50/50 p-3 sm:grid-cols-[1.2fr_.7fr_1fr_auto]">
-            <label className="min-w-0 text-xs font-semibold">Tên thuốc {index + 1} * {row.id !== undefined && <span className="ml-1 font-normal text-sky-600">Đã có trong đơn</span>}<input required disabled={busy} maxLength={200} value={row.name} onChange={event => updateRow(index, 'name', event.target.value)} placeholder="Paracetamol" className={inputClass} /></label>
+            <label className="min-w-0 text-xs font-semibold">Tên thuốc {index + 1} * {row.id !== undefined && <span className="ml-1 font-normal text-teal-600">Đã có trong đơn</span>}<input required disabled={busy} maxLength={200} value={row.name} onChange={event => updateRow(index, 'name', event.target.value)} placeholder="Paracetamol" className={inputClass} /></label>
             <label className="min-w-0 text-xs font-semibold">Hàm lượng / liều ghi trên đơn<input disabled={busy} value={row.dose} onChange={event => updateRow(index, 'dose', event.target.value)} placeholder="500 mg" className={inputClass} /></label>
             <label className="min-w-0 text-xs font-semibold">Cách dùng / số lượng ghi trên đơn<textarea aria-label="Cách dùng / số lượng ghi trên đơn" rows={2} disabled={busy} value={row.frequency} onChange={event => updateRow(index, 'frequency', event.target.value)} placeholder="Nhập theo đơn gốc" className={inputClass} /></label>
             <button type="button" aria-label={`Xóa thuốc ${index + 1}`} disabled={busy} onClick={() => { setRows(items => items.filter((_, i) => i !== index)); setReviewed(false) }} className="self-end rounded-lg p-2 text-slate-400 hover:bg-rose-50 hover:text-rose-600"><Trash2 className="size-4" /></button>
@@ -249,7 +277,7 @@ export function PrescriptionEditor({ initialName = '', existingMedications = [],
         {needsReview && <label className="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900"><input type="checkbox" disabled={busy} checked={reviewed} onChange={event => setReviewed(event.target.checked)} className="mt-1" />Tôi đã đối chiếu ảnh gốc, kiểm tra tên thuốc, hàm lượng, cách dùng và bổ sung các thuốc còn thiếu.</label>}
         {error && <p role="alert" className="text-sm text-rose-600">{error}</p>}
       </div>
-      <footer className="flex shrink-0 flex-col-reverse gap-2 border-t border-slate-100 p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] sm:flex-row sm:items-center sm:justify-end sm:p-5"><Button type="button" variant="outline" onClick={onClose} className="w-full justify-center sm:w-auto">Hủy</Button><Button type="submit" disabled={busy || (needsReview && !reviewed)} className="w-full justify-center bg-sky-500 hover:bg-sky-600 sm:w-auto">{initialName ? 'Lưu thay đổi' : 'Lưu đơn thuốc'}</Button></footer>
+      <footer className="flex shrink-0 flex-col-reverse gap-2 border-t border-slate-100 p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] sm:flex-row sm:items-center sm:justify-end sm:p-5"><Button type="button" variant="outline" onClick={onClose} className="w-full justify-center sm:w-auto">Hủy</Button><Button type="submit" disabled={busy || (needsReview && !reviewed)} className="w-full justify-center bg-teal-500 hover:bg-teal-600 sm:w-auto">{initialName ? 'Lưu thay đổi' : 'Lưu đơn thuốc'}</Button></footer>
     </form>
   </dialog>
 }

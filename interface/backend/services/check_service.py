@@ -12,6 +12,7 @@ from interface.backend.config import get_settings
 from interface.backend.repositories import ddi_repo
 from interface.backend.repositories.translations import localize
 from interface.backend.schemas.ddi import CheckResponse, Citation, FindingOut, NormalizedItem
+from interface.backend.services import patient_context
 from src.core.guardrails import DISCLAIMER, NO_RECORD_MSG, guardrail_assert
 from src.tools._khoa import khoa
 from src.tools.context_terms import detect_diseases, detect_foods
@@ -242,8 +243,9 @@ async def fetch_context_records(db: AsyncSession, inputs_of: dict[str, list[str]
     return records
 
 
-async def run_check(db: AsyncSession, drugs: list[str],
-                    include_food: bool = True) -> CheckResponse:
+async def run_check(db: AsyncSession, drugs: list[str], include_food: bool = True,
+                    conditions: list[str] | None = None,
+                    genes: dict[str, str] | None = None) -> CheckResponse:
     normalized = await normalize_list(db, drugs)
     unknown = [n for n in normalized if n.status != "ok"]
     groups, inputs_of = ok_groups(normalized)
@@ -303,6 +305,11 @@ async def run_check(db: AsyncSession, drugs: list[str],
                 citations=[Citation(source_id="ddinter", source_name="DDInter 2.0",
                                     label=cls)], match_type="exact"))
 
+    # bệnh nền và kiểu gen người dùng khai cho đơn
+    context = {"conditions": list(conditions or []), "genes": dict(genes or {})}
+    disease = await patient_context.disease_findings(db, ok_ids, name_by_id, context["conditions"])
+    gene = await patient_context.gene_findings(db, ok_ids, name_by_id, context["genes"])
+
     cov = await ddi_repo.count_coverage(db)
     coverage = (f"CSDL thật: {cov.get('drugs',0)} hoạt chất / {cov.get('pairs',0)} cặp DDInter "
                 f"+ {cov.get('mechanisms',0)} cơ chế. Hoạt chất ngoài danh sách trả 'chưa có bản ghi'.")
@@ -311,6 +318,7 @@ async def run_check(db: AsyncSession, drugs: list[str],
         max_severity=max_sev, max_severity_vi=SEVERITY_VI.get(max_sev, max_sev),
         findings=findings, no_record_pairs=no_record_pairs,
         food_findings=food_findings, duplicate_findings=dup_findings,
+        disease_findings=disease, gene_findings=gene, patient_context=context,
         disclaimer=DISCLAIMER, data_coverage=coverage)
 
 

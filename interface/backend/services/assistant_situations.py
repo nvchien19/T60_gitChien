@@ -19,7 +19,7 @@ def social_reply(text: str) -> str | None:
     thanks = r"(?:cam on|thank you|thanks|thank u)(?:\s+(?:ban|bot|tro ly|a|nhe|rat nhieu))*"
     goodbye = r"(?:tam biet|chao tam biet|bye|goodbye|hen gap lai)(?:\s+(?:ban|a|nhe))*"
     if re.fullmatch(greeting, text):
-        return "Xin chào! Tôi là trợ lý hỗ trợ giải thích tương tác thuốc. Bạn muốn tôi giúp điều gì?"
+        return "Xin chào! Tôi hỗ trợ tra cứu thuốc, giải thích tương tác và tìm hiểu thực phẩm cung cấp chất dinh dưỡng. Bạn muốn tôi giúp điều gì?"
     if re.fullmatch(thanks, text):
         return "Rất vui được hỗ trợ bạn. Nếu còn điểm nào chưa rõ, bạn cứ hỏi nhé."
     if re.fullmatch(goodbye, text):
@@ -28,7 +28,7 @@ def social_reply(text: str) -> str | None:
         return "Vâng. Nếu bạn muốn làm rõ thêm điều gì, tôi sẵn sàng hỗ trợ."
     if text in {"ban la ai", "ban co the lam gi", "ban giup duoc gi", "huong dan", "help", "giup toi"}:
         return ("Tôi có thể giúp bạn hiểu cơ chế, mức độ và nguồn bằng chứng của tương tác thuốc, "
-                "hoặc chuẩn bị câu hỏi cho bác sĩ/dược sĩ. Bạn muốn hỏi về cặp thuốc hay kết quả nào?")
+                "tìm hiểu thực phẩm cung cấp vitamin/khoáng chất hoặc chuẩn bị câu hỏi cho bác sĩ/dược sĩ. Bạn muốn tìm hiểu điều gì?")
     return None
 
 

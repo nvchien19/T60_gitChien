@@ -28,9 +28,17 @@ class CheckRequest(BaseModel):
     drugs: list[str] = Field(min_length=1, max_length=50)
     include_food: bool = True
     foods: list[str] = []
+    conditions: list[str] = Field(default_factory=list, max_length=30)   # bệnh nền, mã MeSH ("MESH:D...")
+    genes: dict[str, str] = Field(default_factory=dict)                  # {gen: kết quả theo CPIC}
+
+
+class PatientContextRequest(BaseModel):
+    conditions: list[str] = Field(default_factory=list, max_length=30)
+    genes: dict[str, str] = Field(default_factory=dict)
 
 
 class FindingOut(BaseModel):
+    details: dict = Field(default_factory=dict)   # phần riêng của cảnh báo bệnh nền / gen
     untranslated_fields: list[str] = Field(default_factory=list)
     machine_translation: bool = False
     original_mechanism: str = ""
@@ -55,6 +63,9 @@ class CheckResponse(BaseModel):
     no_record_pairs: list[list[str]] = []
     food_findings: list[FindingOut] = []
     duplicate_findings: list[FindingOut] = []
+    disease_findings: list[FindingOut] = []
+    gene_findings: list[FindingOut] = []
+    patient_context: dict = Field(default_factory=dict)
     disclaimer: str
     data_coverage: str = ""
 

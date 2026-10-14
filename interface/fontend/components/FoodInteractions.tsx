@@ -25,7 +25,7 @@ export function FoodInteractions({ record }: { record: CheckRecord | null }) {
       </select>
     </div>}
     {!findings.length && <p className="mt-4 rounded-lg bg-slate-50 p-4 text-sm text-slate-600">Chưa có bản ghi thuốc–thực phẩm trong lần kiểm tra này. Điều này không có nghĩa là mọi thực phẩm đều dùng được. Hãy kiểm tra lại với dược sĩ khi cần.</p>}
-    <div className="mt-4 space-y-3">{visible.map((row, index) => <button type="button" key={`${row.pair.join('|')}-${index}`} onClick={() => setActive(row)} className="flex w-full items-center gap-4 rounded-xl border border-slate-200 p-4 text-left transition hover:border-sky-300 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-sky-500">
+    <div className="mt-4 space-y-3">{visible.map((row, index) => <button type="button" key={`${row.pair.join('|')}-${index}`} onClick={() => setActive(row)} className="flex w-full items-center gap-4 rounded-xl border border-slate-200 p-4 text-left transition hover:border-teal-300 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-teal-500">
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
           <p className="break-words text-sm font-extrabold">{row.pair[0]} <span className="font-normal text-slate-300">↕</span> {row.pair[1]}</p>
@@ -54,10 +54,10 @@ function FoodDetail({ row, onClose }: { row: FoodFinding; onClose: () => void })
     <div className="flex max-h-[92dvh] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
       <div className="flex shrink-0 items-start justify-between gap-3 border-b border-slate-100 p-4 sm:p-6">
         <h2 id="food-detail-title" className="text-lg font-extrabold">Chi tiết tương tác thuốc – thực phẩm</h2>
-        <button type="button" onClick={onClose} aria-label="Đóng chi tiết tương tác thực phẩm" className="rounded-lg p-2 text-slate-500 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-sky-500"><X className="size-5" /></button>
+        <button type="button" onClick={onClose} aria-label="Đóng chi tiết tương tác thực phẩm" className="rounded-lg p-2 text-slate-500 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-teal-500"><X className="size-5" /></button>
       </div>
       <div className="overflow-y-auto overscroll-contain p-4 sm:p-6">
-      <p className="text-xs font-bold text-sky-700">{row.pair[0]}</p>
+      <p className="text-xs font-bold text-teal-700">{row.pair[0]}</p>
       <h4 className="mt-1 break-words text-base font-bold">{row.pair[1]}</h4>
       {row.severity_vi && <p className="mt-1 text-xs text-slate-500">Mức độ theo nguồn: {row.severity_vi}</p>}
       <div className="mt-3 rounded-lg bg-amber-50 p-3 text-sm leading-relaxed text-amber-900"><p className="font-bold">Gợi ý sử dụng / cần tránh</p><p className="mt-1 whitespace-pre-line">{row.management || 'Nguồn chưa có hướng dẫn cụ thể. Trao đổi với dược sĩ trước khi thay đổi chế độ ăn.'}</p></div>
@@ -66,7 +66,7 @@ function FoodDetail({ row, onClose }: { row: FoodFinding; onClose: () => void })
       {row.machine_translation && <p className="mt-2 text-xs text-slate-500">Bản dịch máy, chưa được chuyên gia duyệt.</p>}
       {(row.original_management || row.original_mechanism) && <details className="mt-3 text-xs text-slate-500"><summary className="cursor-pointer font-semibold">Xem nguyên văn nguồn</summary><p className="mt-2 whitespace-pre-line">{row.original_management}</p><p className="mt-2 whitespace-pre-line">{row.original_mechanism}</p></details>}
       <div className="mt-3 space-y-2 text-xs text-slate-500">{row.citations.map((citation, i) => <div key={i}>
-        {/^https?:\/\//i.test(citation.source_url) ? <a href={citation.source_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-semibold text-sky-700 underline">Nguồn: {citation.source_name || citation.source_id}<ExternalLink className="size-3" /></a> : <span>Nguồn: {citation.source_name || citation.source_id}</span>}
+        {/^https?:\/\//i.test(citation.source_url) ? <a href={citation.source_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-semibold text-teal-700 underline">Nguồn: {citation.source_name || citation.source_id}<ExternalLink className="size-3" /></a> : <span>Nguồn: {citation.source_name || citation.source_id}</span>}
         {citation.label && <details className="mt-1"><summary className="cursor-pointer">Tài liệu tham khảo</summary><p className="mt-2 break-words leading-relaxed">{citation.label}</p></details>}
       </div>)}</div>
 

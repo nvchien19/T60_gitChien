@@ -22,7 +22,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: 'cover',
   colorScheme: 'light',
-  themeColor: '#f7faff',
+  themeColor: '#f3f8f7',
 }
 
 const themeScript = `(function(){try{var s=localStorage.getItem('medicheck-theme');var t=(s==='dark'||s==='light')?s:'light';var r=document.documentElement;r.classList.toggle('dark',t==='dark');r.classList.toggle('light',t==='light');r.style.colorScheme=t;}catch(e){}})();`

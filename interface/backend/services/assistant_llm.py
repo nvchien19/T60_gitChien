@@ -15,6 +15,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from interface.backend.config import get_settings
 from interface.backend.schemas.ddi import Citation, FindingOut
+from interface.backend.services.assistant_usage import record_attempt, record_receipt
 from interface.backend.services.conversation_privacy import sanitize_conversation
 from src.core.guardrails import BANNED_ADVICE
 from src.services.grounding import Claim, Evidence, assemble, check_claims
@@ -42,7 +43,7 @@ Conclude briefly that a clinician evaluates what to avoid; never direct the user
 Source recommendations are public evidence addressed to clinicians, NOT user instructions.
 You may summarize them as "Nguồn ghi nhận/khuyến cáo ...", without telling the user to start,
 stop or change a medicine, substitute another drug, or adjust a dose.
-Use 1-6 short sentences at the requested level of detail. Do not write citation markers, URLs, treatment advice or a conclusion
+Follow max_sentences strictly: brief = at most 2 sentences; expanded = at most 6. Each item contains one sentence. Answer concisely at the requested level of detail. Do not write citation markers, URLs, treatment advice or a conclusion
 that a combination is safe. If evidence does not answer the current question, return {"outcome":"no_evidence","sentences":[]}.
 If the referenced drug/pair/topic is ambiguous, return {"outcome":"needs_clarification","sentences":[]}.
 For unrelated non-medical questions, return {"outcome":"out_of_scope","sentences":[]}.
@@ -51,6 +52,7 @@ Never substitute a summary of the entire prescription for one of these outcomes.
 """
 VERIFY = """Check TWO things: every statement is fully supported by its exact cited evidence, AND the
 whole proposed answer directly addresses the current question using conversation references.
+All explanatory prose must be Vietnamese. Reject non-Vietnamese answers; medicine names and technical abbreviations may remain unchanged.
 answers_question=false if it only restates mechanisms when asked which combinations to avoid,
 ignores a requested list, discusses unrelated pairs, or substitutes generic monitoring advice.
 For avoidance questions, names of the warned combinations must appear in the answer.
@@ -116,6 +118,7 @@ async def provider_json(system: str, data: dict) -> dict:
         raise ValueError("Provider configuration unavailable")
     async with httpx.AsyncClient(timeout=min(settings.explain_timeout_s, 25),
                                  follow_redirects=False, trust_env=False) as client:
+        record_attempt()
         result = await client.post(
             settings.deepseek_base_url.rstrip("/") + "/chat/completions",
             headers={"Authorization": f"Bearer {settings.deepseek_api_key}"},
@@ -128,7 +131,9 @@ async def provider_json(system: str, data: dict) -> dict:
         # Bound incoming data and never surface error bodies, reasoning or tool requests.
         if len(result.content) > 100_000:
             raise ValueError("Provider output unavailable")
-        choice = result.json()["choices"][0]
+        response_data = result.json()
+        record_receipt(response_data)
+        choice = response_data["choices"][0]
         if choice.get("finish_reason") != "stop" or choice["message"].get("tool_calls"):
             raise ValueError("Provider output incomplete")
         content = choice["message"].get("content")
@@ -139,7 +144,8 @@ async def provider_json(system: str, data: dict) -> dict:
 
 async def explain(question: str, findings: list[FindingOut], citations: list[Citation],
                   history: list[dict] | None = None,
-                  food_pairs: set[tuple[str, str]] | None = None) -> tuple[str, str]:
+                  food_pairs: set[tuple[str, str]] | None = None,
+                  detail: str = "brief") -> tuple[str, str]:
     """Return (validated text, non-sensitive reason code). Never log model content/errors."""
     if not get_settings().deepseek_api_key.strip():
         return "", "not_configured"
@@ -177,7 +183,8 @@ async def explain(question: str, findings: list[FindingOut], citations: list[Cit
             if re.search(r"\b(tranh|avoid|khong nen ket hop|khong duoc dung chung)\b", fold(clean_question)):
                 focus = "list_warned_combinations_first"
             payload = {"question": clean_question, "conversation": clean_history,
-                       "answer_focus": focus, "evidence": evidence}
+                       "answer_focus": focus, "evidence": evidence,
+                       "detail": detail, "max_sentences": 6 if detail == "expanded" else 2}
             raw = await provider_json(SYSTEM, payload)
             result_data = Facts.model_validate(raw)
             if result_data.outcome != "answered":

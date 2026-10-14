@@ -37,7 +37,7 @@
 /* Keep the existing utility-based UI intact while making every surface theme-aware. */
 .dark body { background: #0f1117; color: #f3f4f6; }
 .dark .bg-white, .dark .bg-white\/95 { background-color: #181b24 !important; }
-.dark .bg-\[\#f7faff\] { background-color: #0f1117 !important; }
+.dark .bg-\[\#f3f8f7\] { background-color: #0f1117 !important; }
 .dark .bg-slate-50, .dark .bg-slate-50\/70 { background-color: #20242e !important; }
 .dark .bg-slate-100 { background-color: #29303b !important; }
 .dark .text-slate-900, .dark .text-slate-800, .dark .text-slate-700 { color: #f3f4f6 !important; }
@@ -49,8 +49,10 @@
 .dark .shadow-\[0_2px_8px_rgba\(15\,23\,42\,0\.03\)\] { box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18) !important; }
 .dark input, .dark textarea { color: #f3f4f6; }
 .dark input::placeholder, .dark textarea::placeholder { color: #6b7280; }
-.dark .bg-sky-50 { background-color: #123047 !important; }
-.dark .text-sky-700, .dark .text-sky-600 { color: #7dd3fc !important; }
+.dark .bg-teal-50 { background-color: #14302f !important; }
+.dark .bg-teal-100 { background-color: #1b3b39 !important; }
+.dark .text-teal-950, .dark .text-teal-900, .dark .text-teal-800, .dark .text-teal-700, .dark .text-teal-600 { color: #7dd3c7 !important; }
+.dark .border-teal-200 { border-color: #28544f !important; }
 .dark .bg-amber-50 { background-color: #3a2d15 !important; }
 .dark .text-amber-900, .dark .text-amber-800, .dark .text-amber-700 { color: #fcd34d !important; }
 .dark .border-amber-200 { border-color: #73551d !important; }

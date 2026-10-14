@@ -42,11 +42,7 @@ function launch(label, command, args, cwd, env = process.env) {
   children.push(child)
   child.once('error', error => {
     console.error(`[${label}] Không khởi động được: ${error.message}`)
-    if (label === 'BE') {
-      console.error(`Python đang dùng: ${python}`)
-      console.error('Tạo .venv tại root repository và cài requirements.txt, hoặc đặt biến PYTHON trỏ đến Python đã cài dependencies.')
-      if (windows) console.error('Nếu python trỏ tới WindowsApps, hãy cài Python thật hoặc tắt App execution alias của Python trong Windows Settings.')
-    }
+    if (label === 'BE') console.error('Cài dependencies backend trong .venv hoặc đặt biến PYTHON trỏ đến Python đã cài requirements.txt.')
     void shutdown(1)
   })
   child.once('exit', (code, signal) => {
@@ -71,7 +67,11 @@ try {
   await checkPort(backendPort, 'BE')
   await checkPort(frontendPort, 'FE')
   if (backendPort === frontendPort) throw new Error('FE và BE cần hai cổng khác nhau.')
-  launch('BE', python, ['-m', 'uvicorn', 'interface.backend.main:app', '--reload', '--host', '127.0.0.1', '--port', String(backendPort)], root)
+  launch('BE', python, ['-m', 'uvicorn', 'interface.backend.main:app', '--reload', '--reload-dir', path.join(root, 'interface/backend'), '--reload-dir', path.join(root, 'src'), '--reload-delay', '0.5', '--host', '127.0.0.1', '--port', String(backendPort)], root)
+  if (!stopping) {
+    launch('FE', process.execPath, [path.join(frontend, 'node_modules/next/dist/bin/next'), 'dev', '--port', String(frontendPort), ...process.argv.slice(2)], frontend, { ...process.env, BACKEND_URL: `http://127.0.0.1:${backendPort}` })
+    console.log('Nhấn Ctrl+C để dừng cả frontend và backend.')
+  }
   const deadline = Date.now() + 60000
   let ready = false
   while (!stopping && Date.now() < deadline) {
@@ -82,10 +82,7 @@ try {
     await new Promise(resolve => setTimeout(resolve, 500))
   }
   if (!ready) throw new Error('Backend chưa sẵn sàng sau 60 giây. Kiểm tra lỗi backend phía trên.')
-  if (!stopping) {
-    launch('FE', process.execPath, [path.join(frontend, 'node_modules/next/dist/bin/next'), 'dev', '--port', String(frontendPort), ...process.argv.slice(2)], frontend, { ...process.env, BACKEND_URL: `http://127.0.0.1:${backendPort}` })
-    console.log('Nhấn Ctrl+C để dừng cả frontend và backend.')
-  }
+
 } catch (error) {
   console.error(error.message)
   await shutdown(1)

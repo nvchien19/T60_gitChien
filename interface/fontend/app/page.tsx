@@ -1,11 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import dynamic from "next/dynamic";
+import { createHistoryLoader } from "@/lib/check-history";
 import {
   AlertCircle,
   ArrowLeft,
   BarChart3,
   Bell,
+  Bot,
   Check,
   ChevronRight,
   ClipboardCheck,
@@ -27,15 +30,17 @@ import {
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { MedicationAssistantWidget } from "@/components/MedicationAssistantWidget";
-import { PrescriptionEditor } from "@/components/PrescriptionEditor";
+const MedicationAssistantWidget = dynamic(() => import("@/components/MedicationAssistantWidget").then(module => module.MedicationAssistantWidget), { loading: () => <p role="status" className="fixed bottom-5 right-5 rounded-xl bg-white p-4 text-sm shadow-lg">Đang tải trợ lý…</p> });
+const PrescriptionEditor = dynamic(() => import("@/components/PrescriptionEditor").then(module => module.PrescriptionEditor), { loading: () => <p role="status" className="p-4 text-sm text-slate-500">Đang tải…</p> });
 import type { EditableMedicationDraft } from "@/components/PrescriptionEditor";
 import { FoodInteractions } from "@/components/FoodInteractions";
-import { QualityView } from "@/components/QualityView";
+import { ContextFindings } from "@/components/ContextFindings";
+import { PatientContextPanel } from "@/components/PatientContextPanel";
+const QualityView = dynamic(() => import("@/components/QualityView").then(module => module.QualityView), { loading: () => <p role="status" className="p-4 text-sm text-slate-500">Đang tải…</p> });
 import { InteractionExplanation } from "@/components/InteractionExplanation";
 import { BrandLogo } from "@/components/BrandLogo";
 import { LogoutButton } from "@/components/LogoutButton";
-import { DoctorReviewPanel } from "@/components/DoctorWorkspace";
+const DoctorReviewPanel = dynamic(() => import("@/components/DoctorWorkspace").then(module => module.DoctorReviewPanel), { loading: () => <p role="status" className="p-4 text-sm text-slate-500">Đang tải…</p> });
 import { AuthGate } from "@/components/AuthGate";
 import type { AuthUser } from "@/lib/api";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -126,6 +131,8 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("Tất cả");
   const [showAssistant, setShowAssistant] = useState(false);
+  const [assistantLoaded, setAssistantLoaded] = useState(false);
+  useEffect(() => { if (showAssistant) setAssistantLoaded(true); }, [showAssistant]);
   const [addMode, setAddMode] = useState<"new" | "append" | null>(null);
   const [checking, setChecking] = useState(false);
   const [checkedId, setCheckedId] = useState<string | null>(null);
@@ -139,9 +146,12 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
     try { setSeenResponses(JSON.parse(localStorage.getItem(seenKey) || "[]")); } catch { /* không có localStorage */ }
   }, [seenKey]);
   const newResponses = isDoctor ? [] : reviewRequests.filter((r) => r.response && !seenResponses.includes(r.id));
-  const reviewBadge = isDoctor
-    ? reviewRequests.filter((r) => r.status === "Đang chờ" && r.createdBy !== null).length
-    : newResponses.length;
+  // Chuông ở góc phải: dược sĩ thấy phản hồi chưa đọc, bác sĩ thấy yêu cầu đang chờ.
+  const bellItems = isDoctor
+    ? reviewRequests.filter((r) => r.status === "Đang chờ" && r.createdBy !== null)
+    : newResponses;
+  const reviewBadge = bellItems.length;
+  const [bellOpen, setBellOpen] = useState(false);
   const markResponsesSeen = () => {
     const ids = reviewRequests.filter((r) => r.response).map((r) => r.id);
     setSeenResponses(ids);
@@ -172,6 +182,10 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
   const [checkRecords, setCheckRecords] = useState<
     Record<string, CheckRecord[]>
   >({});
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [checkLoading, setCheckLoading] = useState(false);
+  const historyLoader = useMemo(() => createHistoryLoader<CheckRecord>(async id =>
+    (await api<{ items: CheckRecord[] }>(`/prescriptions/${id}/checks`)).items), []);
   const busy = useRef(false);
   const reloadVersion = useRef(0);
   const findings = checkRecord ? findingsOf(checkRecord) : [];
@@ -179,58 +193,62 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
   async function reload() {
     const version = ++reloadVersion.current;
     const rows = await loadPrescriptions();
-    const [history, reviews] = await Promise.all([
-      Promise.all(rows.map(async row => [row.id, (await api<{ items: CheckRecord[] }>(`/prescriptions/${row.id}/checks`)).items] as const)),
-      loadReviews(),
-    ]);
     if (version !== reloadVersion.current) return;
+    historyLoader.clear();
+    setCheckRecords({});
     setPrescriptions(rows);
     setSelectedId(id => rows.some(row => row.id === id) ? id : rows[0]?.id || "");
-    setCheckRecords(Object.fromEntries(history));
-    setReviewRequests(reviews);
   }
   useEffect(() => {
     let cancelled = false;
-    reload()
-      .catch((e) => {
-        if (!cancelled) setError(e.message);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-      reloadVersion.current++;
-    };
+    reload().catch(e => { if (!cancelled) setError(e.message); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; reloadVersion.current++; };
   }, []);
+
+  // Reviews update independently; they never hold up the prescription overview.
   useEffect(() => {
     let cancelled = false;
+    loadReviews().then(rows => { if (!cancelled) setReviewRequests(rows); })
+      .catch(e => { if (!cancelled) setError(e.message); });
+    return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    if (active !== "Kiểm tra an toàn" || !selectedId) return;
+    let cancelled = false;
+    const version = reloadVersion.current;
+    const current = () => !cancelled && version === reloadVersion.current;
     setCheckRecord(null);
     setCheckedId(null);
     setDetail(null);
-    const latest = selectedCheckId
-      ? checkRecords[selectedId]?.find((r) => r.check_id === selectedCheckId)
-      : checkRecords[selectedId]?.[0];
-    if (
-      latest &&
-      (selectedCheckId ||
-        prescriptions.find((p) => p.id === selectedId)?.lastChecked !==
-          "Chưa kiểm tra")
-    )
-      api<CheckRecord>(`/checks/${latest.check_id}`)
-        .then((record) => {
-          if (!cancelled) {
-            setCheckRecord(record);
-            setCheckedId(selectedId);
-          }
-        })
-        .catch((e) => {
-          if (!cancelled) setError(e.message);
-        });
-    return () => {
-      cancelled = true;
-    };
-  }, [selectedId, selectedCheckId, checkRecords, prescriptions]);
+    setCheckLoading(true);
+    (async () => {
+      const prescription = prescriptions.find(p => p.id === selectedId);
+      if (!prescription) return;
+      const records = prescription.checks ? await historyLoader.get(selectedId) : [];
+      if (!current()) return;
+      setCheckRecords(items => ({ ...items, [selectedId]: records }));
+      const latest = selectedCheckId ? records.find(r => r.check_id === selectedCheckId) : records[0];
+      if (!latest || (!selectedCheckId && prescription.lastChecked === "Chưa kiểm tra")) return;
+      const record = await api<CheckRecord>(`/checks/${latest.check_id}`);
+      if (current()) { setCheckRecord(record); setCheckedId(selectedId); }
+    })().catch(e => { if (current()) setError(e.message); })
+      .finally(() => { if (current()) setCheckLoading(false); });
+    return () => { cancelled = true; };
+  }, [active, selectedId, selectedCheckId, prescriptions, historyLoader]);
+
+  useEffect(() => {
+    if (active !== "Lịch sử") return;
+    let cancelled = false;
+    const version = reloadVersion.current;
+    setHistoryLoading(true);
+    historyLoader.all(prescriptions.filter(p => p.checks > 0).map(p => p.id))
+      .then(records => { if (!cancelled && version === reloadVersion.current) setCheckRecords(records); })
+      .catch(e => { if (!cancelled && version === reloadVersion.current) setError(e.message); })
+      .finally(() => { if (!cancelled && version === reloadVersion.current) setHistoryLoading(false); });
+    return () => { cancelled = true; };
+  }, [active, prescriptions, historyLoader]);
 
   useEffect(() => {
     const timer = setInterval(() => { loadReviews().then(setReviewRequests).catch(e => setError(e.message)); }, 30000);
@@ -312,13 +330,13 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
   };
 
   return (
-    <div className="min-h-screen overflow-x-clip bg-[#f7faff] text-slate-900">
+    <div className="clinical-app min-h-screen overflow-x-clip bg-[#f3f8f7] text-slate-900">
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-[248px] flex-col border-r border-slate-200 bg-white lg:flex">
         <div className="flex h-[76px] items-center gap-3 border-b border-slate-100 px-7">
           <BrandLogo size={40} />
           <div>
             <p className="text-[15px] font-extrabold tracking-tight">
-              Medication <span className="text-sky-500">Safety</span>
+              Medication <span className="text-teal-500">Safety</span>
             </p>
             <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-slate-400">
               Safety management tool
@@ -333,7 +351,7 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
             <button
               key={label}
               onClick={() => setActive(label)}
-              className={`flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-[13px] font-semibold transition ${active === label ? "bg-sky-50 text-sky-700" : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"}`}
+              className={`flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-[13px] font-semibold transition ${active === label ? "bg-teal-50 text-teal-700" : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"}`}
             >
               <Icon className="size-[17px]" />
               {label}
@@ -351,7 +369,7 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
             Cài đặt
           </button>
           <div className="flex items-center gap-3 rounded-xl bg-slate-50 p-3">
-            <div className="flex size-8 items-center justify-center rounded-full bg-sky-100 text-sky-700">
+            <div className="flex size-8 items-center justify-center rounded-full bg-teal-100 text-teal-700">
               <UserRound className="size-4" />
             </div>
             <div>
@@ -387,8 +405,60 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
           <div className="flex shrink-0 items-center gap-2 sm:gap-4">
             <LogoutButton onLogout={onLogout} onError={setError} compact className="lg:hidden" />
             <ThemeToggle />
-            <Bell className="size-[18px] text-slate-500" />
-            <div className="flex size-8 items-center justify-center rounded-full bg-sky-100 text-xs font-bold text-sky-700 sm:size-9 sm:text-sm">
+            <div className="relative">
+              <button
+                onClick={() => setBellOpen((open) => !open)}
+                aria-label={reviewBadge > 0 ? `Thông báo: ${reviewBadge} mục mới` : "Thông báo"}
+                aria-expanded={bellOpen}
+                className="relative flex min-h-[40px] min-w-[40px] items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100"
+              >
+                <Bell className="size-[18px]" />
+                {reviewBadge > 0 && (
+                  <span className="absolute right-0.5 top-0.5 rounded-full bg-rose-500 px-1.5 py-0.5 text-[10px] font-bold leading-none text-white">
+                    {reviewBadge}
+                  </span>
+                )}
+              </button>
+              {bellOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setBellOpen(false)} />
+                  <div className="absolute right-0 top-full z-50 mt-2 w-[320px] max-w-[calc(100vw-2rem)] rounded-xl border border-slate-200 bg-white shadow-lg">
+                    <p className="border-b border-slate-100 px-4 py-3 text-sm font-extrabold">Thông báo</p>
+                    {bellItems.length === 0 ? (
+                      <p className="px-4 py-6 text-center text-xs text-slate-500">Không có thông báo mới.</p>
+                    ) : (
+                      <ul className="max-h-[320px] overflow-y-auto">
+                        {bellItems.map((r) => (
+                          <li key={r.id}>
+                            <button
+                              onClick={() => { setBellOpen(false); setActive("Yêu cầu trao đổi"); }}
+                              className="block w-full border-b border-slate-100 px-4 py-3 text-left hover:bg-slate-50"
+                            >
+                              <p className="text-xs font-bold text-slate-800">
+                                {isDoctor
+                                  ? `${r.creatorName || "Dược sĩ"} gửi yêu cầu trao đổi về đơn ${r.prescriptionId}`
+                                  : `${r.responderName || "Bác sĩ"} đã phản hồi yêu cầu về đơn ${r.prescriptionId}`}
+                              </p>
+                              <p className="mt-1 line-clamp-2 text-xs text-slate-500">{isDoctor ? r.message : r.response}</p>
+                              <p className="mt-1 text-[10px] text-slate-400">{isDoctor ? r.date : r.respondedAt}</p>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    {!isDoctor && newResponses.length > 0 && (
+                      <button
+                        onClick={() => { markResponsesSeen(); setBellOpen(false); }}
+                        className="w-full px-4 py-3 text-xs font-bold text-teal-600 hover:bg-slate-50"
+                      >
+                        Đánh dấu đã đọc
+                      </button>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+            <div className="flex size-8 items-center justify-center rounded-full bg-teal-100 text-xs font-bold text-teal-700 sm:size-9 sm:text-sm">
               {user.name.trim().split(/\s+/).slice(-2).map(part => part[0]).join("").toUpperCase()}
             </div>
           </div>
@@ -435,7 +505,7 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
               <p>Chưa có đơn thuốc. Thêm đơn để bắt đầu.</p>
               <Button
                 onClick={() => setAddMode("new")}
-                className="mt-4 bg-sky-500"
+                className="mt-4 bg-teal-500"
               >
                 Thêm đơn thuốc
               </Button>
@@ -460,7 +530,7 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
               onAdd={() => setAddMode("new")}
             />
           )}
-          {active === "Kiểm tra an toàn" && selected && (
+          {active === "Kiểm tra an toàn" && selected && (checkLoading ? <p role="status" className="p-4 text-sm text-slate-500">Đang tải kết quả kiểm tra…</p> :
             <SafetyView
               prescription={selected}
               checking={checking}
@@ -474,9 +544,10 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
               canSendReview={!isDoctor}
               onSendReview={sendReviewRequest}
               onViewRequests={() => setActive("Yêu cầu trao đổi")}
+              onContextSaved={reload}
             />
           )}
-          {active === "Lịch sử" && (
+          {active === "Lịch sử" && (historyLoading ? <p role="status" className="p-4 text-sm text-slate-500">Đang tải lịch sử kiểm tra…</p> :
             <HistoryView
               records={checkRecords}
               prescriptions={prescriptions}
@@ -496,14 +567,14 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
           )}
         </div>
       </main>
-      <MedicationAssistantWidget
+      {assistantLoaded || showAssistant ? <MedicationAssistantWidget
         key={selected?.id}
         prescriptionId={selected?.id || "chưa chọn"}
         checkId={checkRecord?.check_id}
         open={showAssistant}
         onOpen={() => setShowAssistant(true)}
         onClose={() => setShowAssistant(false)}
-      />
+      /> : <button type="button" onClick={() => setShowAssistant(true)} aria-label="Mở trợ lý An toàn Thuốc" className="fixed bottom-24 right-4 z-[9999] flex min-h-[48px] items-center gap-2 rounded-full bg-slate-900 px-4 py-3 text-xs font-bold text-white shadow-lg hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500 sm:right-5 lg:bottom-7 lg:right-8"><Bot className="size-4" /> Hỏi trợ lý</button>}
       <nav
         aria-label="Điều hướng di động"
         className="fixed inset-x-0 bottom-0 z-30 flex border-t border-slate-200 bg-white/95 px-1 pb-[calc(env(safe-area-inset-bottom)+6px)] pt-1.5 backdrop-blur lg:hidden"
@@ -529,7 +600,7 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
               key={label}
               onClick={() => setActive(label)}
               aria-current={isActive ? "page" : undefined}
-              className={`flex min-h-[54px] min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-lg px-1 py-1 text-[9px] font-bold transition ${isActive ? "text-sky-600" : "text-slate-400 active:text-slate-600"}`}
+              className={`flex min-h-[54px] min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-lg px-1 py-1 text-[9px] font-bold transition ${isActive ? "text-teal-600" : "text-slate-400 active:text-slate-600"}`}
             >
               <span className="relative">
                 <Icon className="size-5" />
@@ -540,7 +611,7 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
                 )}
               </span>
               <span className="max-w-full truncate">{short}</span>
-              {isActive && <span className="h-1 w-8 rounded-full bg-sky-500" />}
+              {isActive && <span className="h-1 w-8 rounded-full bg-teal-500" />}
             </button>
           );
         })}
@@ -557,7 +628,7 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
               <div className="flex items-center gap-2.5">
                 <BrandLogo size={40} />
                 <p className="text-[15px] font-extrabold tracking-tight">
-                  Medication <span className="text-sky-500">Safety</span>
+                  Medication <span className="text-teal-500">Safety</span>
                 </p>
               </div>
               <button
@@ -580,7 +651,7 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
                     setMobileNav(false);
                   }}
                   aria-current={active === label ? "page" : undefined}
-                  className={`flex min-h-[48px] w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-semibold transition ${active === label ? "bg-sky-50 text-sky-700" : "text-slate-500 active:bg-slate-100"}`}
+                  className={`flex min-h-[48px] w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-semibold transition ${active === label ? "bg-teal-50 text-teal-700" : "text-slate-500 active:bg-slate-100"}`}
                 >
                   <Icon className="size-[18px]" />
                   {label}
@@ -594,7 +665,7 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
             </nav>
             <div className="border-t border-slate-100 p-4">
               <div className="flex items-center gap-3 rounded-xl bg-slate-50 p-3">
-                <div className="flex size-8 items-center justify-center rounded-full bg-sky-100 text-sky-700">
+                <div className="flex size-8 items-center justify-center rounded-full bg-teal-100 text-teal-700">
                   <UserRound className="size-4" />
                 </div>
                 <div>
@@ -644,7 +715,7 @@ function Overview({
     <>
       <section className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-sky-600">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-teal-600">
             Dữ liệu từ hệ thống
           </p>
           <h2 className="text-xl font-extrabold tracking-tight sm:text-[28px]">
@@ -657,7 +728,7 @@ function Overview({
         <Button
           disabled={!prescriptions.length}
           onClick={onCheck}
-          className="h-11 w-full justify-center gap-2 rounded-lg bg-sky-500 px-5 font-bold hover:bg-sky-600 sm:w-auto"
+          className="h-11 w-full justify-center gap-2 rounded-lg bg-teal-500 px-5 font-bold hover:bg-teal-600 sm:w-auto"
         >
           <ClipboardCheck className="size-4" /> Kiểm tra an toàn
         </Button>
@@ -701,7 +772,7 @@ function Overview({
                 </p>
                 <p className="mt-1 text-[11px] text-slate-400">{sub}</p>
               </div>
-              <div className="flex size-9 items-center justify-center rounded-lg bg-sky-50 text-sky-600">
+              <div className="flex size-9 items-center justify-center rounded-lg bg-teal-50 text-teal-600">
                 <Icon className="size-[18px]" />
               </div>
             </div>
@@ -717,7 +788,7 @@ function Overview({
                 Mở đơn để xem thuốc và kết quả
               </p>
             </div>
-            <button onClick={onOpen} className="text-xs font-bold text-sky-600">
+            <button onClick={onOpen} className="text-xs font-bold text-teal-600">
               Xem tất cả
             </button>
           </div>
@@ -727,7 +798,7 @@ function Overview({
               onClick={onOpen}
               className="flex w-full items-center gap-4 border-b border-slate-100 px-4 py-4 sm:px-5 text-left last:border-0 hover:bg-slate-50"
             >
-              <div className="flex size-10 items-center justify-center rounded-lg bg-sky-50 text-sky-600">
+              <div className="flex size-10 items-center justify-center rounded-lg bg-teal-50 text-teal-600">
                 <FileText className="size-4" />
               </div>
               <div className="min-w-0 flex-1">
@@ -745,7 +816,7 @@ function Overview({
         </section>
         <section className="rounded-xl border border-slate-200 bg-white p-5">
           <div className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-lg bg-sky-50 text-sky-600">
+            <div className="flex size-10 items-center justify-center rounded-lg bg-teal-50 text-teal-600">
               <ShieldCheck className="size-5" />
             </div>
             <div>
@@ -766,7 +837,7 @@ function Overview({
                 key={step}
                 className="flex items-center gap-3 text-xs font-semibold text-slate-600"
               >
-                <span className="flex size-7 items-center justify-center rounded-full bg-sky-50 text-sky-600">
+                <span className="flex size-7 items-center justify-center rounded-full bg-teal-50 text-teal-600">
                   {i + 1}
                 </span>
                 {step}
@@ -775,7 +846,7 @@ function Overview({
           </div>
         </section>
       </div>
-      <div className="flex gap-3 rounded-xl border border-sky-600 bg-sky-600 p-4 text-xs leading-relaxed text-white">
+      <div className="flex gap-3 rounded-xl border border-teal-600 bg-teal-600 p-4 text-xs leading-relaxed text-white">
         <ShieldCheck className="mt-0.5 size-4 shrink-0 text-white" />
         <p>
           <strong>Lưu ý an toàn:</strong> Đây là công cụ hỗ trợ quyết định,
@@ -809,7 +880,7 @@ function Library({
     <>
       <section className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <p className="mb-2 text-xs font-bold uppercase tracking-[0.12em] text-sky-600">
+          <p className="mb-2 text-xs font-bold uppercase tracking-[0.12em] text-teal-600">
             Prescription management
           </p>
           <h2 className="text-xl font-extrabold tracking-tight sm:text-2xl">
@@ -821,7 +892,7 @@ function Library({
         </div>
         <Button
           onClick={onAdd}
-          className="w-full justify-center gap-2 rounded-lg bg-sky-500 font-bold hover:bg-sky-600 sm:w-auto"
+          className="w-full justify-center gap-2 rounded-lg bg-teal-500 font-bold hover:bg-teal-600 sm:w-auto"
         >
           <Plus className="size-4" /> Thêm đơn thuốc
         </Button>
@@ -842,7 +913,7 @@ function Library({
               <button
                 key={item}
                 onClick={() => setFilter(item)}
-                className={`min-h-[40px] whitespace-nowrap rounded-lg px-4 py-2.5 text-xs font-bold transition active:scale-[0.98] ${filter === item ? "bg-sky-500 text-white" : "bg-slate-50 text-slate-500"}`}
+                className={`min-h-[40px] whitespace-nowrap rounded-lg px-4 py-2.5 text-xs font-bold transition active:scale-[0.98] ${filter === item ? "bg-teal-500 text-white" : "bg-slate-50 text-slate-500"}`}
               >
                 {item}
               </button>
@@ -871,7 +942,7 @@ function Library({
                     <p className="font-extrabold text-slate-800">
                       {p.name || p.id}
                     </p>
-                    <p className="mt-1 break-all font-mono text-[11px] text-sky-700">
+                    <p className="mt-1 break-all font-mono text-[11px] text-teal-700">
                       Mã đơn: {p.id}
                     </p>
                     <p className="mt-1 text-slate-400">{p.patient}</p>
@@ -896,7 +967,7 @@ function Library({
                     </button>
                     <button
                       onClick={() => onCheck(p.id)}
-                      className="rounded-md bg-sky-50 px-2.5 py-1.5 font-bold text-sky-700"
+                      className="rounded-md bg-teal-50 px-2.5 py-1.5 font-bold text-teal-700"
                     >
                       Kiểm tra
                     </button>
@@ -921,7 +992,7 @@ function Library({
                 >
                   {p.name || p.id}
                 </button>
-                <p className="mt-1 break-all font-mono text-[11px] text-sky-700">
+                <p className="mt-1 break-all font-mono text-[11px] text-teal-700">
                   Mã đơn: {p.id}
                 </p>
                 <p className="mt-1 text-xs text-slate-500">
@@ -934,7 +1005,7 @@ function Library({
               <SeverityBadge severity={p.highest} />
               <button
                 onClick={() => onCheck(p.id)}
-                className="min-h-[40px] rounded-md bg-sky-500 px-4 py-2 text-xs font-bold text-white active:bg-sky-600"
+                className="min-h-[40px] rounded-md bg-teal-500 px-4 py-2 text-xs font-bold text-white active:bg-teal-600"
               >
                 Kiểm tra
               </button>
@@ -959,6 +1030,7 @@ function SafetyView({
   canSendReview,
   onSendReview,
   onViewRequests,
+  onContextSaved,
 }: {
   prescription: Prescription;
   checking: boolean;
@@ -972,12 +1044,13 @@ function SafetyView({
   canSendReview: boolean;
   onSendReview: (message: string) => Promise<void>;
   onViewRequests: () => void;
+  onContextSaved: () => Promise<void>;
 }) {
   return (
     <>
       <button
         onClick={onBack}
-        className="flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-sky-600"
+        className="flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-teal-600"
       >
         <ArrowLeft className="size-4" /> Quay lại thư viện
       </button>
@@ -987,7 +1060,7 @@ function SafetyView({
         <>
           <section className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
             <div>
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.12em] text-sky-600">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.12em] text-teal-600">
                 Prescription detail
               </p>
               <h2 className="break-words text-xl font-extrabold sm:text-2xl">
@@ -1007,13 +1080,6 @@ function SafetyView({
                 className="w-full justify-center gap-2 rounded-lg font-bold sm:w-auto"
               >
                 <Plus className="size-4" /> Thêm thuốc
-              </Button>
-              <Button
-                disabled={prescription.medications.length === 0}
-                onClick={onCheck}
-                className="w-full justify-center gap-2 rounded-lg bg-sky-500 font-bold hover:bg-sky-600 sm:w-auto"
-              >
-                <ClipboardCheck className="size-4" /> Kiểm tra tương tác
               </Button>
             </div>
           </section>
@@ -1035,7 +1101,7 @@ function SafetyView({
                   key={med.id}
                   className="flex items-center gap-3 px-4 py-4 sm:gap-4 sm:px-5"
                 >
-                  <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-sky-50 text-sky-600">
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-teal-50 text-teal-600">
                     <Pill className="size-[18px]" />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -1065,6 +1131,20 @@ function SafetyView({
               ))}
             </div>
           </section>
+          <PatientContextPanel
+            prescriptionId={prescription.id}
+            value={prescription.context}
+            onSaved={onContextSaved}
+          />
+          <div className="flex justify-end">
+            <Button
+              disabled={prescription.medications.length === 0}
+              onClick={onCheck}
+              className="w-full justify-center gap-2 rounded-lg bg-teal-500 font-bold hover:bg-teal-600 sm:w-auto"
+            >
+              <ClipboardCheck className="size-4" /> Kiểm tra tương tác
+            </Button>
+          </div>
           {checked && (
             <Results
               findings={findings}
@@ -1092,7 +1172,7 @@ function Analysis({ prescription }: { prescription: Prescription }) {
       role="status"
       className="rounded-xl border border-slate-200 bg-white p-8 text-center"
     >
-      <ShieldCheck className="mx-auto size-8 animate-pulse text-sky-500" />
+      <ShieldCheck className="mx-auto size-8 animate-pulse text-teal-500" />
       <h2 className="mt-4 text-xl font-bold">
         Đang kiểm tra đơn {prescription.id}
       </h2>
@@ -1121,7 +1201,7 @@ function Results({
       <div className="rounded-xl border border-slate-200 bg-white p-5">
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
           <div>
-            <p className="text-xs font-bold uppercase tracking-wide text-sky-600">
+            <p className="text-xs font-bold uppercase tracking-wide text-teal-600">
               Safety check · {prescription.id}
             </p>
             <h3 className="mt-1 text-xl font-extrabold">
@@ -1137,7 +1217,7 @@ function Results({
                 .getElementById("doctor-form")
                 ?.scrollIntoView({ behavior: "smooth", block: "start" })
             }
-            className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-600 hover:border-sky-300 hover:text-sky-700"
+            className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-600 hover:border-teal-300 hover:text-teal-700"
           >
             Yêu cầu bác sĩ xem
           </button>}
@@ -1196,7 +1276,7 @@ function Results({
             <button
               key={item.id}
               onClick={() => onDetail(item.id)}
-              className="flex w-full items-center gap-4 rounded-xl border border-slate-200 p-4 text-left transition hover:border-sky-300 hover:shadow-sm"
+              className="flex w-full items-center gap-4 rounded-xl border border-slate-200 p-4 text-left transition hover:border-teal-300 hover:shadow-sm"
             >
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
@@ -1230,6 +1310,7 @@ function Results({
           ))}
         </div>
       </div>
+    <ContextFindings key={`context-${checkRecord?.check_id}`} record={checkRecord} />
     <FoodInteractions key={checkRecord?.check_id} record={checkRecord} />
       </section>
   );
@@ -1264,7 +1345,7 @@ function HistoryView({
               </div>
               <button
                 onClick={() => onView(p.id, record.check_id)}
-                className="rounded-lg bg-sky-50 px-4 py-2 text-xs font-bold text-sky-700"
+                className="rounded-lg bg-teal-50 px-4 py-2 text-xs font-bold text-teal-700"
               >
                 Xem kết quả
               </button>
@@ -1312,7 +1393,7 @@ function DoctorRequestForm({
       className="scroll-mt-20 rounded-xl border border-slate-200 bg-white p-4 sm:p-6"
     >
       <div className="flex items-center gap-3">
-        <div className="flex size-11 items-center justify-center rounded-xl bg-sky-50 text-sky-600">
+        <div className="flex size-11 items-center justify-center rounded-xl bg-teal-50 text-teal-600">
           <Users className="size-5" />
         </div>
         <div>
@@ -1341,7 +1422,7 @@ function DoctorRequestForm({
             </Button>
             <Button
               onClick={onViewRequests}
-              className="w-full justify-center bg-sky-500 font-bold hover:bg-sky-600 sm:w-auto"
+              className="w-full justify-center bg-teal-500 font-bold hover:bg-teal-600 sm:w-auto"
             >
               Xem yêu cầu đã gửi
             </Button>
@@ -1365,13 +1446,13 @@ function DoctorRequestForm({
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Tôi muốn được hỗ trợ hiểu các phát hiện này..."
-            className="mt-2 min-h-32 w-full rounded-lg border border-slate-200 p-3 text-sm outline-none focus:border-sky-400"
+            className="mt-2 min-h-32 w-full rounded-lg border border-slate-200 p-3 text-sm outline-none focus:border-teal-400"
           />
           <div className="mt-4 flex flex-wrap items-center gap-2">
             <Button
               disabled={sending}
               onClick={handleSend}
-              className="w-full justify-center gap-2 bg-sky-500 font-bold hover:bg-sky-600 sm:w-auto"
+              className="w-full justify-center gap-2 bg-teal-500 font-bold hover:bg-teal-600 sm:w-auto"
             >
               <Send className="size-4" /> Gửi yêu cầu tới bác sĩ
             </Button>
@@ -1403,7 +1484,7 @@ function ReviewView({
     <>
       <section className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <p className="mb-2 text-xs font-bold uppercase tracking-[0.12em] text-sky-600">
+          <p className="mb-2 text-xs font-bold uppercase tracking-[0.12em] text-teal-600">
             Professional review
           </p>
           <h2 className="text-xl font-extrabold tracking-tight sm:text-2xl">
@@ -1415,7 +1496,7 @@ function ReviewView({
         </div>
         <Button
           onClick={onNew}
-          className="gap-2 rounded-lg bg-sky-500 font-bold hover:bg-sky-600"
+          className="gap-2 rounded-lg bg-teal-500 font-bold hover:bg-teal-600"
         >
           <Plus className="size-4" /> Tạo yêu cầu mới
         </Button>
@@ -1443,7 +1524,7 @@ function ReviewView({
       </div>
       {requests.length === 0 ? (
         <div className="rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center">
-          <div className="mx-auto flex size-12 items-center justify-center rounded-xl bg-sky-50 text-sky-600">
+          <div className="mx-auto flex size-12 items-center justify-center rounded-xl bg-teal-50 text-teal-600">
             <Users className="size-5" />
           </div>
           <h3 className="mt-4 text-sm font-extrabold">Chưa có yêu cầu nào</h3>
@@ -1453,7 +1534,7 @@ function ReviewView({
           </p>
           <Button
             onClick={onNew}
-            className="mt-5 bg-sky-500 font-bold hover:bg-sky-600"
+            className="mt-5 bg-teal-500 font-bold hover:bg-teal-600"
           >
             Đi tới kiểm tra an toàn
           </Button>
@@ -1495,7 +1576,7 @@ function ReviewView({
                 </div>
                 <button
                   onClick={() => onView(req.prescriptionId)}
-                  className="min-h-[40px] rounded-md bg-sky-50 px-3 py-2 text-xs font-bold text-sky-700 hover:bg-sky-100"
+                  className="min-h-[40px] rounded-md bg-teal-50 px-3 py-2 text-xs font-bold text-teal-700 hover:bg-teal-100"
                 >
                   Xem đơn thuốc
                 </button>
@@ -1534,7 +1615,7 @@ function Modal({
           <div className="flex items-start gap-3">
             <BrandLogo size={36} />
             <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-sky-600">
+              <p className="text-xs font-bold uppercase tracking-wider text-teal-600">
                 Medication safety
               </p>
               <h2 className="mt-1 text-xl font-extrabold">{title}</h2>
@@ -1593,7 +1674,7 @@ function InteractionModal({
         <InteractionExplanation a={item.a} b={item.b} />
         <div>
           <h4 className="text-sm font-extrabold">Bạn nên làm gì?</h4>
-          <p className="mt-2 rounded-lg bg-sky-600 p-4 text-sm leading-relaxed text-white">
+          <p className="mt-2 rounded-lg bg-teal-600 p-4 text-sm leading-relaxed text-white">
             {item.management ||
               "Hãy trao đổi với bác sĩ hoặc dược sĩ trước khi thay đổi thuốc."}
           </p>
@@ -1602,7 +1683,7 @@ function InteractionModal({
           <h4 className="text-sm font-extrabold">Bằng chứng</h4>
           <div className="mt-2 rounded-lg border border-slate-200 p-3 text-xs text-slate-600">
             <div className="flex items-center gap-2 font-bold">
-              <FileText className="size-4 text-sky-500" />{" "}
+              <FileText className="size-4 text-teal-500" />{" "}
               {item.citations
                 .map((c) => c.source_name || c.source_id)
                 .join(", ") || "Chưa có nguồn"}
@@ -1616,7 +1697,7 @@ function InteractionModal({
                       href={c.source_url}
                       target="_blank"
                       rel="noreferrer"
-                      className="ml-2 text-sky-600 underline"
+                      className="ml-2 text-teal-600 underline"
                     >
                       Xem nguồn
                     </a>

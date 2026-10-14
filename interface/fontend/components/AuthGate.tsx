@@ -16,7 +16,19 @@ export function AuthGate({ children }: { children: (user: AuthUser, logout: () =
     let cancelled = false;
     setLoading(true);
     setError("");
-    api<AuthUser>("/auth/me")
+    async function checkSession(): Promise<AuthUser> {
+      const deadline = Date.now() + 60000;
+      while (true) {
+        try { return await api<AuthUser>("/auth/me"); }
+        catch (e) {
+          const temporary = !(e instanceof ApiError) || [500, 502, 503, 504].includes(e.status);
+          if (cancelled || !temporary || Date.now() >= deadline) throw e;
+          await new Promise(resolve => setTimeout(resolve, 500));
+          if (cancelled) throw e;
+        }
+      }
+    }
+    checkSession()
       .then(value => { if (!cancelled) setUser(value); })
       .catch(e => {
         if (cancelled) return;

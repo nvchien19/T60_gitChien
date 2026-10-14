@@ -240,6 +240,30 @@ class DiseaseInteraction(Base):
     )
 
 
+class GeneInteraction(Base):
+    """Khuyến cáo thuốc theo kiểu gen của CPIC (CC0). Mỗi dòng là một khuyến cáo trong API CPIC.
+
+    `genes` là {gen: kết quả} dùng để khớp với kiểu gen của bệnh nhân: kiểu hình (vd "Poor Metabolizer")
+    khi CPIC có, nếu không thì giá trị tra cứu gốc (vd "*15:02 positive"). "No Result" = gen đó chưa xét nghiệm.
+    """
+    __tablename__ = "gene_interactions"
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=False)
+    drug_id: Mapped[str | None] = mapped_column(String, ForeignKey("drugs.drug_id"), index=True)
+    drug_name: Mapped[str] = mapped_column(Text, nullable=False)
+    genes: Mapped[dict] = mapped_column(JSON, nullable=False)
+    lookupkey: Mapped[dict] = mapped_column(JSON, default=dict)
+    implication_text: Mapped[str | None] = mapped_column(Text)
+    recommendation: Mapped[str | None] = mapped_column(Text)
+    classification: Mapped[str | None] = mapped_column(Text)
+    population: Mapped[str | None] = mapped_column(Text)
+    comments: Mapped[str | None] = mapped_column(Text)
+    guideline_name: Mapped[str | None] = mapped_column(Text)
+    guideline_url: Mapped[str | None] = mapped_column(Text)
+    source_id: Mapped[str] = mapped_column(
+        String, ForeignKey("sources.source_id"), default="cpic"
+    )
+
+
 class DuplicationClass(Base):
     __tablename__ = "duplication_classes"
     class_name: Mapped[str] = mapped_column(Text, primary_key=True)
@@ -371,6 +395,8 @@ class Prescription(Base):
     highest_severity_vi: Mapped[str | None] = mapped_column(Text)
     checks_count: Mapped[int] = mapped_column(Integer, default=0)
     last_checked: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    # {"conditions": ["MESH:D..."], "genes": {"CYP2D6": "Poor Metabolizer"}}: bệnh nền và kiểu gen người dùng khai.
+    patient_context: Mapped[dict | None] = mapped_column(JSON, nullable=True)
 
 
 class Medication(Base):

@@ -10,19 +10,21 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from interface.backend.db.models.tables import Check, Medication, Prescription, Review, User
 from interface.backend.db.session import get_session
 from interface.backend.repositories import ddi_repo
+from interface.backend.schemas.assistant import AssistantRequest, AssistantResponse
 from interface.backend.schemas.ddi import (
     AddMedicationRequest,
     CreatePrescriptionRequest,
     EditMedicationRequest,
     MedicationOut,
+    PatientContextRequest,
     ReviewOut,
     ReviewRequest,
     ReviewStatusUpdate,
 )
+from interface.backend.services.assistant_service import answer
 from interface.backend.services.auth_service import current_user, doctor, pharmacist
 from interface.backend.services.check_service import normalize_list, run_check
-from interface.backend.schemas.assistant import AssistantRequest, AssistantResponse
-from interface.backend.services.assistant_service import answer
+from interface.backend.services.patient_context import context_options, empty_context, validate_context
 
 router = APIRouter(tags=["prescriptions"])
 
@@ -51,6 +53,7 @@ def _rx_out(rx: Prescription, meds: list[Medication]) -> dict:
             "last_checked": rx.last_checked.isoformat() if rx.last_checked else None,
             "highest_severity_vi": rx.highest_severity_vi,
             "checks_count": rx.checks_count or 0,
+            "patient_context": rx.patient_context or empty_context(),
             "medications": [_med_out(m).model_dump() for m in meds]}
 
 
@@ -172,6 +175,33 @@ async def edit_medications(rx_id: str, requests: list[EditMedicationRequest],
     return [_med_out(med) for med in medications]
 
 
+@router.get("/patient-context/options")
+async def patient_context_options(db: AsyncSession = Depends(get_session)):
+    """Bệnh nền và kết quả gen mà CSDL có bản ghi để tra."""
+    return await context_options(db)
+
+
+@router.put("/prescriptions/{rx_id}/context", dependencies=[Depends(current_user)])
+async def set_patient_context(rx_id: str, req: PatientContextRequest,
+                              db: AsyncSession = Depends(get_session)):
+    rx = await db.get(Prescription, rx_id)
+    if not rx:
+        raise HTTPException(404, "Không tìm thấy đơn")
+    try:
+        context = await validate_context(db, req.conditions, req.genes)
+    except ValueError as error:
+        raise HTTPException(422, str(error)) from None
+    if context != (rx.patient_context or empty_context()):
+        rx.patient_context = context
+        # bối cảnh đổi thì kết quả kiểm tra cũ không còn ứng với đơn hiện tại
+        r = await db.execute(select(Medication).where(Medication.prescription_id == rx_id))
+        rx.status = "Cần xem lại" if any(not m.verified for m in r.scalars().all()) else "Chưa kiểm tra"
+        rx.highest_severity_vi = None
+        rx.last_checked = None
+        await db.commit()
+    return context
+
+
 @router.post("/prescriptions/{rx_id}/checks", dependencies=[Depends(current_user)], status_code=201)
 async def run_rx_check(rx_id: str, db: AsyncSession = Depends(get_session)):
     rx = await db.get(Prescription, rx_id)
@@ -183,7 +213,9 @@ async def run_rx_check(rx_id: str, db: AsyncSession = Depends(get_session)):
     if not names:
         raise HTTPException(400, "Đơn chưa có thuốc")
     # chay check tren ten thuoc goc de normalize lai dong nhat
-    result = await run_check(db, [m.name for m in meds])
+    context = rx.patient_context or empty_context()
+    result = await run_check(db, [m.name for m in meds],
+                             conditions=context["conditions"], genes=context["genes"])
     check_id = f"CHECK-{uuid.uuid4().hex[:6].upper()}"
     snapshot = [{"name": m.name, "drug_id": m.drug_id, "dose": m.dose} for m in meds]
     # luu nguyen van ket qua + ngay cap nhat tung nguon: lan sau mo lai khong tra lai CSDL
@@ -192,7 +224,9 @@ async def run_rx_check(rx_id: str, db: AsyncSession = Depends(get_session)):
                          for s in await ddi_repo.list_sources(db)}
     db.add(Check(id=check_id, prescription_id=rx_id, status="done",
                  meds_snapshot=snapshot,
-                 summary={"meds_count": len(meds), "findings_count": len(result.findings)},
+                 summary={"meds_count": len(meds), "findings_count": len(result.findings),
+                          "disease_count": len(result.disease_findings),
+                          "gene_count": len(result.gene_findings)},
                  result=stored,
                  max_severity=result.max_severity,
                  steps_done=["normalize", "ingredient", "duplicate", "drug_interaction",
@@ -202,6 +236,9 @@ async def run_rx_check(rx_id: str, db: AsyncSession = Depends(get_session)):
     if result.findings:
         rx.status = "Có tương tác"
         rx.highest_severity_vi = result.max_severity_vi
+    elif result.disease_findings:
+        rx.status = "Có tương tác"
+        rx.highest_severity_vi = None
     else:
         rx.status = "Cần xem lại" if result.unknown else "Đã kiểm tra"
         rx.highest_severity_vi = None
@@ -228,6 +265,9 @@ async def get_check(check_id: str, db: AsyncSession = Depends(get_session)):
             "findings": data.get("findings", []),
             "food_findings": data.get("food_findings", []),
             "duplicate_findings": data.get("duplicate_findings", []),
+            "disease_findings": data.get("disease_findings", []),
+            "gene_findings": data.get("gene_findings", []),
+            "patient_context": data.get("patient_context") or empty_context(),
             "disclaimer": data.get("disclaimer", ""),
             "unknown": data.get("unknown", []),
             "no_record_pairs": data.get("no_record_pairs", []),

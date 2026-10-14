@@ -22,7 +22,8 @@ router = APIRouter(tags=["interactions"])
 
 @router.post("/interactions/check", response_model=CheckResponse)
 async def check(req: CheckRequest, db: AsyncSession = Depends(get_session)):
-    return await run_check(db, req.drugs, include_food=req.include_food)
+    return await run_check(db, req.drugs, include_food=req.include_food,
+                           conditions=req.conditions, genes=req.genes)
 
 
 @router.post("/interactions/explain", response_model=InteractionCheckResponse)
