@@ -65,8 +65,10 @@ export function PatientContextPanel({ prescriptionId, value, onSaved }: { prescr
 
       <div>
         <p className="flex items-center gap-2 text-xs font-bold text-slate-600"><Dna className="size-4 text-violet-600" /> Kết quả xét nghiệm gen</p>
+        {!options && !error && <p role="status" className="mt-2 text-xs text-slate-500">Đang tải danh mục gen…</p>}
+        {options && options.genes.length === 0 && <p role="status" className="mt-2 text-xs text-amber-700">Chưa có dữ liệu khuyến cáo gen trong CSDL. Cần nạp dữ liệu CPIC trước khi chọn kết quả xét nghiệm.</p>}
         <div className="mt-2 flex flex-col gap-2 sm:flex-row">
-          <select aria-label="Gen" value={gene} onChange={event => { setGene(event.target.value); setResult('') }} className="rounded-lg border border-slate-200 bg-white p-2 text-sm sm:w-36">
+          <select aria-label="Gen" value={gene} disabled={!options?.genes.length} onChange={event => { setGene(event.target.value); setResult('') }} className="rounded-lg border border-slate-200 bg-white p-2 text-sm disabled:opacity-50 sm:w-36">
             <option value="">Chọn gen</option>{(options?.genes || []).map(item => <option key={item.gene} value={item.gene}>{item.gene}</option>)}
           </select>
           <select aria-label="Kết quả" value={result} disabled={!gene} onChange={event => setResult(event.target.value)} className="min-w-0 flex-1 rounded-lg border border-slate-200 bg-white p-2 text-sm disabled:opacity-50">

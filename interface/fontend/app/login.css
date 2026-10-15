@@ -1,5 +1,5 @@
-/* Full-screen login background served from public/background_login.png. */
-.login-scene { position:relative; isolation:isolate; display:flex; width:100%; min-height:100vh; min-height:100dvh; align-items:center; justify-content:center; overflow:hidden; background:#b3e7ff url("/background_login.png") center center / cover no-repeat; padding:90px 24px 78px; color:#162337; color-scheme:light; }
+/* Full-screen login background served from public/background_login.webp. */
+.login-scene { position:relative; isolation:isolate; display:flex; width:100%; min-height:100vh; min-height:100dvh; align-items:center; justify-content:center; overflow:hidden; background:#b3e7ff url("/background_login.webp") center center / cover no-repeat; padding:90px 24px 78px; color:#162337; color-scheme:light; }
 .login-brand { position:absolute; top:30px; left:36px; display:flex; align-items:center; gap:10px; color:#176090; font-size:14px; font-weight:700; text-decoration:none; }
 .login-brand strong { color:#1355dd; }
 .login-card { width:100%; max-width:440px; border-radius:20px; background:#fff; padding:38px 48px 30px; box-shadow:0 24px 90px #176dab1c; border:1px solid #ffffffc9; }
@@ -31,7 +31,7 @@
 
 /* Calm, high-contrast clinical refresh */
 .login-scene {
-  background: linear-gradient(rgb(244 250 249 / 68%), rgb(244 250 249 / 68%)), url("/background_login.png") center center / cover no-repeat;
+  background: linear-gradient(rgb(244 250 249 / 68%), rgb(244 250 249 / 68%)), url("/background_login.webp") center center / cover no-repeat;
   color: #17313b;
 }
 .login-brand { color: #174f50; }
