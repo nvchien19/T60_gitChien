@@ -289,8 +289,26 @@ async def run_check(db: AsyncSession, drugs: list[str], include_food: bool = Tru
                                     source_url=(food_sources[row.source_id].url or "") if row.source_id in food_sources else "")],
                 match_type="exact"))
 
-    # duplicate class
+    # trung hoat chat: mot hoat chat nam trong tu hai ten nhap tro len (vd hai biet duoc cung thanh phan)
     dup_findings = []
+    source_of = {n.input: n.source for n in normalized}
+    shared: dict[tuple[str, ...], list[str]] = {}  # nhom ten nhap -> cac hoat chat chung
+    for drug_id, inputs in inputs_of.items():
+        if len(inputs) >= 2:
+            shared.setdefault(tuple(inputs), []).append(name_by_id[drug_id])
+    for inputs, actives in shared.items():
+        sources = sorted({s.removeprefix("aliases:") for i in inputs
+                          for s in source_of.get(i, "").split("+") if s})
+        dup_findings.append(FindingOut(
+            pair=list(inputs), severity="duplicate_active", severity_vi=SEVERITY_VI["duplicate_active"],
+            symbol="=", summary=f"Trùng hoạt chất: {', '.join(inputs)} cùng chứa {', '.join(actives)}.",
+            mechanism="",
+            citations=[Citation(source_id=src, source_name=SOURCE_NAMES.get(src, src),
+                                label=f"Thành phần hoạt chất theo danh mục tên thuốc ({src})")
+                       for src in sources],
+            match_type="exact"))
+
+    # duplicate class
     dup_rows = await ddi_repo.get_duplication_for_drugs(db, ok_ids)
     by_class: dict[str, list] = {}
     for d in dup_rows:

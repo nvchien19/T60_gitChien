@@ -1,4 +1,5 @@
 import { api } from '@/lib/api'
+import { cleanOcrMedications } from '@/lib/prescription-ocr-clean'
 import { prescriptionCropRegion, type PrescriptionImageCrop } from '@/lib/prescription-ocr'
 
 type GeminiMedication = { name: string; dose: string; frequency: string; quantity: string; uncertain_fields: string[] }
@@ -20,6 +21,8 @@ export async function recognizePrescriptionWithGemini(file: File, crop?: Prescri
     const url = canvas.toDataURL('image/jpeg', .92)
     const image_base64 = url.split(',')[1]
     if (!image_base64 || image_base64.length > 5592408) throw new Error('Ảnh gửi Gemini quá lớn. Chọn vùng thuốc nhỏ hơn.')
-    return await api<GeminiPrescription>('/prescription-ocr', { mime_type: 'image/jpeg', image_base64, model: 'auto' })
+    const result = await api<GeminiPrescription>('/prescription-ocr', { mime_type: 'image/jpeg', image_base64, model: 'auto' })
+    const { medications, rejected } = cleanOcrMedications(result.medications)
+    return { ...result, medications, warnings: rejected ? [...result.warnings, `Đã bỏ ${rejected} dòng không phải tên thuốc; cần đối chiếu với ảnh gốc.`] : result.warnings }
   } finally { bitmap.close() }
 }

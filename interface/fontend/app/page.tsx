@@ -35,6 +35,7 @@ const PrescriptionEditor = dynamic(() => import("@/components/PrescriptionEditor
 import type { EditableMedicationDraft } from "@/components/PrescriptionEditor";
 import { FoodInteractions } from "@/components/FoodInteractions";
 import { ContextFindings } from "@/components/ContextFindings";
+import { DuplicateFindings } from "@/components/DuplicateFindings";
 import { PatientContextPanel } from "@/components/PatientContextPanel";
 const QualityView = dynamic(() => import("@/components/QualityView").then(module => module.QualityView), { loading: () => <p role="status" className="p-4 text-sm text-slate-500">Đang tải…</p> });
 import { InteractionExplanation } from "@/components/InteractionExplanation";
@@ -42,6 +43,7 @@ import { BrandLogo } from "@/components/BrandLogo";
 import { LogoutButton } from "@/components/LogoutButton";
 const DoctorReviewPanel = dynamic(() => import("@/components/DoctorWorkspace").then(module => module.DoctorReviewPanel), { loading: () => <p role="status" className="p-4 text-sm text-slate-500">Đang tải…</p> });
 import { AuthGate } from "@/components/AuthGate";
+import { TermsNotice } from "@/components/TermsNotice";
 import type { AuthUser } from "@/lib/api";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -83,19 +85,18 @@ function SeverityBadge({ severity }: { severity: Severity | null }) {
         Chưa có
       </span>
     );
-  const tone =
-    severity === "Nghiêm trọng"
-      ? "bg-rose-50 text-rose-700 ring-rose-200"
-      : severity === "Trung bình"
-        ? "bg-amber-50 text-amber-700 ring-amber-200"
-        : "bg-emerald-50 text-emerald-700 ring-emerald-200";
+  // Không dùng màu xanh lá cho mức nào: dễ bị đọc thành "an toàn".
+  const tone = {
+    "Chống chỉ định": ["bg-red-700 text-white ring-red-800", "bg-red-100"],
+    "Nghiêm trọng": ["bg-rose-50 text-rose-700 ring-rose-200", "bg-rose-500"],
+    "Trung bình": ["bg-amber-50 text-amber-700 ring-amber-200", "bg-amber-500"],
+    "Nhẹ": ["bg-sky-50 text-sky-800 ring-sky-200", "bg-sky-500"],
+  }[severity];
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-bold ring-1 ${tone}`}
+      className={`inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-bold ring-1 ${tone[0]}`}
     >
-      <span
-        className={`size-1.5 rounded-full ${severity === "Nghiêm trọng" ? "bg-rose-500" : severity === "Trung bình" ? "bg-amber-500" : "bg-emerald-500"}`}
-      />
+      <span className={`size-1.5 rounded-full ${tone[1]}`} />
       {severity}
     </span>
   );
@@ -118,7 +119,7 @@ function StatusBadge({ status }: { status: Status }) {
 }
 
 export default function Page() {
-  return <AuthGate>{(user, logout) => <ClinicalDashboard user={user} onLogout={logout} />}</AuthGate>;
+  return <AuthGate>{(user, logout) => <><TermsNotice userId={user.id} /><ClinicalDashboard user={user} onLogout={logout} /></>}</AuthGate>;
 }
 
 function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () => Promise<void> }) {
@@ -332,16 +333,8 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
   return (
     <div className="clinical-app min-h-screen overflow-x-clip bg-[#f3f8f7] text-slate-900">
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-[248px] flex-col border-r border-slate-200 bg-white lg:flex">
-        <div className="flex h-[76px] items-center gap-3 border-b border-slate-100 px-7">
-          <BrandLogo size={40} />
-          <div>
-            <p className="text-[15px] font-extrabold tracking-tight">
-              Medication <span className="text-teal-500">Safety</span>
-            </p>
-            <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-slate-400">
-              Safety management tool
-            </p>
-          </div>
+        <div className="flex h-[76px] items-center border-b border-slate-100 px-7">
+          <BrandLogo size={112} alt="VINMEC" className="h-auto w-28" />
         </div>
         <nav
           className="flex-1 space-y-1 px-3 py-6"
@@ -384,7 +377,7 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
       <main className="min-h-screen lg:pl-[248px]">
         <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-2 border-b border-slate-200 bg-white/95 px-4 backdrop-blur sm:h-[76px] sm:px-8">
           <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-            <BrandLogo size={32} className="shrink-0 lg:hidden" />
+            <BrandLogo size={44} alt="VINMEC" className="h-auto w-11 lg:hidden" />
             <button
               onClick={() => setMobileNav(true)}
               aria-label="Mở menu"
@@ -404,7 +397,7 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
           </div>
           <div className="flex shrink-0 items-center gap-2 sm:gap-4">
             <LogoutButton onLogout={onLogout} onError={setError} compact className="lg:hidden" />
-            <ThemeToggle />
+            <ThemeToggle compact />
             <div className="relative">
               <button
                 onClick={() => setBellOpen((open) => !open)}
@@ -574,6 +567,8 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
         open={showAssistant}
         onOpen={() => setShowAssistant(true)}
         onClose={() => setShowAssistant(false)}
+        onSaved={reload}
+        onView={openPrescription}
       /> : <button type="button" onClick={() => setShowAssistant(true)} aria-label="Mở trợ lý An toàn Thuốc" className="fixed bottom-24 right-4 z-[9999] flex min-h-[48px] items-center gap-2 rounded-full bg-slate-900 px-4 py-3 text-xs font-bold text-white shadow-lg hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500 sm:right-5 lg:bottom-7 lg:right-8"><Bot className="size-4" /> Hỏi trợ lý</button>}
       <nav
         aria-label="Điều hướng di động"
@@ -625,12 +620,7 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
           />
           <div className="absolute inset-y-0 left-0 flex w-[280px] max-w-[85vw] flex-col bg-white shadow-2xl animate-in slide-in-from-left duration-200">
             <div className="flex h-16 items-center justify-between border-b border-slate-100 px-4">
-              <div className="flex items-center gap-2.5">
-                <BrandLogo size={40} />
-                <p className="text-[15px] font-extrabold tracking-tight">
-                  Medication <span className="text-teal-500">Safety</span>
-                </p>
-              </div>
+              <BrandLogo size={96} alt="VINMEC" className="h-auto w-24" />
               <button
                 onClick={() => setMobileNav(false)}
                 aria-label="Đóng menu"
@@ -1147,6 +1137,7 @@ function SafetyView({
           </div>
           {checked && (
             <Results
+              key={checkRecord?.check_id ?? prescription.id}
               findings={findings}
               checkRecord={checkRecord}
               onDetail={onDetail}
@@ -1196,6 +1187,18 @@ function Results({
   checkRecord: CheckRecord | null;
   canSendReview: boolean;
 }) {
+  const [severityFilter, setSeverityFilter] = useState<Severity | "Chưa có" | "Tất cả">("Tất cả");
+  const severityOptions: { value: Severity | "Chưa có"; count: number }[] =
+    (["Chống chỉ định", "Nghiêm trọng", "Trung bình", "Nhẹ"] as Severity[])
+      .map((value) => ({ value, count: findings.filter((item) => item.severity === value).length }))
+      .filter((option) => option.count > 0);
+  const unclassifiedCount = findings.filter((item) => item.severity === null).length;
+  if (unclassifiedCount) severityOptions.push({ value: "Chưa có", count: unclassifiedCount });
+  const visibleFindings = findings.filter((item) =>
+    severityFilter === "Tất cả" ||
+    (severityFilter === "Chưa có" ? item.severity === null : item.severity === severityFilter),
+  );
+
   return (
     <section className="space-y-5">
       <div className="rounded-xl border border-slate-200 bg-white p-5">
@@ -1249,6 +1252,15 @@ function Results({
           ))}
         </div>
       </div>
+      {checkRecord?.disclaimer && (
+        <div role="note" className="flex gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-relaxed text-amber-900">
+          <ShieldCheck className="mt-0.5 size-4 shrink-0" />
+          <p>
+            <strong>Lưu ý:</strong> {checkRecord.disclaimer} Mức độ hiển thị đúng như nguồn dữ liệu ghi;
+            &quot;chưa có bản ghi&quot; không có nghĩa là an toàn.
+          </p>
+        </div>
+      )}
       <div className="rounded-xl border border-slate-200 bg-white">
         <div className="border-b border-slate-100 px-4 py-4 sm:px-5">
           <h3 className="text-sm font-extrabold">Tương tác thuốc–thuốc theo mức độ</h3>
@@ -1257,6 +1269,22 @@ function Results({
             đối.
           </p>
         </div>
+        {findings.length > 0 && (
+          <div role="group" aria-label="Lọc tương tác theo mức độ" className="flex flex-wrap items-center gap-2 border-b border-slate-100 px-4 py-3 sm:px-5">
+            <span className="mr-1 text-xs font-semibold text-slate-600">Lọc mức độ:</span>
+            {([{ value: "Tất cả", count: findings.length }, ...severityOptions] as const).map(({ value, count }) => (
+              <button
+                key={value}
+                type="button"
+                aria-pressed={severityFilter === value}
+                onClick={() => setSeverityFilter(value)}
+                className={`rounded-full border px-3 py-1.5 text-xs font-bold transition focus-visible:outline-2 focus-visible:outline-teal-500 ${severityFilter === value ? "border-teal-500 bg-teal-500 text-white" : "border-slate-200 bg-white text-slate-600 hover:border-teal-300"}`}
+              >
+                {value} ({count})
+              </button>
+            ))}
+          </div>
+        )}
         <div className="space-y-3 p-5">
           {findings.length === 0 && (
             <p className="text-sm text-slate-500">
@@ -1269,10 +1297,7 @@ function Results({
               đổi với dược sĩ.
             </p>
           )}
-          {checkRecord?.disclaimer && (
-            <p className="text-xs text-slate-500">{checkRecord.disclaimer}</p>
-          )}
-          {findings.map((item) => (
+          {visibleFindings.map((item) => (
             <button
               key={item.id}
               onClick={() => onDetail(item.id)}
@@ -1310,6 +1335,7 @@ function Results({
           ))}
         </div>
       </div>
+    <DuplicateFindings record={checkRecord} />
     <ContextFindings key={`context-${checkRecord?.check_id}`} record={checkRecord} />
     <FoodInteractions key={checkRecord?.check_id} record={checkRecord} />
       </section>

@@ -5,4 +5,4 @@ minimumReleaseAgeExclude:
   - next
 
 allowBuilds:
-  tesseract.js: true
+  tesseract.js: set this to true or false

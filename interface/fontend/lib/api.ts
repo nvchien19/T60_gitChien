@@ -2,7 +2,7 @@ export type AuthUser = { id: number; email: string; name: string; role: 'doctor'
 export class ApiError extends Error {
   constructor(message: string, public status: number) { super(message); this.name = 'ApiError' }
 }
-export type Severity = 'Nghiêm trọng' | 'Trung bình' | 'Nhẹ'
+export type Severity = 'Chống chỉ định' | 'Nghiêm trọng' | 'Trung bình' | 'Nhẹ'
 export type Status = 'Chưa kiểm tra' | 'Đã kiểm tra' | 'Có tương tác' | 'Cần xem lại'
 export type Medication = { id: number; name: string; ingredient: string; dose: string; frequency: string; type: 'Kê đơn' | 'OTC' | 'Bổ sung'; verified: boolean }
 export type PatientContext = { conditions: string[]; genes: Record<string, string> }
@@ -14,18 +14,19 @@ export type Prescription = { id: string; name?: string; patient: string; date: s
 export type ReviewRequest = { createdBy: number | null; creatorName: string; response: string; responderName: string; respondedAt: string; id: string; prescriptionId: string; patient: string; message: string; date: string; status: 'Đang chờ' | 'Đã phản hồi'; medCount: number }
 export type Citation = { source_id: string; source_name: string; label: string; source_url: string }
 export type Finding = { untranslatedFields: string[]; machineTranslation: boolean; id: number; severity: Severity | null; a: string; b: string; kind: string; text: string; management: string; citations: Citation[]; sources: number }
-export type CheckRecord = { check_id: string; created_at?: string | null; status: string; summary: { meds_count?: number; findings_count?: number }; max_severity: string; findings?: RawFinding[]; food_findings?: FoodFinding[]; disease_findings?: ContextFinding[]; gene_findings?: ContextFinding[]; patient_context?: PatientContext; disclaimer?: string; unknown?: unknown[]; no_record_pairs?: string[][] }
+export type CheckRecord = { check_id: string; created_at?: string | null; status: string; summary: { meds_count?: number; findings_count?: number }; max_severity: string; findings?: RawFinding[]; food_findings?: FoodFinding[]; duplicate_findings?: FoodFinding[]; disease_findings?: ContextFinding[]; gene_findings?: ContextFinding[]; patient_context?: PatientContext; disclaimer?: string; unknown?: unknown[]; no_record_pairs?: string[][] }
 export type EvalMetrics = { run: string; n_cases: number; confusion: { tp: number; fp: number; fn: number; tn: number }; metrics: { key: string; value: number | null; op: '>=' | '<='; threshold: number; passed: boolean | null; basis: string }[]; review_cases: { id: string; category: string; fn: number; fp: number }[] }
 export type EvalRun = { id: string; label: string; note: string; n_cases: number; confusion: { tp: number; fp: number; fn: number; tn: number }; review_cases: { id: string; category: string; fn: number; fp: number }[]; db_gaps: string[] }
 export type EvalAllMetric = { key: string; op: '>=' | '<=' | null; threshold: number | null; basis: string; pooled: number | null; mean: number | null; passed: boolean | null; runs: Record<string, number | null> }
 export type EvalBenchmark = { name: string; kind: 'db' | 'llm'; source: string; sensitivity?: number; specificity?: number; ppv?: number; npv?: number; accuracy?: number }
-export type EvalAll = { generated: string; n_cases: number; confusion: { tp: number; fp: number; fn: number; tn: number }; runs: EvalRun[]; metrics: EvalAllMetric[]; benchmarks: EvalBenchmark[]; latestOnly?: boolean }
+export type EvalAll = { generated: string; n_cases: number; confusion: { tp: number; fp: number; fn: number; tn: number }; runs: EvalRun[]; metrics: EvalAllMetric[]; benchmarks: EvalBenchmark[] }
 export type FoodFinding = RawFinding & { original_management?: string; original_mechanism?: string }
 type RawFinding = { untranslated_fields?: string[]; machine_translation?: boolean; pair: string[]; severity_vi: string; summary: string; management: string; citations: Citation[] }
 type RawPrescription = { id: string; name?: string; created_at?: string | null; last_checked?: string | null; status: Status; highest_severity_vi?: string | null; checks_count: number; medications: Medication[]; patient_context?: PatientContext }
 type RawReview = { created_by?: number | null; creator_name?: string; response?: string; responder_name?: string; responded_at?: string | null; id: number; prescription_id: string; patient: string; message: string; created_at: string; status: 'Đang chờ' | 'Đã phản hồi'; med_count: number }
 export const dateLabel = (value?: string | null) => value ? new Date(/(?:Z|[+-]\d{2}:\d{2})$/.test(value) ? value : `${value}Z`).toLocaleString('vi-VN') : 'Chưa cập nhật'
-export const severityLabel = (value?: string | null): Severity | null => value === 'Nghiêm trọng' || value === 'Trung bình' || value === 'Nhẹ' ? value : null
+// Hiện đúng nhãn backend trả từ CSDL; không ánh xạ lại mức. Nhãn lạ thành null ("Chưa có").
+export const severityLabel = (value?: string | null): Severity | null => value === 'Chống chỉ định' || value === 'Nghiêm trọng' || value === 'Trung bình' || value === 'Nhẹ' ? value : null
 
 export async function api<T>(path: string, body?: unknown, method?: 'POST' | 'PUT' | 'PATCH'): Promise<T> {
   let response: Response
@@ -41,28 +42,6 @@ export async function api<T>(path: string, body?: unknown, method?: 'POST' | 'PU
   }
   if (response.status === 204) return undefined as T
   return response.json() as Promise<T>
-}
-
-export async function loadEvaluation(): Promise<EvalAll> {
-  try {
-    return await api<EvalAll>('/eval/metrics/all')
-  } catch (error) {
-    if (!(error instanceof ApiError) || error.status !== 404) throw error
-  }
-  const latest = await api<EvalMetrics>('/eval/metrics')
-  return {
-    generated: latest.run,
-    n_cases: latest.n_cases,
-    confusion: latest.confusion,
-    latestOnly: true,
-    runs: [{ id: 'golden', label: 'Golden', note: '', n_cases: latest.n_cases, confusion: latest.confusion, review_cases: latest.review_cases, db_gaps: [] }],
-    metrics: latest.metrics.map(metric => ({
-      key: metric.key, op: metric.op, threshold: metric.threshold, basis: metric.basis,
-      pooled: metric.value, mean: metric.value, passed: metric.passed,
-      runs: { golden: metric.value },
-    })),
-    benchmarks: [],
-  }
 }
 
 export async function loadPrescriptions(): Promise<Prescription[]> {

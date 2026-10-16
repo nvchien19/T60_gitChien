@@ -1,0 +1,53 @@
+/* A clear image / reading / navigation hierarchy for the home banner. */
+.medicheck-home #top { background: linear-gradient(90deg, #fbfef9e6, #f3fcf5a6 48%, #eaf8f230), url('/home-slides/banner-background-v2.png') center / cover; }
+.medicheck-home #top > .relative { gap: 48px; }
+.medicheck-home .hero-showcase { max-width: 540px; }
+.medicheck-home .hero-showcase-shell { padding: 0; overflow: hidden; border-radius: 26px; background: #fff; border-color: #dbe9e3; box-shadow: 0 24px 60px -38px #214f4459; }
+.medicheck-home .hero-showcase-art--image { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 0; height: auto; }
+.medicheck-home .hero-showcase-image { width: 100%; height: 100%; min-height: 0; object-fit: cover; }
+.hero-showcase-image-label { position: absolute; left: 20px; bottom: 16px; display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; background: #fffffff0; border: 1px solid #ffffffcc; border-radius: 100px; color: #174f46; font-size: 10px; font-weight: 750; letter-spacing: .06em; backdrop-filter: blur(8px); }
+.hero-showcase-image-count { position: absolute; right: 16px; top: 16px; padding: 6px 10px; background: #ffffffed; border-radius: 100px; color: #214b44; font-size: 11px; font-variant-numeric: tabular-nums; font-weight: 700; }
+.medicheck-home .hero-showcase-copy { padding: 23px 26px 0 ; }
+.medicheck-home .hero-showcase-copy h2 { margin-top: 0; font-size: clamp(25px, 2.2vw, 30px); line-height: 1.22; letter-spacing: -.035em; text-wrap: initial; }
+.medicheck-home .hero-showcase-description { margin-top: 12px; font-size: 14px; line-height: 1.75; min-height: 30px; max-width: 420px; }
+.medicheck-home .hero-showcase-cta { width: auto; margin: 0; gap: 24px; flex-shrink: 0; min-height: 44px; padding: 12px 16px; font-size: 12px; }
+.medicheck-home .hero-showcase-controls { margin: 0; padding: 12px 18px; border-top: 1px solid #e6ede7; background: #f7faf7; gap: 8px; }
+.medicheck-home .hero-showcase-steps { gap: 5px; }
+.medicheck-home .hero-showcase-steps button { padding: 8px 5px; border-radius: 8px; font-size: 10px; min-height: 44px; transition: background-color .2s; }
+.medicheck-home .hero-showcase-steps button[aria-current] { background: var(--hero-tint); color: var(--hero-accent); }
+.medicheck-home .hero-showcase-track { width: 16px; height: 3px; margin: 0 auto 5px; }
+.medicheck-home .hero-showcase-arrow { width: 32px; min-height: 44px; }
+.medicheck-home .hero-showcase-note { margin-top: 14px; font-size: 11px; }
+.theme-dark.medicheck-home #top { background: linear-gradient(90deg, #082a32f2, #0c333ad6), url('/home-slides/banner-background-v2.png') center / cover !important; }
+.theme-dark.medicheck-home .hero-showcase-shell { background: #11323b; }
+.theme-dark.medicheck-home .hero-showcase-controls { background: #0c2931; border-color: #31535a; }
+.theme-dark.medicheck-home .hero-showcase-image-label, .theme-dark.medicheck-home .hero-showcase-image-count { color: #174f46; }
+@media (min-width: 1024px) {
+  .medicheck-home #top > .relative { grid-template-columns: .95fr 1.05fr; }
+  .medicheck-home #top { padding-top: 140px; padding-bottom: 80px; }
+}
+@media (max-width: 640px) {
+  .medicheck-home #top > .relative { gap: 36px; }
+  .medicheck-home .hero-showcase-copy { padding: 20px 20px 0; }
+  .medicheck-home .hero-showcase-description { min-height: 54px; }
+  .medicheck-home .hero-showcase-cta { width: 100%; }
+  .medicheck-home .hero-showcase-controls { padding: 10px; gap: 3px; }
+  .hero-showcase-image-label { left: 14px; bottom: 12px; padding: 6px 10px; font-size: 9px; }
+}
+
+.medicheck-home .hero-showcase-copy { padding-bottom: 2px; }
+.hero-showcase-heading-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px; }
+.medicheck-home .hero-showcase-heading-row h2 { font-size: 25px; min-height: 62px; }
+.medicheck-home .hero-showcase-heading-row .hero-showcase-cta { width: auto; gap: 10px; padding: 12px; }
+@media (max-width: 480px) {
+  .hero-showcase-heading-row { grid-template-columns: minmax(0, 1fr) 110px; gap: 10px; }
+  .medicheck-home .hero-showcase-heading-row h2 { font-size: 20px; min-height: 74px; }
+  .medicheck-home .hero-showcase-heading-row .hero-showcase-cta { font-size: 10px; padding: 10px 8px; justify-content: center; }
+  .hero-showcase-heading-row .hero-showcase-cta svg { display: none; }
+}
+
+.medicheck-home .hero-showcase-dots { display: flex; align-items: center; justify-content: center; gap: 2px; padding: 0 16px 12px; }
+.medicheck-home .hero-showcase-dot { display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%; background: transparent; }
+.medicheck-home .hero-showcase-dot span { display: block; width: 8px; height: 8px; border-radius: 50%; background: var(--hero-accent); opacity: .25; transition: opacity .2s ease, transform .2s ease; }
+.medicheck-home .hero-showcase-dot[aria-current] span { opacity: 1; transform: scale(1.2); }
+.medicheck-home .hero-showcase-dot:hover span { opacity: .7; }

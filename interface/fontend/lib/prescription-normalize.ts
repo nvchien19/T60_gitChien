@@ -4,12 +4,12 @@ export type CatalogProduct = { product_id: number; name: string; strength: strin
 
 // Match on accent-free text, but return the original characters and numeric values.
 const key = (text: string) => text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase()
-const numberPrefix = /^\s*\d{1,3}(?:\s*[.)\-:]\s*|\s+(?=\p{L}))/u
+const numberPrefix = /^\s*\d{1,3}(?:\s*[.)/\-:]\s*|\s+(?=\p{L}))/u
 const strengthPart = String.raw`\d+(?:[.,]\d+)?\s*(?:mcg|µg|μg|mg|kg|g|m[lL]|[lL]|[iI][uU]|[uU][iI]|%)(?![\p{L}])(?:\s*\/\s*(?:\d+(?:[.,]\d+)?\s*)?(?:m[lL]|g|viên)(?![\p{L}]))?`
 const strengthPattern = new RegExp(`${strengthPart}(?:\\s*[+/,;]\\s*${strengthPart})*`, 'iu')
 const instructionStart = /^(?:cach dung|lieu dung|uong|ngay|sang|trua|chieu|toi|sau an|truoc an|boi|nho|xit|tiem|ngam|nhai|dung ngoai|dung theo|moi lan|lan|trong|so luong|sl)(?=\s|:|$)/
 const numericInstruction = /^\d+(?:[.,]\d+)?\s*(?:lan\s*\/|vien\s*\/|ml\s*\/|ngay(?:\s|$))/
-const metadata = /^(?:ho\s*(?:va\s*)?ten|benh nhan|chan doan|dia chi|dien thoai|ngay sinh|nam sinh|tuoi|gioi tinh|ma (?:benh nhan|don)|ten don(?: thuoc)?|ngay (?:kham|lap|ke)|ngay\s*\d|phong kham|benh vien|bac si|bs\.?|nguoi lap|tai kham|loi dan|luu y|chu ky|ky ten|tong cong|du lieu|khong (?:dung|co)|don thuoc|stt|ten thuoc)(?=\s|:|$)/
+const metadata = /^(?:ho\s*(?:va\s*)?ten|benh nhan|chan doan|dia chi|dien thoai|so dien thoai|sdt|zalo|ngay sinh|nam sinh|tuoi|gioi tinh|ma (?:benh nhan|don)|ten don(?: thuoc)?|ngay (?:kham|lap|ke)|ngay\s*\d|phong kham|benh vien|bac si|bs\.?|nguoi lap|tai kham|loi dan|luu y|chu ky|ky ten|tong cong|du lieu|sinh hieu|huyet ap|khong (?:dung|co)|don thuoc|stt|ten thuoc)(?=\s|:|$)/
 const quantityOnly = /^\d+\s*(?:vien|chai|lo|ong|goi|hop|tuyp)(?:\s|$)/
 const formOnly = /^(?:vien (?:nen|nang)|dung dich|hon dich|siro|kem|thuoc mo)(?:\s|$)/
 

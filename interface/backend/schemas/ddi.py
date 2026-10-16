@@ -18,6 +18,7 @@ class NormalizedItem(BaseModel):
     status: str = "unknown"
     suggestions: list[dict] = []
     note: str = ""
+    source: str = ""              # bang alias da dung de nhan ra ten, vd "aliases:dav"
 
 
 class NormalizeRequest(BaseModel):

@@ -10,7 +10,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from interface.backend.db.models.tables import Check, Medication, Prescription, Review, User
 from interface.backend.db.session import get_session
 from interface.backend.repositories import ddi_repo
-from interface.backend.schemas.assistant import AssistantRequest, AssistantResponse
 from interface.backend.schemas.ddi import (
     AddMedicationRequest,
     CreatePrescriptionRequest,
@@ -21,10 +20,12 @@ from interface.backend.schemas.ddi import (
     ReviewRequest,
     ReviewStatusUpdate,
 )
-from interface.backend.services.assistant_service import answer
 from interface.backend.services.auth_service import current_user, doctor, pharmacist
 from interface.backend.services.check_service import normalize_list, run_check
+from interface.backend.schemas.assistant import AssistantRequest, AssistantResponse
+from interface.backend.services.assistant_service import answer
 from interface.backend.services.patient_context import context_options, empty_context, validate_context
+from interface.backend.services.rate_limit import chat_limit
 
 router = APIRouter(tags=["prescriptions"])
 
@@ -226,7 +227,8 @@ async def run_rx_check(rx_id: str, db: AsyncSession = Depends(get_session)):
                  meds_snapshot=snapshot,
                  summary={"meds_count": len(meds), "findings_count": len(result.findings),
                           "disease_count": len(result.disease_findings),
-                          "gene_count": len(result.gene_findings)},
+                          "gene_count": len(result.gene_findings),
+                          "duplicate_count": len(result.duplicate_findings)},
                  result=stored,
                  max_severity=result.max_severity,
                  steps_done=["normalize", "ingredient", "duplicate", "drug_interaction",
@@ -236,7 +238,7 @@ async def run_rx_check(rx_id: str, db: AsyncSession = Depends(get_session)):
     if result.findings:
         rx.status = "Có tương tác"
         rx.highest_severity_vi = result.max_severity_vi
-    elif result.disease_findings:
+    elif result.disease_findings or result.duplicate_findings:
         rx.status = "Có tương tác"
         rx.highest_severity_vi = None
     else:
@@ -351,6 +353,6 @@ async def update_review(review_id: int, req: ReviewStatusUpdate,
     return _review_out(review)
 
 
-@router.post("/assistant/chat", response_model=AssistantResponse)
+@router.post("/assistant/chat", response_model=AssistantResponse, dependencies=[Depends(chat_limit)])
 async def assistant_chat(payload: AssistantRequest, db: AsyncSession = Depends(get_session)):
     return await answer(db, payload)

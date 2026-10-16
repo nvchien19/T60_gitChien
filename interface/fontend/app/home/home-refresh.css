@@ -1,0 +1,80 @@
+/* Warm, quiet surfaces keep the illustrations and reading flow in focus. */
+.medicheck-home { background: #fcfcf8; }
+.medicheck-home section[id] { scroll-margin-top: 100px; }
+.medicheck-home #top {
+  background: linear-gradient(90deg, #fafcf5ed 0%, #f7fcf6a8 47%, #eff9f238 100%), url('/home-slides/ambient-v1.png') center / cover;
+  border-bottom: 1px solid #dbe8df;
+}
+.medicheck-home #top::before, .medicheck-home #top::after,
+.medicheck-home #top > .absolute { display: none; }
+.medicheck-home #top h1 { line-height: 1.1; letter-spacing: -.055em; text-wrap: balance; }
+.medicheck-home #top h1 > span { color: #087c70; }
+.medicheck-home #top h1 + p { font-size: 17px; line-height: 1.85; color: #4c6562; }
+.medicheck-home header { background: rgb(255 255 255 / 48%); border-color: rgb(255 255 255 / 62%); box-shadow: 0 8px 30px -22px #1b51494d; }
+.medicheck-home header nav { font-size: 13px; }
+.medicheck-home button, .medicheck-home a { -webkit-tap-highlight-color: transparent; }
+.medicheck-home button { cursor: pointer; }
+.medicheck-home h2 { text-wrap: balance; }
+.medicheck-home .hero-showcase { max-width: 478px; }
+.medicheck-home .hero-showcase-shell { padding: 18px; background: #ffffffef; border: 1px solid #ffffff; border-radius: 28px; box-shadow: 0 24px 60px -32px #194c4166; }
+.medicheck-home .hero-showcase-halo { display: none; }
+.medicheck-home .hero-showcase-topline { padding: 3px 6px 15px; }
+.medicheck-home .hero-showcase-art--image { height: auto; aspect-ratio: 16 / 9; border-radius: 18px; }
+.medicheck-home .hero-showcase-image { min-height: 0; height: 100%; }
+.medicheck-home .hero-showcase-copy { padding: 22px 10px 0; }
+.medicheck-home .hero-showcase-copy h2 { font-size: clamp(25px, 2.4vw, 31px); }
+.medicheck-home .hero-showcase-description { font-size: 13px; line-height: 1.5; min-height: 48px; }
+.medicheck-home .hero-showcase-cta { min-height: 46px; border-radius: 13px; }
+.medicheck-home .hero-showcase-controls { margin-top: 12px; }
+.medicheck-home .hero-showcase-steps button { font-size: 10px; min-height: 44px; }
+.medicheck-home .hero-showcase-arrow { width: 32px; height: 44px; }
+.medicheck-home .hero-showcase-note { color: #405f58; }
+.medicheck-home #features { background: #fcfcf8; }
+.medicheck-home #features::before, .medicheck-home #features > .absolute { display: none; }
+.medicheck-home #features article { border-radius: 24px; padding: 28px; box-shadow: none; border-color: #dfe8e2; }
+.medicheck-home #features article:not(:nth-child(2)) { background: linear-gradient(145deg, #fff, #f2f8f3); }
+.medicheck-home #features article:nth-child(2) { background: linear-gradient(135deg, #117d70, #075a55); border-color: #117d70; }
+.medicheck-home #features article:not(:nth-child(2)) .text-teal-300 { color: #087c70; }
+.medicheck-home #features article:not(:nth-child(2)) .text-slate-400 { color: #536b66; }
+.medicheck-home #features article h3 { font-size: 20px; letter-spacing: -.025em; }
+.medicheck-home #features article:hover { box-shadow: 0 18px 35px -28px #16534566; border-color: #84b9a8; transform: translateY(-4px); }
+.medicheck-home #process { background: linear-gradient(105deg, #eaf3edfa 30%, #f7faf4e0), url('/home-slides/ambient-v1.png') center / cover; }
+.medicheck-home #process::before { display: none; }
+.medicheck-home #process > div > div:first-child { background: linear-gradient(150deg, #103e39f5, #13574fe8), url('/home-slides/ambient-v1.png') right / cover; box-shadow: none; border: 1px solid #ffffff26; }
+.medicheck-home #process > div > div:first-child::before { display: none; }
+.medicheck-home #process .text-teal-100\/70 { color: #c2ded5; }
+.medicheck-home #process h2 { font-size: clamp(30px, 3vw, 42px); line-height: 1.18; letter-spacing: -.035em; }
+.medicheck-home #process h2 + p { font-size: 15px; color: #526b63; }
+.medicheck-home #stories { background: linear-gradient(180deg, #fffdf8, #f9faf5); }
+.medicheck-home #stories::before, .medicheck-home #stories > .absolute { display: none; }
+.medicheck-home #stories article { border: 1px solid #e1e8df; box-shadow: none; }
+.medicheck-home #stories article:nth-child(2) { background: #163e37; border-color: #163e37; }
+.medicheck-home #stories article > div:last-child { margin-top: 24px; }
+.medicheck-home #stories article .text-slate-400 { color: #64776f; }
+.medicheck-home #stories article:nth-child(2) .text-slate-400 { color: #b5ccc3; }
+.medicheck-home #safety { background: #f9faf5; }
+.medicheck-home #safety > div { background: linear-gradient(90deg, #e6f4eaf5 0%, #edf7eddf 55%, #eef8e880), url('/home-slides/ambient-v1.png') center / cover; border: 1px solid #d4e5d8; box-shadow: none; }
+.medicheck-home #safety > div::before { display: none; }
+.medicheck-home footer { background: #f9faf5; }
+.theme-dark.medicheck-home #top { background: linear-gradient(90deg, #082a32fa, #0c333ad9), url('/home-slides/ambient-v1.png') center / cover !important; border-color: #24494d; }
+.theme-dark.medicheck-home #features, .theme-dark.medicheck-home #stories,
+.theme-dark.medicheck-home #safety, .theme-dark.medicheck-home footer { background: #09252e !important; }
+.theme-dark.medicheck-home #features article:not(:nth-child(2)) { background: #123640 !important; border-color: #31525a; }
+.theme-dark.medicheck-home #features article:not(:nth-child(2)) .text-teal-300 { color: #84d8c2; }
+.theme-dark.medicheck-home #process { background: linear-gradient(100deg, #0a3038f5, #0b343cde), url('/home-slides/ambient-v1.png') center / cover !important; }
+.theme-dark.medicheck-home #safety > div { background: linear-gradient(90deg, #123d43f5, #133e46cf), url('/home-slides/ambient-v1.png') center / cover !important; border-color: #31575b; }
+.theme-dark.medicheck-home .hero-showcase-shell { background: #11323bea; border-color: #31535a; }
+.theme-dark.medicheck-home .hero-showcase-note { color: #aacac1; }
+.theme-dark.medicheck-home #top h1 > span { color: #80dcc3; }
+.theme-dark.medicheck-home #stories article { border-color: #31525a; }
+@media (max-width: 640px) {
+  .medicheck-home #top { padding-top: 125px; padding-bottom: 64px; background-position: 65% center; }
+  .medicheck-home #top h1 { font-size: clamp(37px, 10vw, 48px); }
+  .medicheck-home #top h1 + p { font-size: 15px; line-height: 1.8; }
+  .medicheck-home #features, .medicheck-home #process, .medicheck-home #stories { padding-top: 64px; padding-bottom: 64px; }
+  .medicheck-home #features h2, .medicheck-home #stories h2 { font-size: 33px; }
+  .medicheck-home .hero-showcase-shell { padding: 14px; }
+  .medicheck-home .hero-showcase-copy { padding-left: 4px; padding-right: 4px; }
+  .medicheck-home #safety > div { padding: 28px; }
+}
+@media (prefers-reduced-motion: reduce) { .medicheck-home #features article:hover { transform: none; } }

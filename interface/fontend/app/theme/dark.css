@@ -58,6 +58,11 @@
 .dark .border-amber-200 { border-color: #73551d !important; }
 .dark .bg-rose-50 { background-color: #3a1e28 !important; }
 .dark .text-rose-700 { color: #fda4af !important; }
+.dark .bg-sky-50 { background-color: #142a3a !important; }
+.dark .text-sky-800 { color: #7dd3fc !important; }
+.dark .ring-sky-200 { --tw-ring-color: #1e4a66 !important; }
+.dark .bg-violet-50 { background-color: #2a2140 !important; }
+.dark .text-violet-800 { color: #c4b5fd !important; }
 .dark .bg-emerald-50 { background-color: #12352a !important; }
 .dark .text-emerald-700 { color: #6ee7b7 !important; }
 .dark .bg-slate-900 { background-color: #e5e7eb !important; color: #111827 !important; }

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Pill, Stethoscope, LockKeyhole, LoaderCircle } from "lucide-react";
+import { Eye, EyeOff, Pill, Stethoscope, LockKeyhole, LoaderCircle, UserRound } from "lucide-react";
 import { api, ApiError, type AuthUser } from "@/lib/api";
 import { BrandLogo } from "@/components/BrandLogo";
 
@@ -54,14 +54,15 @@ function LoginScreen({ onLogin, connectionError, onRetry }: { onLogin: (user: Au
     finally { setBusy(false); }
   }
   return <main className="login-scene">
-    <a href="/" className="login-brand"><BrandLogo size={32} /><span>Medication <strong>Safety</strong></span></a>
+    <a href="/" className="login-brand" aria-label="Về dashboard"><BrandLogo size={112} alt="VINMEC" /></a>
     <section className="login-card" aria-labelledby="login-title">
-      <div className="login-symbol"><BrandLogo size={72} alt="Logo Medication Safety" /></div>
+      <div className="login-symbol"><BrandLogo size={72} alt="VINMEC" /></div>
       <h1 id="login-title">Chào mừng trở lại!</h1>
       <p className="login-subtitle">Đăng nhập để kết nối và chăm sóc an toàn hơn.</p>
       <div className="login-roles">
         <button type="button" onClick={() => fillDemoCredentials("doctor")} disabled={busy} aria-label="Điền tài khoản demo Bác sĩ"><Stethoscope size={15} /> Bác sĩ</button>
         <button type="button" onClick={() => fillDemoCredentials("pharmacist")} disabled={busy} aria-label="Điền tài khoản demo Dược sĩ"><Pill size={15} /> Dược sĩ</button>
+        <a href="/home" aria-label="Vào trang chủ với tư cách Guest"><UserRound size={15} /> Guest</a>
       </div>
       <form onSubmit={submit} className="login-form">
         <label htmlFor="login-email">Email</label>

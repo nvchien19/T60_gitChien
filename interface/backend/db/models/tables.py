@@ -264,6 +264,36 @@ class GeneInteraction(Base):
     )
 
 
+class FormularyMonograph(Base):
+    """Chuyên luận Dược thư quốc gia Việt Nam 2018 (`scripts/import_duoc_thu.py`). THỬ NGHIỆM NỘI BỘ: sách có bản
+    quyền, không đưa nội dung vào git, file dump hay production (xem `docs/DATA_PIPELINE.md` mục 13.4).
+
+    `sections` giữ mọi mục của chuyên luận theo khóa của script; 5 cột văn bản là bản sao các mục hay tra.
+    `drug_id` chỉ có khi khớp chính xác (`match_method`: inn, title, atc); "none" là chưa nối được hoạt chất.
+    """
+    __tablename__ = "formulary_monographs"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    monograph_no: Mapped[int] = mapped_column(Integer, nullable=False)
+    title: Mapped[str] = mapped_column(Text, nullable=False)
+    inn: Mapped[str] = mapped_column(Text, nullable=False)
+    atc: Mapped[str | None] = mapped_column(Text)
+    drug_class: Mapped[str | None] = mapped_column(Text)
+    drug_id: Mapped[str | None] = mapped_column(String, ForeignKey("drugs.drug_id"), index=True)
+    drug_ids: Mapped[list] = mapped_column(JSON, default=list)
+    match_method: Mapped[str] = mapped_column(String, default="none")
+    page_start: Mapped[int | None] = mapped_column(Integer)
+    page_end: Mapped[int | None] = mapped_column(Integer)
+    contraindications: Mapped[str | None] = mapped_column(Text)
+    precautions: Mapped[str | None] = mapped_column(Text)
+    interactions: Mapped[str | None] = mapped_column(Text)
+    pregnancy: Mapped[str | None] = mapped_column(Text)
+    lactation: Mapped[str | None] = mapped_column(Text)
+    sections: Mapped[dict] = mapped_column(JSON, default=dict)
+    source_id: Mapped[str] = mapped_column(
+        String, ForeignKey("sources.source_id"), default="duocthu2018"
+    )
+
+
 class DuplicationClass(Base):
     __tablename__ = "duplication_classes"
     class_name: Mapped[str] = mapped_column(Text, primary_key=True)

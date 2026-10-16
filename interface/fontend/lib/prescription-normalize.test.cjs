@@ -12,6 +12,12 @@ assert.deepEqual(normalize('Họ tên: Nguyễn Văn A\nChẩn đoán: Viêm h�
   { name: 'Vitamin D3', dose: '1000 IU', frequency: '' },
 ])
 assert.deepEqual(normalize('1. Thuốc chưa rõ'), [{name: 'Thuốc chưa rõ', dose: '', frequency: ''}])
+assert.deepEqual(normalize('1/ACEMUC 200mg\n2/PROPANOL 10mg\n3/AUGMENTIN 500mg'), [
+  { name: 'ACEMUC', dose: '200 mg', frequency: '' },
+  { name: 'PROPANOL', dose: '10 mg', frequency: '' },
+  { name: 'AUGMENTIN', dose: '500 mg', frequency: '' },
+])
+assert.equal(normalize('Zalo đặt lịch khám: 0982.831.327\nSinh hiệu: Mạch 102 Vp.').length, 0)
 assert.equal(normalize('1. Amoxicillin 250 mg/5ml')[0].dose, '250 mg/5 ml')
 assert.equal(normalize('Bệnh nhân: A 50mg').length, 0)
 assert.equal(normalize('1. ThuốcX 0,5mg')[0].dose, '0,5 mg')

@@ -40,6 +40,9 @@ app = FastAPI(
     description="Tra cứu tương tác thuốc & cảnh báo an toàn (grounded từ CSDL thật)",
     version="0.1.0",
     lifespan=lifespan,
+    # Production không công khai sơ đồ API (/docs, /openapi.json).
+    **({"docs_url": None, "redoc_url": None, "openapi_url": None}
+       if get_settings().app_env == "production" else {}),
 )
 
 @app.middleware("http")
@@ -47,6 +50,9 @@ async def private_api_cache(request: Request, call_next):
     response = await call_next(request)
     if request.url.path.startswith("/api/v1"):
         response.headers["Cache-Control"] = "no-store"
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("X-Frame-Options", "DENY")
+    response.headers.setdefault("Referrer-Policy", "no-referrer")
     return response
 
 

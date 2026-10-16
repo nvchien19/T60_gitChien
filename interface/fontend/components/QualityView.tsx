@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Info } from 'lucide-react'
-import { loadEvaluation, type EvalAll, type EvalAllMetric, type EvalBenchmark } from '@/lib/api'
+import { api, type EvalAll, type EvalAllMetric, type EvalBenchmark } from '@/lib/api'
 
 type Meta = { label: string; note: string }
 // Chú thích hiện khi bấm nút (i) ở góc phải mỗi chỉ số.
@@ -102,7 +102,7 @@ export function QualityView() {
   const [data, setData] = useState<EvalAll | null>(null)
   const [error, setError] = useState('')
   const [benchInfo, setBenchInfo] = useState(false)
-  useEffect(() => { let cancelled = false; loadEvaluation().then(d => { if (!cancelled) setData(d) }).catch(e => { if (!cancelled) setError(e.message) }); return () => { cancelled = true } }, [])
+  useEffect(() => { let cancelled = false; api<EvalAll>('/eval/metrics/all').then(d => { if (!cancelled) setData(d) }).catch(e => { if (!cancelled) setError(e.message) }); return () => { cancelled = true } }, [])
 
   if (error) return <p role="alert" className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">{error}</p>
   if (!data) return <p role="status" className="rounded-xl bg-white p-5 text-sm">Đang tải chỉ số…</p>

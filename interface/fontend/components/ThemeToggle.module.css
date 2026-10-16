@@ -1,0 +1,113 @@
+.toggle {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 82px;
+  min-width: 82px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.art {
+  display: block;
+  width: 80px;
+  height: 33px;
+  overflow: visible;
+  filter: drop-shadow(0 3px 3px rgb(15 23 42 / 25%));
+  transition: filter 250ms ease, transform 250ms ease;
+}
+
+.toggle[data-compact='true'] {
+  width: 76px;
+  min-width: 76px;
+  height: 44px;
+}
+
+.toggle[data-compact='true'] .art {
+  width: 74px;
+  height: 31px;
+}
+
+.toggle:hover .art {
+  filter: drop-shadow(0 4px 5px rgb(15 23 42 / 30%));
+  transform: translateY(-1px);
+}
+
+.toggle:active .art {
+  transform: scale(.96);
+}
+
+.dayScene,
+.nightScene,
+.sun,
+.moon,
+.craters,
+.knob {
+  transition: opacity 550ms ease, transform 650ms cubic-bezier(.25, .9, .3, 1.1);
+}
+
+.nightScene,
+.moon,
+.craters {
+  opacity: 0;
+}
+
+.knob {
+  filter: drop-shadow(4px 6px 5px rgb(0 0 0 / 40%));
+}
+
+.toggle[data-mode='dark'] .dayScene,
+.toggle[data-mode='dark'] .sun {
+  opacity: 0;
+}
+
+.toggle[data-mode='dark'] .nightScene,
+.toggle[data-mode='dark'] .moon,
+.toggle[data-mode='dark'] .craters {
+  opacity: 1;
+}
+
+.toggle[data-mode='dark'] .knob {
+  transform: translateX(190px);
+}
+
+@media (min-width: 640px) {
+  .toggle {
+    width: 108px;
+    min-width: 108px;
+    height: 48px;
+  }
+
+  .art {
+    width: 104px;
+    height: 43px;
+  }
+
+  .toggle[data-compact='true'] {
+    width: 84px;
+    min-width: 84px;
+    height: 44px;
+  }
+
+  .toggle[data-compact='true'] .art {
+    width: 82px;
+    height: 34px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .art,
+  .dayScene,
+  .nightScene,
+  .sun,
+  .moon,
+  .craters,
+  .knob {
+    transition: none;
+  }
+}

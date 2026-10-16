@@ -8,6 +8,13 @@ export function FoodInteractions({ record }: { record: CheckRecord | null }) {
   const [drug, setDrug] = useState('')
   const [active, setActive] = useState<FoodFinding | null>(null)
   const findings = record?.food_findings || []
+  const foodsByName = new Map<string, string>()
+  for (const row of findings) {
+    const food = (row.pair[1] || '').normalize('NFKC').replace(/\s+/g, ' ').trim()
+    const key = food.toLocaleLowerCase('vi-VN')
+    if (food && !foodsByName.has(key)) foodsByName.set(key, food)
+  }
+  const foods = [...foodsByName.values()]
   const drugs = [...new Set(findings.map(row => row.pair[0]))]
   const selected = drugs.includes(drug) ? drug : ''
   const visible = findings.filter(row => !selected || row.pair[0] === selected)
@@ -19,6 +26,16 @@ export function FoodInteractions({ record }: { record: CheckRecord | null }) {
     </div>
     <p className="mt-3 text-xs leading-relaxed text-slate-500">Làm theo hướng dẫn của từng bản ghi: tránh dùng, giãn cách thời điểm hoặc duy trì lượng ăn ổn định. Không phải mọi thực phẩm được liệt kê đều cần kiêng hoàn toàn.</p>
     {!!record?.unknown?.length && <p className="mt-3 text-sm text-amber-700">Có thuốc chưa được nhận diện; phần thực phẩm chưa đánh giá được đầy đủ cho các thuốc này.</p>}
+    {foods.length > 0 && <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h4 className="text-sm font-extrabold">Thực phẩm nên tránh hoặc điều chỉnh</h4>
+        <span className="text-xs font-semibold text-slate-500">{foods.length} loại</span>
+      </div>
+      <p className="mt-2 text-xs leading-relaxed text-slate-500">Tổng hợp từ tất cả thuốc trong lần kiểm tra. Xem từng tương tác để biết cần tránh, giãn cách hay giữ lượng ăn ổn định.</p>
+      <ul className="mt-3 flex flex-wrap gap-2">
+        {foods.map(food => <li key={food.toLocaleLowerCase('vi-VN')} className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700">{food}</li>)}
+      </ul>
+    </div>}
     {drugs.length > 1 && <div><label htmlFor="food-drug-filter" className="mt-4 block text-xs font-semibold text-slate-600">Lọc theo thuốc</label>
       <select id="food-drug-filter" value={selected} onChange={event => setDrug(event.target.value)} className="mt-2 block w-full rounded-lg border border-slate-200 bg-white p-2 text-sm sm:max-w-sm">
         <option value="">Tất cả thuốc có lưu ý</option>{drugs.map(name => <option key={name} value={name}>{name}</option>)}

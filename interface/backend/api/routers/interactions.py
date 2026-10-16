@@ -10,6 +10,7 @@ from interface.backend.repositories import ddi_repo
 from interface.backend.schemas.chat import InteractionCheckRequest, InteractionCheckResponse
 from interface.backend.schemas.ddi import CheckRequest, CheckResponse
 from interface.backend.services.check_service import normalize_list, run_check
+from interface.backend.services.rate_limit import explain_limit
 from src.core.guardrails import NO_RECORD_MSG
 from src.services.ddi_check import check_interactions
 from src.services.ddi_repository import DDIRepository, get_repository
@@ -26,7 +27,7 @@ async def check(req: CheckRequest, db: AsyncSession = Depends(get_session)):
                            conditions=req.conditions, genes=req.genes)
 
 
-@router.post("/interactions/explain", response_model=InteractionCheckResponse)
+@router.post("/interactions/explain", response_model=InteractionCheckResponse, dependencies=[Depends(explain_limit)])
 async def explain(
     request: InteractionCheckRequest,
     repo: DDIRepository = Depends(get_repository),
