@@ -3,6 +3,15 @@
 > Bộ metric, ngưỡng đạt và golden set để đo agent `normalize → lookup → rank → explain → guardrail`.
 > Ngưỡng được neo theo benchmark đã công bố của các công cụ tra tương tác thuốc hiện có.
 > Phần chấm bằng LLM dùng Ragas và LLM-as-a-judge có kiểu (typed), có tùy chọn JEV chấm trước theo kiểu cascade.
+>
+> **Từ 17/10/2026, chức năng kiểm tra đơn có bộ đánh giá riêng** với đáp án lấy ngoài CSDL của hệ thống: 255 cặp
+> Al-Ashwal 2023 (Micromedex, Drugs.com), 469 cặp ONC 2012, 253 đơn thật (MIMIC-IV Demo + đơn Việt Nam). Script
+> `golden/build_rx_golden.py` và `run_rx_eval.py`; nguồn ở `golden/refs/README.md`; phương pháp, kết quả, phương án
+> và đánh đổi ở `docs/DANH_GIA_KIEM_TRA_DON.md`. Giao diện "Chất lượng AI" hiện bộ này; tài liệu bên dưới mô tả bộ
+> câu hỏi cho trợ lý (48 + 50 ca, đáp án lấy từ CSDL).
+>
+> 255 cặp Al-Ashwal còn được chấm theo **chuẩn tổng hợp** (`golden/build_authoritative_ref.py`): cảnh báo đúng khi có
+> cơ sở trong Micromedex, nhãn thuốc FDA hoặc nhãn thuốc Nhật Bản (KEGG), kèm giải thích. Đây là số chính trên giao diện.
 
 ## 1. Chạy nhanh
 
@@ -35,7 +44,7 @@ Test cho metric nằm ở `tests/test_eval/`. Test không gọi API, vì LLM và
 
 | Nghiên cứu | Hệ thống | Chuẩn so sánh | Metric | Kết quả chính |
 |---|---|---|---|---|
-| Marcath và cs., *J Oncol Pract* 2018 | 9 công cụ: Lexicomp, Micromedex, Facts & Comparisons, PEPID, Drugs.com, Epocrates, Medscape, RxList, WebMD | Stockley's Drug Interactions + PubMed, 145 cặp thuốc ung thư đường uống | Độ nhạy, độ đặc hiệu, PPV, NPV; **điểm tổng hợp = trung bình 4 chỉ số** | Lexicomp: 0,96 / 0,84 / 0,97 / 0,83. Drugs.com: 0,93 / 0,82 / 0,96 / 0,80. Micromedex: 0,85 / 0,73 / 0,94 / 0,55. Medscape: 0,88 / 0,68 / 0,93 / 0,60 |
+| Marcath và cs., *J Oncol Pract* 2018 | 9 công cụ: Lexicomp, Micromedex, Facts & Comparisons, PEPID, Drugs.com, Epocrates, Medscape, RxList, WebMD | Stockley's Drug Interactions + PubMed, 145 cặp thuốc ung thư đường uống | Độ nhạy, độ đặc hiệu, PPV, NPV; **điểm tổng hợp = trung bình 4 chỉ số** | Bảng 2 của bài báo (đã đối chiếu bản gốc 2026-10-07). Trả phí: Lexicomp 0,96 / 0,80 / 0,95 / 0,83; Micromedex 0,86 / 0,87 / 0,96 / 0,62; Facts & Comparisons 0,67 / 0,93 / 0,97 / 0,42; PEPID 0,90 / 0,53 / 0,88 / 0,59. Miễn phí: Drugs.com 0,93 / 0,73 / 0,93 / 0,73; Epocrates Free 0,73 / 0,83 / 0,94 / 0,45; Medscape 0,79 / 0,73 / 0,92 / 0,48; RxList 0,65 / 0,83 / 0,94 / 0,38; WebMD 0,79 / 0,77 / 0,93 / 0,49. Điểm tổng hợp cao nhất: Lexicomp 0,89, Drugs.com 0,83 |
 | Patel & Beckett, *J Med Libr Assoc* 2016 | 7 nguồn tra tương tác | 82 cặp thuốc–thuốc, 18 cặp thuốc–thực phẩm chức năng | Điểm **phạm vi (scope)**, **đầy đủ (completeness)**, tính nhất quán | Scope: Lexicomp 97,0%, Clinical Pharmacology 97,0%, Micromedex 93,0%. Completeness cao nhất: Micromedex, Lexicomp |
 | Suriyapakorn và cs., *PLoS ONE* 2019 | Micromedex và Drugs.com | Đối chiếu chéo | Số cặp phát hiện, **đồng thuận mức độ** | Drugs.com phát hiện gấp khoảng 1,5 lần (1.122 so với 724 cặp). Chỉ **37,43%** cặp được hai nguồn xếp cùng mức độ |
 | Xu và cs., *Front Pharmacol* 2025 | Micromedex, Lexi-Interact, Epocrates, Medscape, Drugs.com (thuốc SSRI) | Đối chiếu chéo | **Gwet AC1** (đồng thuận đã hiệu chỉnh theo ngẫu nhiên) | AC1 chung chỉ 0,16–0,24; riêng tương tác nặng 0,22–0,33 |
@@ -44,7 +53,7 @@ Test cho metric nằm ở `tests/test_eval/`. Test không gọi API, vì LLM và
 
 | Nghiên cứu | Hệ thống | Chuẩn | Kết quả, lấy Drugs.com làm chuẩn (độ nhạy / độ đặc hiệu / độ chính xác) |
 |---|---|---|---|
-| Al-Ashwal và cs., *Drug Healthc Patient Saf* 2023 | ChatGPT-3.5, ChatGPT-4, Bing AI, Bard; 255 cặp thuốc | Micromedex, Drugs.com | ChatGPT-3.5: 0,747 / 0,389 / 0,525. ChatGPT-4: 0,823 / 0,392 / 0,592. Bing AI: 0,879 / 0,892 / 0,890. Bard: 0,956 / 0,755 / 0,860 |
+| Al-Ashwal và cs., *Drug Healthc Patient Saf* 2023 | ChatGPT-3.5, ChatGPT-4, Bing AI, Bard; 255 cặp thuốc | Micromedex, Drugs.com | Bảng 4 của bài báo, N = 255 (đã đối chiếu bản gốc 2026-10-07). ChatGPT-3.5: 0,823 / 0,392 / 0,525. ChatGPT-4: 0,747 / 0,523 / 0,592. Bing AI: 0,886 / 0,892 / 0,890. Bard: 0,823 / 0,625 / 0,686. PPV chỉ 0,38–0,79 |
 
 ### 2.3 Đánh giá câu trả lời y khoa dạng mở và LLM-as-a-judge
 
@@ -58,7 +67,7 @@ Test cho metric nằm ở `tests/test_eval/`. Test không gọi API, vì LLM và
 ### 2.4 Rút ra cho hệ thống
 
 1. **Metric chuẩn của lĩnh vực là bảng 2x2 theo cặp thuốc**: độ nhạy, độ đặc hiệu, PPV, NPV và điểm tổng hợp. Hệ thống dùng đúng các metric này để so được với Lexicomp và Drugs.com.
-2. **LLM không bám nguồn có độ đặc hiệu rất thấp** (ChatGPT-4 chỉ đạt 0,39), tức là báo nhầm nhiều tương tác không có thật. Đây là lý do mọi kết luận phải lấy từ CSDL. Độ đặc hiệu là metric hệ thống phải thắng rõ nhất.
+2. **LLM không bám nguồn có độ đặc hiệu rất thấp** (ChatGPT-3.5 chỉ đạt 0,39, ChatGPT-4 đạt 0,52), tức là báo nhầm nhiều tương tác không có thật. Đây là lý do mọi kết luận phải lấy từ CSDL. Độ đặc hiệu là metric hệ thống phải thắng rõ nhất.
 3. **Các CSDL thương mại bất đồng về mức độ** (chỉ 37% cùng mức; AC1 0,16–0,24). Vì vậy mức độ phải do CSDL quyết định (quyết định #8 trong ARCHITECTURE.md), còn metric chỉ đo agent có **trung thành với CSDL** hay không. Độ đúng lâm sàng của bản thân CSDL (DDInter) là câu hỏi riêng, cần bộ kiểm chứng do dược sĩ gán nhãn (xem mục 6).
 4. **Rubric riêng từng ca (HealthBench) phù hợp hơn thang 1–10**: judge chỉ phải trả lời có/không cho từng tiêu chí cụ thể, nên dễ kiểm chứng và ít thiên lệch.
 
@@ -88,8 +97,8 @@ Một **cặp ứng viên** là mọi cặp hoạt chất khác nhau đến từ
 | Metric | Định nghĩa | Ngưỡng | Căn cứ |
 |---|---|---|---|
 | `sensitivity` | TP / (TP + FN) trên cặp ứng viên, cộng tương tác thực phẩm/bệnh nền | ≥ 0,96 | Lexicomp 0,96 (Marcath 2018) |
-| `specificity` | TN / (TN + FP) | ≥ 0,84 | Lexicomp 0,84; ChatGPT-4 chỉ 0,39 (Al-Ashwal 2023) |
-| `ppv`, `npv` | TP / (TP + FP), TN / (TN + FN) | ≥ 0,97 và ≥ 0,83 | Lexicomp (Marcath 2018) |
+| `specificity` | TN / (TN + FP) | ≥ 0,84 | Tự đặt, chặt hơn Lexicomp 0,80 (Marcath 2018); ChatGPT-3.5 chỉ 0,39 (Al-Ashwal 2023) |
+| `ppv`, `npv` | TP / (TP + FP), TN / (TN + FN) | ≥ 0,97 và ≥ 0,83 | PPV: mức cao nhất trong 9 công cụ (Facts & Comparisons 0,97; Lexicomp 0,95). NPV: Lexicomp 0,83 (Marcath 2018) |
 | `composite` | Trung bình 4 chỉ số trên | theo dõi | Cách tính của Marcath 2018 |
 | `severe_recall` | Cặp major/contraindicated được báo ở mức ≥ major | ≥ 0,95 | ARCHITECTURE.md, giai đoạn 1 |
 | `contraindicated_recall` | Chống chỉ định (lớp 2) được báo đúng là chống chỉ định | = 1,0 | Không được hạ mức chống chỉ định |
@@ -106,6 +115,8 @@ Một **cặp ứng viên** là mọi cặp hoạt chất khác nhau đến từ
 | `citation_coverage` | Mọi finding có mức độ đều được trích dẫn | = 1,0 | G2: 0 kết luận không nguồn |
 | `latency_p95_ms` | Phân vị 95 thời gian trả lời | ≤ 10.000 | PRD < 10 giây |
 
+> **Đính chính 2026-10-07:** bản trước ghi Lexicomp đạt độ đặc hiệu 0,84 và PPV 0,97; bảng gốc của Marcath 2018 là 0,80 và 0,95. Hai ngưỡng 0,84 và 0,97 được giữ nguyên (chưa ai trong team quyết định đổi), nên hiện chúng chặt hơn Lexicomp.
+>
 > Ngưỡng lấy từ Lexicomp là **mức sàn**. Golden set được dựng từ chính CSDL agent truy xuất, nên agent đúng thiết kế phải đạt gần 1,0. Dưới ngưỡng nghĩa là agent làm sai so với dữ liệu của chính nó.
 
 ### 4.2 Tầng B: Ragas (`ragas_eval.py`)

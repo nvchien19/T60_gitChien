@@ -1,0 +1,39 @@
+{
+  "source": "Phansalkar S, Desai AA, Bell D, et al. High-priority drug-drug interactions for use in electronic health records. J Am Med Inform Assoc. 2012;19(5):735-743. doi:10.1136/amiajnl-2011-000612 (Table 2)",
+  "note": "Danh sách 15 tương tác ưu tiên cao do hội đồng chuyên gia của ONC (Mỹ) chọn: hệ thống kê đơn điện tử nên luôn cảnh báo. Tên thành viên chép từ Bảng 2 (dữ kiện, ghi nguồn khi dùng). Quy tắc 8 (QT với QT) bị bỏ vì danh sách thuốc nằm ở torsades.org và đổi theo thời gian. Quy tắc 7: bảng chỉ ghi tên nhóm 'Tricyclic antidepressants', thành viên lấy từ ATC N06AA qua RxClass (NLM).",
+  "classes": {
+    "maoi": ["tranylcypromine", "phenelzine", "isocarboxazid", "procarbazine", "selegiline"],
+    "maoi_triptan": ["tranylcypromine", "phenelzine", "isocarboxazid", "procarbazine", "selegiline", "moclobemide", "methylene blue"],
+    "amphetamine_derivatives": ["dexmethylphenidate", "dextroamphetamine", "methylphenidate", "lisdexamfetamine", "methamphetamine", "phendimetrazine", "pseudoephedrine", "amphetamine", "benzphetamine", "diethylpropion", "phentermine", "atomoxetine"],
+    "ppi": ["omeprazole", "lansoprazole", "pantoprazole", "rabeprazole", "esomeprazole"],
+    "ssri_snri": ["fluoxetine", "paroxetine", "citalopram", "escitalopram", "sertraline", "fluvoxamine", "duloxetine", "nefazodone", "desvenlafaxine", "milnacipran", "venlafaxine"],
+    "protease_inhibitors": ["ritonavir", "nelfinavir", "atazanavir", "indinavir", "saquinavir", "amprenavir", "darunavir", "lopinavir", "tipranavir", "fosamprenavir"],
+    "cyp3a4_inhibitors_irinotecan": ["ritonavir", "nelfinavir", "atazanavir", "indinavir", "saquinavir", "amprenavir", "darunavir", "lopinavir", "tipranavir", "fosamprenavir", "clarithromycin", "erythromycin", "telithromycin", "amiodarone", "verapamil", "diltiazem", "ketoconazole", "itraconazole", "fluconazole", "voriconazole", "nefazodone", "aprepitant", "cimetidine"],
+    "narcotic_analgesics": ["meperidine", "methadone", "tapentadol", "fentanyl", "tramadol", "dextromethorphan"],
+    "tca": "@rxclass:N06AA",
+    "cyp1a2_inhibitors_ramelteon": ["fluvoxamine", "amiodarone", "ticlopidine", "ciprofloxacin"],
+    "strong_cyp3a4_inducers": ["bosentan", "rifapentine", "carbamazepine", "rifabutin", "rifampin", "st. john's wort"],
+    "statins_3a4": ["simvastatin", "lovastatin"],
+    "cyp3a4_inhibitors_statin": ["ritonavir", "nelfinavir", "atazanavir", "indinavir", "saquinavir", "amprenavir", "darunavir", "lopinavir", "tipranavir", "fosamprenavir", "clarithromycin", "erythromycin", "telithromycin", "amiodarone", "verapamil", "diltiazem", "ketoconazole", "itraconazole", "fluconazole", "voriconazole", "nefazodone"],
+    "cyp3a4_inhibitors_ergot": ["ritonavir", "nelfinavir", "atazanavir", "indinavir", "saquinavir", "amprenavir", "darunavir", "lopinavir", "tipranavir", "fosamprenavir", "clarithromycin", "erythromycin", "telithromycin", "ketoconazole", "itraconazole", "voriconazole"],
+    "ergot_alkaloids": ["ergotamine", "methylergonovine", "dihydroergotamine", "ergonovine"],
+    "tizanidine_inhibitors": ["ciprofloxacin", "fluvoxamine", "mexiletine", "propafenone", "zileuton", "amiodarone", "ticlopidine"],
+    "triptans": ["sumatriptan", "zolmitriptan", "rizatriptan"]
+  },
+  "rules": [
+    {"id": "ONC-01", "name": "Amphetamine derivatives – MAO inhibitors", "a": "amphetamine_derivatives", "b": "maoi"},
+    {"id": "ONC-02", "name": "Atazanavir – Proton pump inhibitors", "a": ["atazanavir"], "b": "ppi"},
+    {"id": "ONC-03", "name": "Febuxostat – Azathioprine, mercaptopurine", "a": ["febuxostat"], "b": ["azathioprine", "mercaptopurine"]},
+    {"id": "ONC-04", "name": "SSRI/SNRI – MAO inhibitors", "a": "ssri_snri", "b": "maoi"},
+    {"id": "ONC-05", "name": "Irinotecan – CYP3A4 inhibitors", "a": ["irinotecan"], "b": "cyp3a4_inhibitors_irinotecan"},
+    {"id": "ONC-06", "name": "Narcotic analgesics – MAO inhibitors", "a": "narcotic_analgesics", "b": "maoi"},
+    {"id": "ONC-07", "name": "Tricyclic antidepressants – MAO inhibitors", "a": "tca", "b": "maoi"},
+    {"id": "ONC-09", "name": "Ramelteon – CYP1A2 inhibitors", "a": ["ramelteon"], "b": "cyp1a2_inhibitors_ramelteon"},
+    {"id": "ONC-10", "name": "Strong CYP3A4 inducers – Protease inhibitors", "a": "strong_cyp3a4_inducers", "b": "protease_inhibitors"},
+    {"id": "ONC-11", "name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "a": "statins_3a4", "b": "cyp3a4_inhibitors_statin"},
+    {"id": "ONC-12", "name": "CYP3A4 inhibitors – Ergot alkaloids", "a": "cyp3a4_inhibitors_ergot", "b": "ergot_alkaloids"},
+    {"id": "ONC-13", "name": "Tizanidine – CYP1A2 inhibitors", "a": ["tizanidine"], "b": "tizanidine_inhibitors"},
+    {"id": "ONC-14", "name": "Tranylcypromine – Procarbazine", "a": ["tranylcypromine"], "b": ["procarbazine"]},
+    {"id": "ONC-15", "name": "Triptans – MAO inhibitors", "a": "triptans", "b": "maoi_triptan"}
+  ]
+}

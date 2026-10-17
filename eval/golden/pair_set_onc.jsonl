@@ -1,0 +1,469 @@
+{"pair_id": "ONC-P001", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "dexmethylphenidate", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P002", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "dexmethylphenidate", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P003", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "dexmethylphenidate", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P004", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "dexmethylphenidate", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P005", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "dexmethylphenidate", "drug_b": "selegiline"}
+{"pair_id": "ONC-P006", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "dextroamphetamine", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P007", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "dextroamphetamine", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P008", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "dextroamphetamine", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P009", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "dextroamphetamine", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P010", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "dextroamphetamine", "drug_b": "selegiline"}
+{"pair_id": "ONC-P011", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "methylphenidate", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P012", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "methylphenidate", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P013", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "methylphenidate", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P014", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "methylphenidate", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P015", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "methylphenidate", "drug_b": "selegiline"}
+{"pair_id": "ONC-P016", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "lisdexamfetamine", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P017", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "lisdexamfetamine", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P018", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "lisdexamfetamine", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P019", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "lisdexamfetamine", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P020", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "lisdexamfetamine", "drug_b": "selegiline"}
+{"pair_id": "ONC-P021", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "methamphetamine", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P022", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "methamphetamine", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P023", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "methamphetamine", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P024", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "methamphetamine", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P025", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "methamphetamine", "drug_b": "selegiline"}
+{"pair_id": "ONC-P026", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "phendimetrazine", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P027", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "phendimetrazine", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P028", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "phendimetrazine", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P029", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "phendimetrazine", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P030", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "phendimetrazine", "drug_b": "selegiline"}
+{"pair_id": "ONC-P031", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "pseudoephedrine", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P032", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "pseudoephedrine", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P033", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "pseudoephedrine", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P034", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "pseudoephedrine", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P035", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "pseudoephedrine", "drug_b": "selegiline"}
+{"pair_id": "ONC-P036", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "amphetamine", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P037", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "amphetamine", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P038", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "amphetamine", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P039", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "amphetamine", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P040", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "amphetamine", "drug_b": "selegiline"}
+{"pair_id": "ONC-P041", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "benzphetamine", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P042", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "benzphetamine", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P043", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "benzphetamine", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P044", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "benzphetamine", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P045", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "benzphetamine", "drug_b": "selegiline"}
+{"pair_id": "ONC-P046", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "diethylpropion", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P047", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "diethylpropion", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P048", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "diethylpropion", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P049", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "diethylpropion", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P050", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "diethylpropion", "drug_b": "selegiline"}
+{"pair_id": "ONC-P051", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "phentermine", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P052", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "phentermine", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P053", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "phentermine", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P054", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "phentermine", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P055", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "phentermine", "drug_b": "selegiline"}
+{"pair_id": "ONC-P056", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "atomoxetine", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P057", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "atomoxetine", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P058", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "atomoxetine", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P059", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "atomoxetine", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P060", "rule": "ONC-01", "rule_name": "Amphetamine derivatives – MAO inhibitors", "drug_a": "atomoxetine", "drug_b": "selegiline"}
+{"pair_id": "ONC-P061", "rule": "ONC-02", "rule_name": "Atazanavir – Proton pump inhibitors", "drug_a": "atazanavir", "drug_b": "omeprazole"}
+{"pair_id": "ONC-P062", "rule": "ONC-02", "rule_name": "Atazanavir – Proton pump inhibitors", "drug_a": "atazanavir", "drug_b": "lansoprazole"}
+{"pair_id": "ONC-P063", "rule": "ONC-02", "rule_name": "Atazanavir – Proton pump inhibitors", "drug_a": "atazanavir", "drug_b": "pantoprazole"}
+{"pair_id": "ONC-P064", "rule": "ONC-02", "rule_name": "Atazanavir – Proton pump inhibitors", "drug_a": "atazanavir", "drug_b": "rabeprazole"}
+{"pair_id": "ONC-P065", "rule": "ONC-02", "rule_name": "Atazanavir – Proton pump inhibitors", "drug_a": "atazanavir", "drug_b": "esomeprazole"}
+{"pair_id": "ONC-P066", "rule": "ONC-03", "rule_name": "Febuxostat – Azathioprine, mercaptopurine", "drug_a": "febuxostat", "drug_b": "azathioprine"}
+{"pair_id": "ONC-P067", "rule": "ONC-03", "rule_name": "Febuxostat – Azathioprine, mercaptopurine", "drug_a": "febuxostat", "drug_b": "mercaptopurine"}
+{"pair_id": "ONC-P068", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "fluoxetine", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P069", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "fluoxetine", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P070", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "fluoxetine", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P071", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "fluoxetine", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P072", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "fluoxetine", "drug_b": "selegiline"}
+{"pair_id": "ONC-P073", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "paroxetine", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P074", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "paroxetine", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P075", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "paroxetine", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P076", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "paroxetine", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P077", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "paroxetine", "drug_b": "selegiline"}
+{"pair_id": "ONC-P078", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "citalopram", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P079", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "citalopram", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P080", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "citalopram", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P081", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "citalopram", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P082", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "citalopram", "drug_b": "selegiline"}
+{"pair_id": "ONC-P083", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "escitalopram", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P084", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "escitalopram", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P085", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "escitalopram", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P086", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "escitalopram", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P087", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "escitalopram", "drug_b": "selegiline"}
+{"pair_id": "ONC-P088", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "sertraline", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P089", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "sertraline", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P090", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "sertraline", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P091", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "sertraline", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P092", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "sertraline", "drug_b": "selegiline"}
+{"pair_id": "ONC-P093", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "fluvoxamine", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P094", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "fluvoxamine", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P095", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "fluvoxamine", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P096", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "fluvoxamine", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P097", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "fluvoxamine", "drug_b": "selegiline"}
+{"pair_id": "ONC-P098", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "duloxetine", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P099", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "duloxetine", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P100", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "duloxetine", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P101", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "duloxetine", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P102", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "duloxetine", "drug_b": "selegiline"}
+{"pair_id": "ONC-P103", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "nefazodone", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P104", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "nefazodone", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P105", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "nefazodone", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P106", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "nefazodone", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P107", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "nefazodone", "drug_b": "selegiline"}
+{"pair_id": "ONC-P108", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "desvenlafaxine", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P109", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "desvenlafaxine", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P110", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "desvenlafaxine", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P111", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "desvenlafaxine", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P112", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "desvenlafaxine", "drug_b": "selegiline"}
+{"pair_id": "ONC-P113", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "milnacipran", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P114", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "milnacipran", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P115", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "milnacipran", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P116", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "milnacipran", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P117", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "milnacipran", "drug_b": "selegiline"}
+{"pair_id": "ONC-P118", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "venlafaxine", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P119", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "venlafaxine", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P120", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "venlafaxine", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P121", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "venlafaxine", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P122", "rule": "ONC-04", "rule_name": "SSRI/SNRI – MAO inhibitors", "drug_a": "venlafaxine", "drug_b": "selegiline"}
+{"pair_id": "ONC-P123", "rule": "ONC-05", "rule_name": "Irinotecan – CYP3A4 inhibitors", "drug_a": "irinotecan", "drug_b": "ritonavir"}
+{"pair_id": "ONC-P124", "rule": "ONC-05", "rule_name": "Irinotecan – CYP3A4 inhibitors", "drug_a": "irinotecan", "drug_b": "nelfinavir"}
+{"pair_id": "ONC-P125", "rule": "ONC-05", "rule_name": "Irinotecan – CYP3A4 inhibitors", "drug_a": "irinotecan", "drug_b": "atazanavir"}
+{"pair_id": "ONC-P126", "rule": "ONC-05", "rule_name": "Irinotecan – CYP3A4 inhibitors", "drug_a": "irinotecan", "drug_b": "indinavir"}
+{"pair_id": "ONC-P127", "rule": "ONC-05", "rule_name": "Irinotecan – CYP3A4 inhibitors", "drug_a": "irinotecan", "drug_b": "saquinavir"}
+{"pair_id": "ONC-P128", "rule": "ONC-05", "rule_name": "Irinotecan – CYP3A4 inhibitors", "drug_a": "irinotecan", "drug_b": "amprenavir"}
+{"pair_id": "ONC-P129", "rule": "ONC-05", "rule_name": "Irinotecan – CYP3A4 inhibitors", "drug_a": "irinotecan", "drug_b": "darunavir"}
+{"pair_id": "ONC-P130", "rule": "ONC-05", "rule_name": "Irinotecan – CYP3A4 inhibitors", "drug_a": "irinotecan", "drug_b": "lopinavir"}
+{"pair_id": "ONC-P131", "rule": "ONC-05", "rule_name": "Irinotecan – CYP3A4 inhibitors", "drug_a": "irinotecan", "drug_b": "tipranavir"}
+{"pair_id": "ONC-P132", "rule": "ONC-05", "rule_name": "Irinotecan – CYP3A4 inhibitors", "drug_a": "irinotecan", "drug_b": "fosamprenavir"}
+{"pair_id": "ONC-P133", "rule": "ONC-05", "rule_name": "Irinotecan – CYP3A4 inhibitors", "drug_a": "irinotecan", "drug_b": "clarithromycin"}
+{"pair_id": "ONC-P134", "rule": "ONC-05", "rule_name": "Irinotecan – CYP3A4 inhibitors", "drug_a": "irinotecan", "drug_b": "erythromycin"}
+{"pair_id": "ONC-P135", "rule": "ONC-05", "rule_name": "Irinotecan – CYP3A4 inhibitors", "drug_a": "irinotecan", "drug_b": "telithromycin"}
+{"pair_id": "ONC-P136", "rule": "ONC-05", "rule_name": "Irinotecan – CYP3A4 inhibitors", "drug_a": "irinotecan", "drug_b": "amiodarone"}
+{"pair_id": "ONC-P137", "rule": "ONC-05", "rule_name": "Irinotecan – CYP3A4 inhibitors", "drug_a": "irinotecan", "drug_b": "verapamil"}
+{"pair_id": "ONC-P138", "rule": "ONC-05", "rule_name": "Irinotecan – CYP3A4 inhibitors", "drug_a": "irinotecan", "drug_b": "diltiazem"}
+{"pair_id": "ONC-P139", "rule": "ONC-05", "rule_name": "Irinotecan – CYP3A4 inhibitors", "drug_a": "irinotecan", "drug_b": "ketoconazole"}
+{"pair_id": "ONC-P140", "rule": "ONC-05", "rule_name": "Irinotecan – CYP3A4 inhibitors", "drug_a": "irinotecan", "drug_b": "itraconazole"}
+{"pair_id": "ONC-P141", "rule": "ONC-05", "rule_name": "Irinotecan – CYP3A4 inhibitors", "drug_a": "irinotecan", "drug_b": "fluconazole"}
+{"pair_id": "ONC-P142", "rule": "ONC-05", "rule_name": "Irinotecan – CYP3A4 inhibitors", "drug_a": "irinotecan", "drug_b": "voriconazole"}
+{"pair_id": "ONC-P143", "rule": "ONC-05", "rule_name": "Irinotecan – CYP3A4 inhibitors", "drug_a": "irinotecan", "drug_b": "nefazodone"}
+{"pair_id": "ONC-P144", "rule": "ONC-05", "rule_name": "Irinotecan – CYP3A4 inhibitors", "drug_a": "irinotecan", "drug_b": "aprepitant"}
+{"pair_id": "ONC-P145", "rule": "ONC-05", "rule_name": "Irinotecan – CYP3A4 inhibitors", "drug_a": "irinotecan", "drug_b": "cimetidine"}
+{"pair_id": "ONC-P146", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "meperidine", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P147", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "meperidine", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P148", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "meperidine", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P149", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "meperidine", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P150", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "meperidine", "drug_b": "selegiline"}
+{"pair_id": "ONC-P151", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "methadone", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P152", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "methadone", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P153", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "methadone", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P154", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "methadone", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P155", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "methadone", "drug_b": "selegiline"}
+{"pair_id": "ONC-P156", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "tapentadol", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P157", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "tapentadol", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P158", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "tapentadol", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P159", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "tapentadol", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P160", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "tapentadol", "drug_b": "selegiline"}
+{"pair_id": "ONC-P161", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "fentanyl", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P162", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "fentanyl", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P163", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "fentanyl", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P164", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "fentanyl", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P165", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "fentanyl", "drug_b": "selegiline"}
+{"pair_id": "ONC-P166", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "tramadol", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P167", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "tramadol", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P168", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "tramadol", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P169", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "tramadol", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P170", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "tramadol", "drug_b": "selegiline"}
+{"pair_id": "ONC-P171", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "dextromethorphan", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P172", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "dextromethorphan", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P173", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "dextromethorphan", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P174", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "dextromethorphan", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P175", "rule": "ONC-06", "rule_name": "Narcotic analgesics – MAO inhibitors", "drug_a": "dextromethorphan", "drug_b": "selegiline"}
+{"pair_id": "ONC-P176", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "amineptin", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P177", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "amineptin", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P178", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "amineptin", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P179", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "amineptin", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P180", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "amineptin", "drug_b": "selegiline"}
+{"pair_id": "ONC-P181", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "amitriptyline", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P182", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "amitriptyline", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P183", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "amitriptyline", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P184", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "amitriptyline", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P185", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "amitriptyline", "drug_b": "selegiline"}
+{"pair_id": "ONC-P186", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "amoxapine", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P187", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "amoxapine", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P188", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "amoxapine", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P189", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "amoxapine", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P190", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "amoxapine", "drug_b": "selegiline"}
+{"pair_id": "ONC-P191", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "butriptyline", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P192", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "butriptyline", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P193", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "butriptyline", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P194", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "butriptyline", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P195", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "butriptyline", "drug_b": "selegiline"}
+{"pair_id": "ONC-P196", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "clomipramine", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P197", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "clomipramine", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P198", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "clomipramine", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P199", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "clomipramine", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P200", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "clomipramine", "drug_b": "selegiline"}
+{"pair_id": "ONC-P201", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "desipramine", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P202", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "desipramine", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P203", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "desipramine", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P204", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "desipramine", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P205", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "desipramine", "drug_b": "selegiline"}
+{"pair_id": "ONC-P206", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "dibenzepin", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P207", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "dibenzepin", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P208", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "dibenzepin", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P209", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "dibenzepin", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P210", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "dibenzepin", "drug_b": "selegiline"}
+{"pair_id": "ONC-P211", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "dothiepin", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P212", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "dothiepin", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P213", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "dothiepin", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P214", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "dothiepin", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P215", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "dothiepin", "drug_b": "selegiline"}
+{"pair_id": "ONC-P216", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "doxepin", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P217", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "doxepin", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P218", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "doxepin", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P219", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "doxepin", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P220", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "doxepin", "drug_b": "selegiline"}
+{"pair_id": "ONC-P221", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "imipramine", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P222", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "imipramine", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P223", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "imipramine", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P224", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "imipramine", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P225", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "imipramine", "drug_b": "selegiline"}
+{"pair_id": "ONC-P226", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "iprindole", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P227", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "iprindole", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P228", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "iprindole", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P229", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "iprindole", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P230", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "iprindole", "drug_b": "selegiline"}
+{"pair_id": "ONC-P231", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "lofepramine", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P232", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "lofepramine", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P233", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "lofepramine", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P234", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "lofepramine", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P235", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "lofepramine", "drug_b": "selegiline"}
+{"pair_id": "ONC-P236", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "maprotiline", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P237", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "maprotiline", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P238", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "maprotiline", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P239", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "maprotiline", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P240", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "maprotiline", "drug_b": "selegiline"}
+{"pair_id": "ONC-P241", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "melitracen", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P242", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "melitracen", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P243", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "melitracen", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P244", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "melitracen", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P245", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "melitracen", "drug_b": "selegiline"}
+{"pair_id": "ONC-P246", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "nortriptyline", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P247", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "nortriptyline", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P248", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "nortriptyline", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P249", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "nortriptyline", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P250", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "nortriptyline", "drug_b": "selegiline"}
+{"pair_id": "ONC-P251", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "opipramol", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P252", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "opipramol", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P253", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "opipramol", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P254", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "opipramol", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P255", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "opipramol", "drug_b": "selegiline"}
+{"pair_id": "ONC-P256", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "protriptyline", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P257", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "protriptyline", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P258", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "protriptyline", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P259", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "protriptyline", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P260", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "protriptyline", "drug_b": "selegiline"}
+{"pair_id": "ONC-P261", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "quinupramine", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P262", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "quinupramine", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P263", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "quinupramine", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P264", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "quinupramine", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P265", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "quinupramine", "drug_b": "selegiline"}
+{"pair_id": "ONC-P266", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "trimipramine", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P267", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "trimipramine", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P268", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "trimipramine", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P269", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "trimipramine", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P270", "rule": "ONC-07", "rule_name": "Tricyclic antidepressants – MAO inhibitors", "drug_a": "trimipramine", "drug_b": "selegiline"}
+{"pair_id": "ONC-P271", "rule": "ONC-09", "rule_name": "Ramelteon – CYP1A2 inhibitors", "drug_a": "ramelteon", "drug_b": "fluvoxamine"}
+{"pair_id": "ONC-P272", "rule": "ONC-09", "rule_name": "Ramelteon – CYP1A2 inhibitors", "drug_a": "ramelteon", "drug_b": "amiodarone"}
+{"pair_id": "ONC-P273", "rule": "ONC-09", "rule_name": "Ramelteon – CYP1A2 inhibitors", "drug_a": "ramelteon", "drug_b": "ticlopidine"}
+{"pair_id": "ONC-P274", "rule": "ONC-09", "rule_name": "Ramelteon – CYP1A2 inhibitors", "drug_a": "ramelteon", "drug_b": "ciprofloxacin"}
+{"pair_id": "ONC-P275", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "bosentan", "drug_b": "ritonavir"}
+{"pair_id": "ONC-P276", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "bosentan", "drug_b": "nelfinavir"}
+{"pair_id": "ONC-P277", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "bosentan", "drug_b": "atazanavir"}
+{"pair_id": "ONC-P278", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "bosentan", "drug_b": "indinavir"}
+{"pair_id": "ONC-P279", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "bosentan", "drug_b": "saquinavir"}
+{"pair_id": "ONC-P280", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "bosentan", "drug_b": "amprenavir"}
+{"pair_id": "ONC-P281", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "bosentan", "drug_b": "darunavir"}
+{"pair_id": "ONC-P282", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "bosentan", "drug_b": "lopinavir"}
+{"pair_id": "ONC-P283", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "bosentan", "drug_b": "tipranavir"}
+{"pair_id": "ONC-P284", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "bosentan", "drug_b": "fosamprenavir"}
+{"pair_id": "ONC-P285", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifapentine", "drug_b": "ritonavir"}
+{"pair_id": "ONC-P286", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifapentine", "drug_b": "nelfinavir"}
+{"pair_id": "ONC-P287", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifapentine", "drug_b": "atazanavir"}
+{"pair_id": "ONC-P288", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifapentine", "drug_b": "indinavir"}
+{"pair_id": "ONC-P289", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifapentine", "drug_b": "saquinavir"}
+{"pair_id": "ONC-P290", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifapentine", "drug_b": "amprenavir"}
+{"pair_id": "ONC-P291", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifapentine", "drug_b": "darunavir"}
+{"pair_id": "ONC-P292", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifapentine", "drug_b": "lopinavir"}
+{"pair_id": "ONC-P293", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifapentine", "drug_b": "tipranavir"}
+{"pair_id": "ONC-P294", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifapentine", "drug_b": "fosamprenavir"}
+{"pair_id": "ONC-P295", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "carbamazepine", "drug_b": "ritonavir"}
+{"pair_id": "ONC-P296", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "carbamazepine", "drug_b": "nelfinavir"}
+{"pair_id": "ONC-P297", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "carbamazepine", "drug_b": "atazanavir"}
+{"pair_id": "ONC-P298", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "carbamazepine", "drug_b": "indinavir"}
+{"pair_id": "ONC-P299", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "carbamazepine", "drug_b": "saquinavir"}
+{"pair_id": "ONC-P300", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "carbamazepine", "drug_b": "amprenavir"}
+{"pair_id": "ONC-P301", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "carbamazepine", "drug_b": "darunavir"}
+{"pair_id": "ONC-P302", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "carbamazepine", "drug_b": "lopinavir"}
+{"pair_id": "ONC-P303", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "carbamazepine", "drug_b": "tipranavir"}
+{"pair_id": "ONC-P304", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "carbamazepine", "drug_b": "fosamprenavir"}
+{"pair_id": "ONC-P305", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifabutin", "drug_b": "ritonavir"}
+{"pair_id": "ONC-P306", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifabutin", "drug_b": "nelfinavir"}
+{"pair_id": "ONC-P307", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifabutin", "drug_b": "atazanavir"}
+{"pair_id": "ONC-P308", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifabutin", "drug_b": "indinavir"}
+{"pair_id": "ONC-P309", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifabutin", "drug_b": "saquinavir"}
+{"pair_id": "ONC-P310", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifabutin", "drug_b": "amprenavir"}
+{"pair_id": "ONC-P311", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifabutin", "drug_b": "darunavir"}
+{"pair_id": "ONC-P312", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifabutin", "drug_b": "lopinavir"}
+{"pair_id": "ONC-P313", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifabutin", "drug_b": "tipranavir"}
+{"pair_id": "ONC-P314", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifabutin", "drug_b": "fosamprenavir"}
+{"pair_id": "ONC-P315", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifampin", "drug_b": "ritonavir"}
+{"pair_id": "ONC-P316", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifampin", "drug_b": "nelfinavir"}
+{"pair_id": "ONC-P317", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifampin", "drug_b": "atazanavir"}
+{"pair_id": "ONC-P318", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifampin", "drug_b": "indinavir"}
+{"pair_id": "ONC-P319", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifampin", "drug_b": "saquinavir"}
+{"pair_id": "ONC-P320", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifampin", "drug_b": "amprenavir"}
+{"pair_id": "ONC-P321", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifampin", "drug_b": "darunavir"}
+{"pair_id": "ONC-P322", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifampin", "drug_b": "lopinavir"}
+{"pair_id": "ONC-P323", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifampin", "drug_b": "tipranavir"}
+{"pair_id": "ONC-P324", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "rifampin", "drug_b": "fosamprenavir"}
+{"pair_id": "ONC-P325", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "st. john's wort", "drug_b": "ritonavir"}
+{"pair_id": "ONC-P326", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "st. john's wort", "drug_b": "nelfinavir"}
+{"pair_id": "ONC-P327", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "st. john's wort", "drug_b": "atazanavir"}
+{"pair_id": "ONC-P328", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "st. john's wort", "drug_b": "indinavir"}
+{"pair_id": "ONC-P329", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "st. john's wort", "drug_b": "saquinavir"}
+{"pair_id": "ONC-P330", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "st. john's wort", "drug_b": "amprenavir"}
+{"pair_id": "ONC-P331", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "st. john's wort", "drug_b": "darunavir"}
+{"pair_id": "ONC-P332", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "st. john's wort", "drug_b": "lopinavir"}
+{"pair_id": "ONC-P333", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "st. john's wort", "drug_b": "tipranavir"}
+{"pair_id": "ONC-P334", "rule": "ONC-10", "rule_name": "Strong CYP3A4 inducers – Protease inhibitors", "drug_a": "st. john's wort", "drug_b": "fosamprenavir"}
+{"pair_id": "ONC-P335", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "simvastatin", "drug_b": "ritonavir"}
+{"pair_id": "ONC-P336", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "simvastatin", "drug_b": "nelfinavir"}
+{"pair_id": "ONC-P337", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "simvastatin", "drug_b": "atazanavir"}
+{"pair_id": "ONC-P338", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "simvastatin", "drug_b": "indinavir"}
+{"pair_id": "ONC-P339", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "simvastatin", "drug_b": "saquinavir"}
+{"pair_id": "ONC-P340", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "simvastatin", "drug_b": "amprenavir"}
+{"pair_id": "ONC-P341", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "simvastatin", "drug_b": "darunavir"}
+{"pair_id": "ONC-P342", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "simvastatin", "drug_b": "lopinavir"}
+{"pair_id": "ONC-P343", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "simvastatin", "drug_b": "tipranavir"}
+{"pair_id": "ONC-P344", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "simvastatin", "drug_b": "fosamprenavir"}
+{"pair_id": "ONC-P345", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "simvastatin", "drug_b": "clarithromycin"}
+{"pair_id": "ONC-P346", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "simvastatin", "drug_b": "erythromycin"}
+{"pair_id": "ONC-P347", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "simvastatin", "drug_b": "telithromycin"}
+{"pair_id": "ONC-P348", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "simvastatin", "drug_b": "amiodarone"}
+{"pair_id": "ONC-P349", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "simvastatin", "drug_b": "verapamil"}
+{"pair_id": "ONC-P350", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "simvastatin", "drug_b": "diltiazem"}
+{"pair_id": "ONC-P351", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "simvastatin", "drug_b": "ketoconazole"}
+{"pair_id": "ONC-P352", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "simvastatin", "drug_b": "itraconazole"}
+{"pair_id": "ONC-P353", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "simvastatin", "drug_b": "fluconazole"}
+{"pair_id": "ONC-P354", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "simvastatin", "drug_b": "voriconazole"}
+{"pair_id": "ONC-P355", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "simvastatin", "drug_b": "nefazodone"}
+{"pair_id": "ONC-P356", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "lovastatin", "drug_b": "ritonavir"}
+{"pair_id": "ONC-P357", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "lovastatin", "drug_b": "nelfinavir"}
+{"pair_id": "ONC-P358", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "lovastatin", "drug_b": "atazanavir"}
+{"pair_id": "ONC-P359", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "lovastatin", "drug_b": "indinavir"}
+{"pair_id": "ONC-P360", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "lovastatin", "drug_b": "saquinavir"}
+{"pair_id": "ONC-P361", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "lovastatin", "drug_b": "amprenavir"}
+{"pair_id": "ONC-P362", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "lovastatin", "drug_b": "darunavir"}
+{"pair_id": "ONC-P363", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "lovastatin", "drug_b": "lopinavir"}
+{"pair_id": "ONC-P364", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "lovastatin", "drug_b": "tipranavir"}
+{"pair_id": "ONC-P365", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "lovastatin", "drug_b": "fosamprenavir"}
+{"pair_id": "ONC-P366", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "lovastatin", "drug_b": "clarithromycin"}
+{"pair_id": "ONC-P367", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "lovastatin", "drug_b": "erythromycin"}
+{"pair_id": "ONC-P368", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "lovastatin", "drug_b": "telithromycin"}
+{"pair_id": "ONC-P369", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "lovastatin", "drug_b": "amiodarone"}
+{"pair_id": "ONC-P370", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "lovastatin", "drug_b": "verapamil"}
+{"pair_id": "ONC-P371", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "lovastatin", "drug_b": "diltiazem"}
+{"pair_id": "ONC-P372", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "lovastatin", "drug_b": "ketoconazole"}
+{"pair_id": "ONC-P373", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "lovastatin", "drug_b": "itraconazole"}
+{"pair_id": "ONC-P374", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "lovastatin", "drug_b": "fluconazole"}
+{"pair_id": "ONC-P375", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "lovastatin", "drug_b": "voriconazole"}
+{"pair_id": "ONC-P376", "rule": "ONC-11", "rule_name": "Simvastatin, lovastatin – CYP3A4 inhibitors", "drug_a": "lovastatin", "drug_b": "nefazodone"}
+{"pair_id": "ONC-P377", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "ritonavir", "drug_b": "ergotamine"}
+{"pair_id": "ONC-P378", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "ritonavir", "drug_b": "methylergonovine"}
+{"pair_id": "ONC-P379", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "ritonavir", "drug_b": "dihydroergotamine"}
+{"pair_id": "ONC-P380", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "ritonavir", "drug_b": "ergonovine"}
+{"pair_id": "ONC-P381", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "nelfinavir", "drug_b": "ergotamine"}
+{"pair_id": "ONC-P382", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "nelfinavir", "drug_b": "methylergonovine"}
+{"pair_id": "ONC-P383", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "nelfinavir", "drug_b": "dihydroergotamine"}
+{"pair_id": "ONC-P384", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "nelfinavir", "drug_b": "ergonovine"}
+{"pair_id": "ONC-P385", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "atazanavir", "drug_b": "ergotamine"}
+{"pair_id": "ONC-P386", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "atazanavir", "drug_b": "methylergonovine"}
+{"pair_id": "ONC-P387", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "atazanavir", "drug_b": "dihydroergotamine"}
+{"pair_id": "ONC-P388", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "atazanavir", "drug_b": "ergonovine"}
+{"pair_id": "ONC-P389", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "indinavir", "drug_b": "ergotamine"}
+{"pair_id": "ONC-P390", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "indinavir", "drug_b": "methylergonovine"}
+{"pair_id": "ONC-P391", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "indinavir", "drug_b": "dihydroergotamine"}
+{"pair_id": "ONC-P392", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "indinavir", "drug_b": "ergonovine"}
+{"pair_id": "ONC-P393", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "saquinavir", "drug_b": "ergotamine"}
+{"pair_id": "ONC-P394", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "saquinavir", "drug_b": "methylergonovine"}
+{"pair_id": "ONC-P395", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "saquinavir", "drug_b": "dihydroergotamine"}
+{"pair_id": "ONC-P396", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "saquinavir", "drug_b": "ergonovine"}
+{"pair_id": "ONC-P397", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "amprenavir", "drug_b": "ergotamine"}
+{"pair_id": "ONC-P398", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "amprenavir", "drug_b": "methylergonovine"}
+{"pair_id": "ONC-P399", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "amprenavir", "drug_b": "dihydroergotamine"}
+{"pair_id": "ONC-P400", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "amprenavir", "drug_b": "ergonovine"}
+{"pair_id": "ONC-P401", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "darunavir", "drug_b": "ergotamine"}
+{"pair_id": "ONC-P402", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "darunavir", "drug_b": "methylergonovine"}
+{"pair_id": "ONC-P403", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "darunavir", "drug_b": "dihydroergotamine"}
+{"pair_id": "ONC-P404", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "darunavir", "drug_b": "ergonovine"}
+{"pair_id": "ONC-P405", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "lopinavir", "drug_b": "ergotamine"}
+{"pair_id": "ONC-P406", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "lopinavir", "drug_b": "methylergonovine"}
+{"pair_id": "ONC-P407", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "lopinavir", "drug_b": "dihydroergotamine"}
+{"pair_id": "ONC-P408", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "lopinavir", "drug_b": "ergonovine"}
+{"pair_id": "ONC-P409", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "tipranavir", "drug_b": "ergotamine"}
+{"pair_id": "ONC-P410", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "tipranavir", "drug_b": "methylergonovine"}
+{"pair_id": "ONC-P411", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "tipranavir", "drug_b": "dihydroergotamine"}
+{"pair_id": "ONC-P412", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "tipranavir", "drug_b": "ergonovine"}
+{"pair_id": "ONC-P413", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "fosamprenavir", "drug_b": "ergotamine"}
+{"pair_id": "ONC-P414", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "fosamprenavir", "drug_b": "methylergonovine"}
+{"pair_id": "ONC-P415", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "fosamprenavir", "drug_b": "dihydroergotamine"}
+{"pair_id": "ONC-P416", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "fosamprenavir", "drug_b": "ergonovine"}
+{"pair_id": "ONC-P417", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "clarithromycin", "drug_b": "ergotamine"}
+{"pair_id": "ONC-P418", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "clarithromycin", "drug_b": "methylergonovine"}
+{"pair_id": "ONC-P419", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "clarithromycin", "drug_b": "dihydroergotamine"}
+{"pair_id": "ONC-P420", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "clarithromycin", "drug_b": "ergonovine"}
+{"pair_id": "ONC-P421", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "erythromycin", "drug_b": "ergotamine"}
+{"pair_id": "ONC-P422", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "erythromycin", "drug_b": "methylergonovine"}
+{"pair_id": "ONC-P423", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "erythromycin", "drug_b": "dihydroergotamine"}
+{"pair_id": "ONC-P424", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "erythromycin", "drug_b": "ergonovine"}
+{"pair_id": "ONC-P425", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "telithromycin", "drug_b": "ergotamine"}
+{"pair_id": "ONC-P426", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "telithromycin", "drug_b": "methylergonovine"}
+{"pair_id": "ONC-P427", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "telithromycin", "drug_b": "dihydroergotamine"}
+{"pair_id": "ONC-P428", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "telithromycin", "drug_b": "ergonovine"}
+{"pair_id": "ONC-P429", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "ketoconazole", "drug_b": "ergotamine"}
+{"pair_id": "ONC-P430", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "ketoconazole", "drug_b": "methylergonovine"}
+{"pair_id": "ONC-P431", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "ketoconazole", "drug_b": "dihydroergotamine"}
+{"pair_id": "ONC-P432", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "ketoconazole", "drug_b": "ergonovine"}
+{"pair_id": "ONC-P433", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "itraconazole", "drug_b": "ergotamine"}
+{"pair_id": "ONC-P434", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "itraconazole", "drug_b": "methylergonovine"}
+{"pair_id": "ONC-P435", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "itraconazole", "drug_b": "dihydroergotamine"}
+{"pair_id": "ONC-P436", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "itraconazole", "drug_b": "ergonovine"}
+{"pair_id": "ONC-P437", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "voriconazole", "drug_b": "ergotamine"}
+{"pair_id": "ONC-P438", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "voriconazole", "drug_b": "methylergonovine"}
+{"pair_id": "ONC-P439", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "voriconazole", "drug_b": "dihydroergotamine"}
+{"pair_id": "ONC-P440", "rule": "ONC-12", "rule_name": "CYP3A4 inhibitors – Ergot alkaloids", "drug_a": "voriconazole", "drug_b": "ergonovine"}
+{"pair_id": "ONC-P441", "rule": "ONC-13", "rule_name": "Tizanidine – CYP1A2 inhibitors", "drug_a": "tizanidine", "drug_b": "ciprofloxacin"}
+{"pair_id": "ONC-P442", "rule": "ONC-13", "rule_name": "Tizanidine – CYP1A2 inhibitors", "drug_a": "tizanidine", "drug_b": "fluvoxamine"}
+{"pair_id": "ONC-P443", "rule": "ONC-13", "rule_name": "Tizanidine – CYP1A2 inhibitors", "drug_a": "tizanidine", "drug_b": "mexiletine"}
+{"pair_id": "ONC-P444", "rule": "ONC-13", "rule_name": "Tizanidine – CYP1A2 inhibitors", "drug_a": "tizanidine", "drug_b": "propafenone"}
+{"pair_id": "ONC-P445", "rule": "ONC-13", "rule_name": "Tizanidine – CYP1A2 inhibitors", "drug_a": "tizanidine", "drug_b": "zileuton"}
+{"pair_id": "ONC-P446", "rule": "ONC-13", "rule_name": "Tizanidine – CYP1A2 inhibitors", "drug_a": "tizanidine", "drug_b": "amiodarone"}
+{"pair_id": "ONC-P447", "rule": "ONC-13", "rule_name": "Tizanidine – CYP1A2 inhibitors", "drug_a": "tizanidine", "drug_b": "ticlopidine"}
+{"pair_id": "ONC-P448", "rule": "ONC-14", "rule_name": "Tranylcypromine – Procarbazine", "drug_a": "tranylcypromine", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P449", "rule": "ONC-15", "rule_name": "Triptans – MAO inhibitors", "drug_a": "sumatriptan", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P450", "rule": "ONC-15", "rule_name": "Triptans – MAO inhibitors", "drug_a": "sumatriptan", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P451", "rule": "ONC-15", "rule_name": "Triptans – MAO inhibitors", "drug_a": "sumatriptan", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P452", "rule": "ONC-15", "rule_name": "Triptans – MAO inhibitors", "drug_a": "sumatriptan", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P453", "rule": "ONC-15", "rule_name": "Triptans – MAO inhibitors", "drug_a": "sumatriptan", "drug_b": "selegiline"}
+{"pair_id": "ONC-P454", "rule": "ONC-15", "rule_name": "Triptans – MAO inhibitors", "drug_a": "sumatriptan", "drug_b": "moclobemide"}
+{"pair_id": "ONC-P455", "rule": "ONC-15", "rule_name": "Triptans – MAO inhibitors", "drug_a": "sumatriptan", "drug_b": "methylene blue"}
+{"pair_id": "ONC-P456", "rule": "ONC-15", "rule_name": "Triptans – MAO inhibitors", "drug_a": "zolmitriptan", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P457", "rule": "ONC-15", "rule_name": "Triptans – MAO inhibitors", "drug_a": "zolmitriptan", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P458", "rule": "ONC-15", "rule_name": "Triptans – MAO inhibitors", "drug_a": "zolmitriptan", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P459", "rule": "ONC-15", "rule_name": "Triptans – MAO inhibitors", "drug_a": "zolmitriptan", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P460", "rule": "ONC-15", "rule_name": "Triptans – MAO inhibitors", "drug_a": "zolmitriptan", "drug_b": "selegiline"}
+{"pair_id": "ONC-P461", "rule": "ONC-15", "rule_name": "Triptans – MAO inhibitors", "drug_a": "zolmitriptan", "drug_b": "moclobemide"}
+{"pair_id": "ONC-P462", "rule": "ONC-15", "rule_name": "Triptans – MAO inhibitors", "drug_a": "zolmitriptan", "drug_b": "methylene blue"}
+{"pair_id": "ONC-P463", "rule": "ONC-15", "rule_name": "Triptans – MAO inhibitors", "drug_a": "rizatriptan", "drug_b": "tranylcypromine"}
+{"pair_id": "ONC-P464", "rule": "ONC-15", "rule_name": "Triptans – MAO inhibitors", "drug_a": "rizatriptan", "drug_b": "phenelzine"}
+{"pair_id": "ONC-P465", "rule": "ONC-15", "rule_name": "Triptans – MAO inhibitors", "drug_a": "rizatriptan", "drug_b": "isocarboxazid"}
+{"pair_id": "ONC-P466", "rule": "ONC-15", "rule_name": "Triptans – MAO inhibitors", "drug_a": "rizatriptan", "drug_b": "procarbazine"}
+{"pair_id": "ONC-P467", "rule": "ONC-15", "rule_name": "Triptans – MAO inhibitors", "drug_a": "rizatriptan", "drug_b": "selegiline"}
+{"pair_id": "ONC-P468", "rule": "ONC-15", "rule_name": "Triptans – MAO inhibitors", "drug_a": "rizatriptan", "drug_b": "moclobemide"}
+{"pair_id": "ONC-P469", "rule": "ONC-15", "rule_name": "Triptans – MAO inhibitors", "drug_a": "rizatriptan", "drug_b": "methylene blue"}

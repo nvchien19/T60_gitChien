@@ -73,8 +73,8 @@ def to_prediction(case_id, state, latency_ms):
     )
 
 
-async def main(out):
-    cases = [json.loads(line) for line in GOLDEN.read_text(encoding="utf-8").splitlines() if line.strip()]
+async def main(out, golden=GOLDEN):
+    cases = [json.loads(line) for line in golden.read_text(encoding="utf-8").splitlines() if line.strip()]
     out.parent.mkdir(parents=True, exist_ok=True)
     async with SessionLocal() as db:
         await run_agent(db, "Paracetamol, Warfarin", ["Paracetamol", "Warfarin"])   # nạp cache danh mục tên thuốc
@@ -90,4 +90,6 @@ async def main(out):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--out", type=pathlib.Path, default=OUT)
-    asyncio.run(main(ap.parse_args().out))
+    ap.add_argument("--golden", type=pathlib.Path, default=GOLDEN, help="bộ ca cần chạy (mặc định golden_set.jsonl)")
+    args = ap.parse_args()
+    asyncio.run(main(args.out, args.golden))

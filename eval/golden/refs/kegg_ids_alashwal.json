@@ -1,0 +1,229 @@
+{
+ "acetaminophen": [
+  "D00217"
+ ],
+ "albuterol": [
+  "D00683",
+  "D02147"
+ ],
+ "allopurinol": [
+  "D00224",
+  "D07564"
+ ],
+ "alprazolam": [
+  "D00225"
+ ],
+ "amlodipine": [
+  "D00615",
+  "D02914",
+  "D07450"
+ ],
+ "amoxicillin": [
+  "D00229",
+  "D02925",
+  "D07452"
+ ],
+ "amphetamine": [
+  "D02074",
+  "D07445",
+  "D11622"
+ ],
+ "apixaban": [
+  "D03213"
+ ],
+ "aspirin": [
+  "D00109",
+  "D07582"
+ ],
+ "atorvastatin": [
+  "D02258",
+  "D07474"
+ ],
+ "azithromycin": [
+  "D02134",
+  "D06390",
+  "D07486"
+ ],
+ "bupropion": [
+  "D00817",
+  "D07591",
+  "D07938"
+ ],
+ "canagliflozin": [
+  "D09592"
+ ],
+ "carvedilol": [
+  "D00255",
+  "D03415"
+ ],
+ "citalopram": [
+  "D00822",
+  "D07704",
+  "D07705"
+ ],
+ "clarithromycin": [
+  "D00276",
+  "D07710"
+ ],
+ "clonazepam": [
+  "D00280"
+ ],
+ "clopidogrel": [
+  "D00769",
+  "D07729",
+  "D10823",
+  "D10824"
+ ],
+ "cyclobenzaprine": [
+  "D00772",
+  "D07758"
+ ],
+ "dapagliflozin": [
+  "D08897",
+  "D09763"
+ ],
+ "duloxetine": [
+  "D01179",
+  "D07880"
+ ],
+ "empagliflozin": [
+  "D10459"
+ ],
+ "ergocalciferol": [
+  "D00187"
+ ],
+ "escitalopram": [
+  "D02567",
+  "D07913"
+ ],
+ "ethinyl estradiol": [
+  "D00554"
+ ],
+ "fluoxetine": [
+  "D00326",
+  "D00823"
+ ],
+ "fluticasone": [
+  "D01708",
+  "D06315",
+  "D07981"
+ ],
+ "furosemide": [
+  "D00331",
+  "D07999"
+ ],
+ "gabapentin": [
+  "D00332"
+ ],
+ "glipizide": [
+  "D00335"
+ ],
+ "hydrochlorothiazide": [
+  "D00340"
+ ],
+ "hydrocodone": [
+  "D03725",
+  "D04461",
+  "D08045",
+  "D08046"
+ ],
+ "ibuprofen": [
+  "D00126",
+  "D08059",
+  "D09760"
+ ],
+ "insulin glargine": [
+  "D03250"
+ ],
+ "levothyroxine": [
+  "D01010",
+  "D08125",
+  "D11113"
+ ],
+ "lisinopril": [
+  "D00362",
+  "D08131"
+ ],
+ "losartan": [
+  "D00357",
+  "D08146"
+ ],
+ "meloxicam": [
+  "D00969"
+ ],
+ "metformin": [
+  "D00944",
+  "D04966"
+ ],
+ "methylphenidate": [
+  "D01296",
+  "D04999"
+ ],
+ "metoprolol": [
+  "D00601",
+  "D00635",
+  "D02358",
+  "D05011"
+ ],
+ "montelukast": [
+  "D00529",
+  "D08229"
+ ],
+ "norethindrone": [
+  "D00182",
+  "D00953"
+ ],
+ "omeprazole": [
+  "D00455",
+  "D01207",
+  "D05259",
+  "D05261"
+ ],
+ "pantoprazole": [
+  "D02593",
+  "D05353"
+ ],
+ "potassium chloride": [
+  "D02060"
+ ],
+ "pravastatin": [
+  "D00893",
+  "D08410"
+ ],
+ "prednisone": [
+  "D00473",
+  "D08416"
+ ],
+ "rosuvastatin": [
+  "D01915",
+  "D08492"
+ ],
+ "sertraline": [
+  "D00825",
+  "D02360"
+ ],
+ "simvastatin": [
+  "D00434"
+ ],
+ "tamsulosin": [
+  "D01024",
+  "D08560"
+ ],
+ "tramadol": [
+  "D01355",
+  "D08623"
+ ],
+ "trazodone": [
+  "D00820",
+  "D08626"
+ ],
+ "venlafaxine": [
+  "D00821",
+  "D08670",
+  "D12403"
+ ],
+ "zolpidem": [
+  "D00706",
+  "D08690"
+ ]
+}

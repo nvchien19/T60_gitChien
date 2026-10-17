@@ -67,9 +67,6 @@ def values(rows):
 def main():
     runs, everything = [], []
     for spec in RUNS:
-        if not (HERE / spec["golden"]).exists() or not (HERE / spec["pred"]).exists():
-            print(f"Bỏ qua {spec['id']}: chưa có bộ ca hoặc dự đoán; không tạo số liệu thay thế.")
-            continue
         gold = read_jsonl(HERE / spec["golden"])
         pred = {p["id"]: p for p in read_jsonl(HERE / spec["pred"])}
         if missing := [g["id"] for g in gold if g["id"] not in pred]:
@@ -82,8 +79,6 @@ def main():
                          review_cases=[dict(id=r["id"], category=r["category"], fn=r["fn"], fp=r["fp"])
                                        for r in rows if r["fn"] or r["fp"]],
                          db_gaps=[g["id"] for g in gold if g.get("db_gap")]))
-    if not runs:
-        sys.exit("Chưa có bộ ca và dự đoán hoàn chỉnh để gộp.")
     pooled = values(everything)
     keys = [k for k in pooled if k not in ("n_cases", "tp", "fp", "fn", "tn")]
     mean = {}

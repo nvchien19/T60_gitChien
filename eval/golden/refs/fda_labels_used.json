@@ -1,0 +1,903 @@
+{
+ "acetaminophen": {
+  "set_id": "0f67c1bd-915b-4681-88dd-22f5154a80b3",
+  "effective_time": "20240506",
+  "generic_name": [
+   "ACETAMINOPHEN"
+  ],
+  "brand_name": [
+   "Acetaminophen"
+  ],
+  "application_number": [
+   "ANDA214331"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "albuterol": {
+  "set_id": "d6acb5a7-555a-463a-ae65-2911d6789b42",
+  "effective_time": "20260114",
+  "generic_name": [
+   "ALBUTEROL SULFATE"
+  ],
+  "brand_name": [
+   "Albuterol Sulfate"
+  ],
+  "application_number": [
+   "NDA020503"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "allopurinol": {
+  "set_id": "7003e410-b4ff-da07-5571-07e7e13f67e0",
+  "effective_time": "20240522",
+  "generic_name": [
+   "ALLOPURINOL"
+  ],
+  "brand_name": [
+   "Allopurinol"
+  ],
+  "application_number": [
+   "NDA018877"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "alprazolam": {
+  "set_id": "10de2b3b-3b3f-4a5a-a9e7-a8401f53b8cc",
+  "effective_time": "20230804",
+  "generic_name": [
+   "ALPRAZOLAM"
+  ],
+  "brand_name": [
+   "Alprazolam"
+  ],
+  "application_number": [
+   "NDA018276"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "amlodipine": {
+  "set_id": "614d974f-51c7-4b18-8171-39eb6e8d4c03",
+  "effective_time": "20260216",
+  "generic_name": [
+   "AMLODIPINE"
+  ],
+  "brand_name": [
+   "NORLIQVA"
+  ],
+  "application_number": [
+   "NDA214439"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "amoxicillin": {
+  "set_id": "06e5c07d-d95c-4955-8d35-a4703ca2359e",
+  "effective_time": "20260707",
+  "generic_name": [
+   "AMOXICILLIN"
+  ],
+  "brand_name": [
+   "Amoxicillin"
+  ],
+  "application_number": [
+   "NDA050760"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "amphetamine": {
+  "set_id": "ae304b29-0b40-40ec-ad0d-76b742d4a9b9",
+  "effective_time": "20260224",
+  "generic_name": [
+   "AMPHETAMINE"
+  ],
+  "brand_name": [
+   "Dyanavel XR",
+   "DYANAVEL XR"
+  ],
+  "application_number": [
+   "NDA208147",
+   "NDA210526"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "apixaban": {
+  "set_id": "a454cd24-0c6d-46e8-b1e4-197388606175",
+  "effective_time": "20260424",
+  "generic_name": [
+   "APIXABAN"
+  ],
+  "brand_name": [
+   "ELIQUIS"
+  ],
+  "application_number": [
+   "NDA202155"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "aspirin": {
+  "set_id": "2777beea-06d7-4ff5-ae4a-ad7a117dfb62",
+  "effective_time": "20260902",
+  "generic_name": [
+   "ASPIRIN"
+  ],
+  "brand_name": [
+   "Aspirin Regular Strength"
+  ],
+  "application_number": [
+   "M013"
+  ],
+  "product_type": [
+   "HUMAN OTC DRUG"
+  ]
+ },
+ "atorvastatin": {
+  "set_id": "a60cc18b-0631-4cf0-b021-9f52224ece65",
+  "effective_time": "20240415",
+  "generic_name": [
+   "ATORVASTATIN CALCIUM"
+  ],
+  "brand_name": [
+   "Lipitor"
+  ],
+  "application_number": [
+   "NDA020702"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "azithromycin": {
+  "set_id": "3b631aa1-2d46-40bc-a614-d698301ea4f9",
+  "effective_time": "20260724",
+  "generic_name": [
+   "AZITHROMYCIN DIHYDRATE"
+  ],
+  "brand_name": [
+   "Zithromax"
+  ],
+  "application_number": [
+   "NDA050733"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "bupropion": {
+  "set_id": "3ec04240-baef-44d7-8d73-a181171eec43",
+  "effective_time": "20260601",
+  "generic_name": [
+   "BUPROPION HYDROBROMIDE"
+  ],
+  "brand_name": [
+   "Bupropion Hydrobromide"
+  ],
+  "application_number": [
+   "NDA022108"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "canagliflozin": {
+  "set_id": "b9057d3b-b104-4f09-8a61-c61ef9d4a3f3",
+  "effective_time": "20260611",
+  "generic_name": [
+   "CANAGLIFLOZIN"
+  ],
+  "brand_name": [
+   "INVOKANA"
+  ],
+  "application_number": [
+   "NDA204042"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "carvedilol": {
+  "set_id": "07c619c6-4a0c-445e-94fa-664a54f68a39",
+  "effective_time": "20260731",
+  "generic_name": [
+   "CARVEDILOL"
+  ],
+  "brand_name": [
+   "Coreg"
+  ],
+  "application_number": [
+   "NDA020297"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "citalopram": {
+  "set_id": "4259d9b1-de34-43a4-85a8-41dd214e9177",
+  "effective_time": "20231009",
+  "generic_name": [
+   "CITALOPRAM"
+  ],
+  "brand_name": [
+   "Celexa"
+  ],
+  "application_number": [
+   "NDA020822"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "clarithromycin": {
+  "set_id": "9eb306e0-ccfb-418c-82ca-204f20a788f7",
+  "effective_time": "20251101",
+  "generic_name": [
+   "CLARITHROMYCIN"
+  ],
+  "brand_name": [
+   "Clarithromycin"
+  ],
+  "application_number": [
+   "ANDA203584"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "clonazepam": {
+  "set_id": "cfa0d79a-843c-4b88-95a1-e9511d649ca1",
+  "effective_time": "20251201",
+  "generic_name": [
+   "CLONAZEPAM"
+  ],
+  "brand_name": [
+   "Klonopin"
+  ],
+  "application_number": [
+   "NDA017533"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "clopidogrel": {
+  "set_id": "de8b0b67-eb25-4684-83b5-7ad785314227",
+  "effective_time": "20250530",
+  "generic_name": [
+   "CLOPIDOGREL"
+  ],
+  "brand_name": [
+   "Plavix"
+  ],
+  "application_number": [
+   "NDA020839"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "cyclobenzaprine": {
+  "set_id": "30e61110-5bc8-4134-8456-538558479735",
+  "effective_time": "20260901",
+  "generic_name": [
+   "CYCLOBENZAPRINE HYDROCHLORIDE"
+  ],
+  "brand_name": [
+   "Cyclobenzaprine Hydrochloride"
+  ],
+  "application_number": [
+   "NDA021777"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "dapagliflozin": {
+  "set_id": "01f90c94-71cb-4a1f-81ff-8004b850529b",
+  "effective_time": "20260710",
+  "generic_name": [
+   "DAPAGLIFLOZIN"
+  ],
+  "brand_name": [
+   "FARXIGA"
+  ],
+  "application_number": [
+   "NDA202293"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "duloxetine": {
+  "set_id": "bb2ca3bf-983c-1e4a-a91d-dc7dee66d741",
+  "effective_time": "20260302",
+  "generic_name": [
+   "DULOXETINE"
+  ],
+  "brand_name": [
+   "Duloxetine"
+  ],
+  "application_number": [
+   "NDA219131"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "empagliflozin": {
+  "set_id": "59ed43d9-b4e0-72a2-e063-6394a90a327d",
+  "effective_time": "20260826",
+  "generic_name": [
+   "EMPAGLIFLOZIN"
+  ],
+  "brand_name": [
+   "Jardiance"
+  ],
+  "application_number": [
+   "NDA204629"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "ergocalciferol": {
+  "set_id": "4ae38744-020d-4c37-a6f1-88f55c2f1047",
+  "effective_time": "20260904",
+  "generic_name": [
+   "ERGOCALCIFEROL"
+  ],
+  "brand_name": [
+   "ERGOCALCIFEROL"
+  ],
+  "application_number": [
+   "NDA003444"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "escitalopram": {
+  "set_id": "c0401570-a3b0-bef2-7365-c23dc952b8b6",
+  "effective_time": "20250831",
+  "generic_name": [
+   "ESCITALOPRAM"
+  ],
+  "brand_name": [
+   "escitalopram"
+  ],
+  "application_number": [
+   "NDA219130"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "ethinyl estradiol": {
+  "set_id": "b2482d51-d606-4aaa-8af4-19e4fe2f8872",
+  "effective_time": "20260827",
+  "generic_name": [
+   "LEVONORGESTREL AND ETHINYL ESTRADIOL"
+  ],
+  "brand_name": [
+   "Tyblume"
+  ],
+  "application_number": [
+   "NDA209405"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "fluoxetine": {
+  "set_id": "c88f33ed-6dfb-4c5e-bc01-d8e36dd97299",
+  "effective_time": "20260108",
+  "generic_name": [
+   "FLUOXETINE HYDROCHLORIDE"
+  ],
+  "brand_name": [
+   "Prozac"
+  ],
+  "application_number": [
+   "NDA018936"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "fluticasone": {
+  "set_id": "348cbd8c-edeb-499c-961d-3aeb5cc2cef1",
+  "effective_time": "20260728",
+  "generic_name": [
+   "FLUTICASONE PROPIONATE"
+  ],
+  "brand_name": [
+   "FLUTICASONE PROPIONATE DISKUS"
+  ],
+  "application_number": [
+   "NDA020833"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "furosemide": {
+  "set_id": "462e8917-cbe0-f4f9-e063-6394a90ab4ff",
+  "effective_time": "20260617",
+  "generic_name": [
+   "FUROSEMIDE"
+  ],
+  "brand_name": [
+   "Furosemide"
+  ],
+  "application_number": [
+   "NDA018569"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "gabapentin": {
+  "set_id": "466273b1-c9fc-3930-c94b-aa11394d5140",
+  "effective_time": "20260630",
+  "generic_name": [
+   "GABAPENTIN"
+  ],
+  "brand_name": [
+   "Gralise"
+  ],
+  "application_number": [
+   "NDA022544"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "glipizide": {
+  "set_id": "eed99b60-d043-4249-9b2a-f05e46fb588d",
+  "effective_time": "20260721",
+  "generic_name": [
+   "GLIPIZIDE"
+  ],
+  "brand_name": [
+   "Glucotrol XL"
+  ],
+  "application_number": [
+   "NDA020329"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "hydrochlorothiazide": {
+  "set_id": "5bacc909-6b02-4815-85ef-55fd25b1b1f7",
+  "effective_time": "20251205",
+  "generic_name": [
+   "HYDROCHLOROTHIAZIDE"
+  ],
+  "brand_name": [
+   "Hydrochlorothiazide"
+  ],
+  "application_number": [
+   "NDA020504"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "hydrocodone": {
+  "set_id": "b7d23ac2-e776-9f62-3290-c64c2d6eb353",
+  "effective_time": "20260529",
+  "generic_name": [
+   "HYDROCODONE BITARTRATE"
+  ],
+  "brand_name": [
+   "Hysingla ER"
+  ],
+  "application_number": [
+   "NDA206627"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "ibuprofen": {
+  "set_id": "1eaa7790-f1a1-4f51-b10a-cbbaf033f684",
+  "effective_time": "20260129",
+  "generic_name": [
+   "IBUPROFEN"
+  ],
+  "brand_name": [
+   "Caldolor"
+  ],
+  "application_number": [
+   "NDA022348"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "insulin glargine": {
+  "set_id": "0ad21db3-2b1c-4ed9-a687-bdd6a74d0aae",
+  "effective_time": "20260616",
+  "generic_name": [
+   "INSULIN GLARGINE"
+  ],
+  "brand_name": [
+   "BASAGLAR KwikPen"
+  ],
+  "application_number": [
+   "BLA205692"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "levothyroxine": {
+  "set_id": "abe173cc-1579-43a5-b12d-a31958d0a539",
+  "effective_time": "20260604",
+  "generic_name": [
+   "LEVOTHYROXINE SODIUM"
+  ],
+  "brand_name": [
+   "Levothyroxine Sodium"
+  ],
+  "application_number": [
+   "NDA021210"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "lisinopril": {
+  "set_id": "9f6e4e57-a489-4b36-b093-b93865d3717c",
+  "effective_time": "20251216",
+  "generic_name": [
+   "LISINOPRIL"
+  ],
+  "brand_name": [
+   "Qbrelis"
+  ],
+  "application_number": [
+   "NDA208401"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "losartan": {
+  "set_id": "9949448f-c3b9-44ee-94ed-c1aca8c90f39",
+  "effective_time": "20260120",
+  "generic_name": [
+   "LOSARTAN POTASSIUM"
+  ],
+  "brand_name": [
+   "COZAAR"
+  ],
+  "application_number": [
+   "NDA020386"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "meloxicam": {
+  "set_id": "385fd779-1be1-49ae-8213-750b96ecc997",
+  "effective_time": "20260716",
+  "generic_name": [
+   "MELOXICAM"
+  ],
+  "brand_name": [
+   "QAMZOVA"
+  ],
+  "application_number": [
+   "NDA217593"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "metformin": {
+  "set_id": "74d32a8a-c4c2-4dbb-b376-eea3f8fa64d7",
+  "effective_time": "20241114",
+  "generic_name": [
+   "METFORMIN HYDROCHLORIDE"
+  ],
+  "brand_name": [
+   "Metformin hydrochloride"
+  ],
+  "application_number": [
+   "NDA021748"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "methylphenidate": {
+  "set_id": "e45c75dc-d381-475b-b649-a871c8a36e60",
+  "effective_time": "20260731",
+  "generic_name": [
+   "METHYLPHENIDATE HYDROCHLORIDE"
+  ],
+  "brand_name": [
+   "methylphenidate hydrochloride CD"
+  ],
+  "application_number": [
+   "NDA021259"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "metoprolol": {
+  "set_id": "a07891a5-152e-4a38-8179-e05a90458a7d",
+  "effective_time": "20180220",
+  "generic_name": [
+   "METOPROLOL SUCCINATE"
+  ],
+  "brand_name": [
+   "TOPROL XL"
+  ],
+  "application_number": [
+   "NDA019962"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "montelukast": {
+  "set_id": "482dcc92-b47f-4ea6-854a-f5ac2aea7842",
+  "effective_time": "20250430",
+  "generic_name": [
+   "MONTELUKAST SODIUM"
+  ],
+  "brand_name": [
+   "SINGULAIR"
+  ],
+  "application_number": [
+   "NDA020830",
+   "NDA021409",
+   "NDA020829"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "norethindrone": {
+  "set_id": "0d2f8fea-3675-40d2-afd9-9fcb148dbd4b",
+  "effective_time": "20260131",
+  "generic_name": [
+   "NORETHINDRONE"
+  ],
+  "brand_name": [
+   "Norethindrone"
+  ],
+  "application_number": [
+   "ANDA091209"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "omeprazole": {
+  "set_id": "b6761f84-53ac-4745-a8c8-1e5427d7e179",
+  "effective_time": "20240319",
+  "generic_name": [
+   "OMEPRAZOLE MAGNESIUM"
+  ],
+  "brand_name": [
+   "Prilosec"
+  ],
+  "application_number": [
+   "NDA022056"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "pantoprazole": {
+  "set_id": "08098cb2-c048-4640-f387-6beec4a38936",
+  "effective_time": "20260518",
+  "generic_name": [
+   "PANTOPRAZOLE SODIUM"
+  ],
+  "brand_name": [
+   "Protonix Delayed-Release"
+  ],
+  "application_number": [
+   "NDA020987",
+   "NDA022020"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "potassium chloride": {
+  "set_id": "eb56a807-ea94-4edb-9811-a04b19568468",
+  "effective_time": "20251029",
+  "generic_name": [
+   "POTASSIUM CHLORIDE"
+  ],
+  "brand_name": [
+   "Potassium Chloride"
+  ],
+  "application_number": [
+   "NDA020161"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "pravastatin": {
+  "set_id": "e7194af1-6304-4e3e-88ab-0825706a3962",
+  "effective_time": "20241211",
+  "generic_name": [
+   "PRAVASTATIN SODIUM"
+  ],
+  "brand_name": [
+   "Pravastatin Sodium"
+  ],
+  "application_number": [
+   "ANDA076341"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "prednisone": {
+  "set_id": "0062fcc7-aa08-4990-9d33-d798725907f1",
+  "effective_time": "20260908",
+  "generic_name": [
+   "PREDNISONE"
+  ],
+  "brand_name": [
+   "Prednisone"
+  ],
+  "application_number": [
+   "ANDA040584"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "rosuvastatin": {
+  "set_id": "cb942007-6ef1-4445-8dbd-6f4972148bf1",
+  "effective_time": "20260909",
+  "generic_name": [
+   "ROSUVASTATIN CALCIUM"
+  ],
+  "brand_name": [
+   "Rosuvastatin calcium"
+  ],
+  "application_number": [
+   "ANDA207752"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "sertraline": {
+  "set_id": "e0e1f35e-114d-bb39-34f1-70208b94ac9e",
+  "effective_time": "20250806",
+  "generic_name": [
+   "SERTRALINE HYDROCHLORIDE"
+  ],
+  "brand_name": [
+   "sertraline hydrochloride"
+  ],
+  "application_number": [
+   "NDA215133"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "simvastatin": {
+  "set_id": "8f55d5de-5a4f-4a39-8c84-c53976dd6af9",
+  "effective_time": "20250328",
+  "generic_name": [
+   "SIMVASTATIN"
+  ],
+  "brand_name": [
+   "ZOCOR"
+  ],
+  "application_number": [
+   "NDA019766"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "tamsulosin": {
+  "set_id": "f8302a6e-b8da-4931-a279-b49e37943816",
+  "effective_time": "20260901",
+  "generic_name": [
+   "TAMSULOSIN HYDROCHLORIDE"
+  ],
+  "brand_name": [
+   "Tamsulosin Hydrochloride"
+  ],
+  "application_number": [
+   "ANDA202433"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "tramadol": {
+  "set_id": "c0bc7218-3fd0-4646-96f4-25355fc84aa9",
+  "effective_time": "20260123",
+  "generic_name": [
+   "TRAMADOL HYDROCHLORIDE"
+  ],
+  "brand_name": [
+   "Tramadol Hydrochloride Extended-Release"
+  ],
+  "application_number": [
+   "NDA022370"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "trazodone": {
+  "set_id": "fa7afa93-b98c-4dc7-bbb8-ab6a058427b9",
+  "effective_time": "20260908",
+  "generic_name": [
+   "TRAZODONE HYDROCHLORIDE"
+  ],
+  "brand_name": [
+   "Trazodone Hydrochloride"
+  ],
+  "application_number": [
+   "ANDA073137"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "venlafaxine": {
+  "set_id": "fdaed1c2-dd0a-4bf3-975a-86fe3e7f0c97",
+  "effective_time": "20250731",
+  "generic_name": [
+   "VENLAFAXINE HYDROCHLORIDE"
+  ],
+  "brand_name": [
+   "Venlafaxine Hydrochloride"
+  ],
+  "application_number": [
+   "NDA022104"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ },
+ "zolpidem": {
+  "set_id": "41124767-8ff7-da5d-e063-6394a90a5203",
+  "effective_time": "20251119",
+  "generic_name": [
+   "ZOLPIDEM TARTRATE"
+  ],
+  "brand_name": [
+   "zolpidem tartrate"
+  ],
+  "application_number": [
+   "NDA021774"
+  ],
+  "product_type": [
+   "HUMAN PRESCRIPTION DRUG"
+  ]
+ }
+}
