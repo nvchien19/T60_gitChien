@@ -9,11 +9,11 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: '/medicheck-logo.png',
+        url: '/brand-icon.png',
         type: 'image/png',
       },
     ],
-    apple: '/medicheck-logo.png',
+    apple: '/brand-icon.png',
   },
 }
 

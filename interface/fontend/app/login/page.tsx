@@ -56,7 +56,7 @@ function LoginScreen({ onLogin, connectionError, onRetry }: { onLogin: (user: Au
   return <main className="login-scene">
     <a href="/" className="login-brand" aria-label="Về dashboard"><BrandLogo size={128} alt="" /></a>
     <section className="login-card" aria-labelledby="login-title">
-      <div className="login-symbol"><BrandLogo size={72} alt="MediCheck" /></div>
+      <div className="login-symbol"><BrandLogo size={72} alt="Vinmec" /></div>
       <h1 id="login-title">Chào mừng trở lại!</h1>
       <p className="login-subtitle">Đăng nhập để kết nối và chăm sóc an toàn hơn.</p>
       <div className="login-roles">
