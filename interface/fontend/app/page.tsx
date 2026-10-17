@@ -18,12 +18,10 @@ import {
   Home,
   Info,
   Menu,
-  MoreHorizontal,
   Pill,
   Plus,
   Search,
   Send,
-  Settings,
   ShieldCheck,
   UserRound,
   Users,
@@ -334,7 +332,9 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
     <div className="clinical-app min-h-screen overflow-x-clip bg-[#f3f8f7] text-slate-900">
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-[248px] flex-col border-r border-slate-200 bg-white lg:flex">
         <div className="flex h-[76px] items-center border-b border-slate-100 px-7">
-          <BrandLogo size={112} alt="VINMEC" className="h-auto w-28" />
+          <a href="/" aria-label="Về trang Tổng quan" className="rounded-lg">
+            <BrandLogo size={112} alt="" className="h-auto w-28" />
+          </a>
         </div>
         <nav
           className="flex-1 space-y-1 px-3 py-6"
@@ -357,10 +357,6 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
           ))}
         </nav>
         <div className="space-y-4 border-t border-slate-100 p-4">
-          <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-semibold text-slate-500 hover:bg-slate-50">
-            <Settings className="size-4" />
-            Cài đặt
-          </button>
           <div className="flex items-center gap-3 rounded-xl bg-slate-50 p-3">
             <div className="flex size-8 items-center justify-center rounded-full bg-teal-100 text-teal-700">
               <UserRound className="size-4" />
@@ -377,7 +373,9 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
       <main className="min-h-screen lg:pl-[248px]">
         <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-2 border-b border-slate-200 bg-white/95 px-4 backdrop-blur sm:h-[76px] sm:px-8">
           <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-            <BrandLogo size={44} alt="VINMEC" className="h-auto w-11 lg:hidden" />
+            <a href="/" aria-label="Về trang Tổng quan" className="rounded-lg lg:hidden">
+              <BrandLogo size={84} alt="" className="h-auto w-16 min-[400px]:w-21" />
+            </a>
             <button
               onClick={() => setMobileNav(true)}
               aria-label="Mở menu"
@@ -390,7 +388,7 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
               <p className="hidden truncate text-xs font-medium text-slate-400 min-[400px]:block">
                 Xin chào, {user.name}
               </p>
-              <h1 className="truncate text-base font-extrabold sm:text-lg">
+              <h1 className="hidden truncate text-base font-extrabold min-[400px]:block sm:text-lg">
                 {active}
               </h1>
             </div>
@@ -451,12 +449,9 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
                 </>
               )}
             </div>
-            <div className="flex size-8 items-center justify-center rounded-full bg-teal-100 text-xs font-bold text-teal-700 sm:size-9 sm:text-sm">
-              {user.name.trim().split(/\s+/).slice(-2).map(part => part[0]).join("").toUpperCase()}
-            </div>
           </div>
         </header>
-        <div className="mx-auto max-w-[1280px] space-y-6 p-4 pb-28 sm:space-y-7 sm:p-8 sm:pb-8 xl:p-10">
+        <div className="mx-auto max-w-[1280px] space-y-6 p-4 pb-28 sm:space-y-7 sm:p-8 sm:pb-28 lg:pb-8 xl:p-10">
           {loading && (
             <p role="status" className="rounded-xl bg-white p-5 text-sm">
               Đang tải đơn thuốc…
@@ -507,7 +502,8 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
           {active === "Tổng quan" && (
             <Overview
               prescriptions={prescriptions}
-              onOpen={() => setActive("Đơn thuốc")}
+              onOpen={openPrescription}
+              onViewAll={() => setActive("Đơn thuốc")}
               onCheck={() => runCheck(selectedId)}
             />
           )}
@@ -569,7 +565,7 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
         onClose={() => setShowAssistant(false)}
         onSaved={reload}
         onView={openPrescription}
-      /> : <button type="button" onClick={() => setShowAssistant(true)} aria-label="Mở trợ lý An toàn Thuốc" className="fixed bottom-24 right-4 z-[9999] flex min-h-[48px] items-center gap-2 rounded-full bg-slate-900 px-4 py-3 text-xs font-bold text-white shadow-lg hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500 sm:right-5 lg:bottom-7 lg:right-8"><Bot className="size-4" /> Hỏi trợ lý</button>}
+      /> : <button type="button" onClick={() => setShowAssistant(true)} aria-label="Mở trợ lý An toàn Thuốc" className="fixed bottom-20 right-4 z-[9999] flex min-h-11 items-center gap-2 rounded-full bg-slate-900 px-4 py-3 text-xs font-bold text-white shadow-lg hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500 sm:right-5 lg:bottom-7 lg:right-8"><Bot className="size-4" /> Hỏi trợ lý</button>}
       <nav
         aria-label="Điều hướng di động"
         className="fixed inset-x-0 bottom-0 z-30 flex border-t border-slate-200 bg-white/95 px-1 pb-[calc(env(safe-area-inset-bottom)+6px)] pt-1.5 backdrop-blur lg:hidden"
@@ -620,7 +616,9 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
           />
           <div className="absolute inset-y-0 left-0 flex w-[280px] max-w-[85vw] flex-col bg-white shadow-2xl animate-in slide-in-from-left duration-200">
             <div className="flex h-16 items-center justify-between border-b border-slate-100 px-4">
-              <BrandLogo size={96} alt="VINMEC" className="h-auto w-24" />
+              <a href="/" aria-label="Về trang Tổng quan" className="rounded-lg">
+                <BrandLogo size={112} alt="" className="h-auto w-28" />
+              </a>
               <button
                 onClick={() => setMobileNav(false)}
                 aria-label="Đóng menu"
@@ -695,10 +693,12 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
 function Overview({
   prescriptions,
   onOpen,
+  onViewAll,
   onCheck,
 }: {
   prescriptions: Prescription[];
-  onOpen: () => void;
+  onOpen: (id: string) => void;
+  onViewAll: () => void;
   onCheck: () => void;
 }) {
   return (
@@ -723,21 +723,23 @@ function Overview({
           <ClipboardCheck className="size-4" /> Kiểm tra an toàn
         </Button>
       </section>
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 sm:gap-4 xl:grid-cols-4" aria-label="Số liệu tổng quan">
         {(
           [
-            ["Đơn thuốc", prescriptions.length, "Đang quản lý", Pill],
+            ["Đơn thuốc", prescriptions.length, "Đang quản lý", Pill, "teal"],
             [
               "Đã kiểm tra",
               prescriptions.filter((p) => p.checks > 0).length,
               "Lịch sử đã lưu",
               History,
+              "sky",
             ],
             [
               "Có tương tác",
               prescriptions.filter((p) => p.status === "Có tương tác").length,
               "Cần xem xét",
               AlertCircle,
+              "rose",
             ],
             [
               "Cần xác minh",
@@ -747,26 +749,23 @@ function Overview({
               ),
               "Thông tin chưa đủ",
               Info,
+              "amber",
             ],
           ] as const
-        ).map(([title, value, sub, Icon]) => (
-          <div
+        ).map(([title, value, sub, Icon, tone]) => (
+          <article
             key={String(title)}
-            className="rounded-xl border border-slate-200 bg-white p-4 shadow-[0_2px_8px_rgba(15,23,42,0.03)] sm:p-5"
+            className={`dashboard-stat dashboard-stat--${tone} min-h-[148px] p-5 sm:p-6`}
           >
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-xs font-semibold text-slate-500">{title}</p>
-                <p className="mt-2 text-xl font-extrabold sm:mt-3 sm:text-2xl">
-                  {value}
-                </p>
-                <p className="mt-1 text-[11px] text-slate-400">{sub}</p>
-              </div>
-              <div className="flex size-9 items-center justify-center rounded-lg bg-teal-50 text-teal-600">
-                <Icon className="size-[18px]" />
-              </div>
+            <div className="flex items-start justify-between gap-3">
+              <p className="text-xs font-bold uppercase tracking-[0.08em] text-slate-600">{title}</p>
+              <span className="dashboard-stat-icon flex size-11 shrink-0 items-center justify-center rounded-xl" aria-hidden="true">
+                <Icon className="size-5" />
+              </span>
             </div>
-          </div>
+            <p className="dashboard-stat-value mt-2 text-4xl font-black leading-none tabular-nums sm:text-[2.65rem]">{value}</p>
+            <p className="mt-2 text-xs font-medium text-slate-500">{sub}</p>
+          </article>
         ))}
       </div>
       <div className="grid gap-7 xl:grid-cols-[1.45fr_1fr]">
@@ -778,14 +777,14 @@ function Overview({
                 Mở đơn để xem thuốc và kết quả
               </p>
             </div>
-            <button onClick={onOpen} className="text-xs font-bold text-teal-600">
+            <button onClick={onViewAll} className="text-xs font-bold text-teal-600">
               Xem tất cả
             </button>
           </div>
           {prescriptions.slice(0, 5).map((p) => (
             <button
               key={p.id}
-              onClick={onOpen}
+              onClick={() => onOpen(p.id)}
               className="flex w-full items-center gap-4 border-b border-slate-100 px-4 py-4 sm:px-5 text-left last:border-0 hover:bg-slate-50"
             >
               <div className="flex size-10 items-center justify-center rounded-lg bg-teal-50 text-teal-600">
@@ -879,6 +878,9 @@ function Library({
           <p className="mt-1.5 text-sm text-slate-500">
             Quản lý đơn thuốc và kiểm tra các tương tác tiềm ẩn.
           </p>
+          <p className="mt-1 text-xs font-medium text-teal-700">
+            Nhấn vào một đơn thuốc để mở chi tiết.
+          </p>
         </div>
         <Button
           onClick={onAdd}
@@ -926,9 +928,22 @@ function Library({
           </thead>
           <tbody className="divide-y divide-slate-100">
             {items.map((p) => (
-              <tr key={p.id} className="text-xs">
+              <tr
+                key={p.id}
+                role="button"
+                tabIndex={0}
+                aria-label={`Mở đơn thuốc ${p.name || p.id}`}
+                onClick={() => onOpen(p.id)}
+                onKeyDown={(event) => {
+                  if (event.target === event.currentTarget && (event.key === "Enter" || event.key === " ")) {
+                    event.preventDefault();
+                    onOpen(p.id);
+                  }
+                }}
+                className="cursor-pointer text-xs transition hover:bg-teal-50/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-700"
+              >
                 <td className="px-5 py-4">
-                  <button onClick={() => onOpen(p.id)} className="text-left">
+                  <div className="text-left">
                     <p className="font-extrabold text-slate-800">
                       {p.name || p.id}
                     </p>
@@ -936,7 +951,7 @@ function Library({
                       Mã đơn: {p.id}
                     </p>
                     <p className="mt-1 text-slate-400">{p.patient}</p>
-                  </button>
+                  </div>
                 </td>
                 <td className="text-slate-500">{p.date}</td>
                 <td className="text-slate-500">{p.medications.length} thuốc</td>
@@ -950,13 +965,13 @@ function Library({
                 <td className="px-5">
                   <div className="flex gap-2">
                     <button
-                      onClick={() => onOpen(p.id)}
+                      onClick={(event) => { event.stopPropagation(); onOpen(p.id); }}
                       className="rounded-md border border-slate-200 px-2.5 py-1.5 font-bold text-slate-600"
                     >
                       Mở
                     </button>
                     <button
-                      onClick={() => onCheck(p.id)}
+                      onClick={(event) => { event.stopPropagation(); onCheck(p.id); }}
                       className="rounded-md bg-teal-50 px-2.5 py-1.5 font-bold text-teal-700"
                     >
                       Kiểm tra
@@ -972,12 +987,22 @@ function Library({
         {items.map((p) => (
           <div
             key={p.id}
-            className="rounded-xl border border-slate-200 bg-white p-4"
+            role="button"
+            tabIndex={0}
+            aria-label={`Mở đơn thuốc ${p.name || p.id}`}
+            onClick={() => onOpen(p.id)}
+            onKeyDown={(event) => {
+              if (event.target === event.currentTarget && (event.key === "Enter" || event.key === " ")) {
+                event.preventDefault();
+                onOpen(p.id);
+              }
+            }}
+            className="cursor-pointer rounded-xl border border-slate-200 bg-white p-4 transition hover:border-teal-300 hover:bg-teal-50/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-700"
           >
             <div className="flex items-start justify-between">
               <div>
                 <button
-                  onClick={() => onOpen(p.id)}
+                  onClick={(event) => { event.stopPropagation(); onOpen(p.id); }}
                   className="text-sm font-extrabold"
                 >
                   {p.name || p.id}
@@ -994,7 +1019,7 @@ function Library({
             <div className="mt-4 flex items-center justify-between">
               <SeverityBadge severity={p.highest} />
               <button
-                onClick={() => onCheck(p.id)}
+                onClick={(event) => { event.stopPropagation(); onCheck(p.id); }}
                 className="min-h-[40px] rounded-md bg-teal-500 px-4 py-2 text-xs font-bold text-white active:bg-teal-600"
               >
                 Kiểm tra
@@ -1073,6 +1098,16 @@ function SafetyView({
               </Button>
             </div>
           </section>
+          {checked && (
+            <Results
+              key={checkRecord?.check_id ?? prescription.id}
+              findings={findings}
+              checkRecord={checkRecord}
+              onDetail={onDetail}
+              prescription={prescription}
+              canSendReview={canSendReview}
+            />
+          )}
           <section className="rounded-xl border border-slate-200 bg-white">
             <div className="flex items-center justify-between border-b border-slate-100 px-4 py-4 sm:px-5">
               <div>
@@ -1126,25 +1161,26 @@ function SafetyView({
             value={prescription.context}
             onSaved={onContextSaved}
           />
-          <div className="flex justify-end">
+          <section className="flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-5" aria-labelledby="check-action-title">
+            <div className="flex items-start gap-3">
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-teal-50 text-teal-700" aria-hidden="true">
+                <ShieldCheck className="size-5" />
+              </span>
+              <div>
+                <h3 id="check-action-title" className="text-sm font-extrabold text-slate-800">Kiểm tra an toàn đơn thuốc</h3>
+                <p className="mt-1 text-xs leading-5 text-slate-500">
+                  {checked ? "Chạy lại để cập nhật kết quả sau khi thay đổi đơn thuốc." : `Đối chiếu ${prescription.medications.length} thuốc trong đơn và xem các cảnh báo có nguồn.`}
+                </p>
+              </div>
+            </div>
             <Button
               disabled={prescription.medications.length === 0}
               onClick={onCheck}
-              className="w-full justify-center gap-2 rounded-lg bg-teal-500 font-bold hover:bg-teal-600 sm:w-auto"
+              className="h-11 w-full justify-center gap-2 rounded-lg bg-teal-600 px-5 text-sm font-bold text-white shadow-sm hover:bg-teal-700 sm:w-auto sm:min-w-52"
             >
-              <ClipboardCheck className="size-4" /> Kiểm tra tương tác
+              <ClipboardCheck className="size-[18px]" /> Kiểm tra tương tác
             </Button>
-          </div>
-          {checked && (
-            <Results
-              key={checkRecord?.check_id ?? prescription.id}
-              findings={findings}
-              checkRecord={checkRecord}
-              onDetail={onDetail}
-              prescription={prescription}
-              canSendReview={canSendReview}
-            />
-          )}
+          </section>
           {canSendReview && <DoctorRequestForm
             key={prescription.id}
             prescription={prescription}
@@ -1198,6 +1234,9 @@ function Results({
     severityFilter === "Tất cả" ||
     (severityFilter === "Chưa có" ? item.severity === null : item.severity === severityFilter),
   );
+  const highestSeverity = (["Chống chỉ định", "Nghiêm trọng", "Trung bình", "Nhẹ"] as Severity[])
+    .find((level) => findings.some((item) => item.severity === level)) ?? "Chưa có";
+  const severe = highestSeverity === "Chống chỉ định" || highestSeverity === "Nghiêm trọng";
 
   return (
     <section className="space-y-5">
@@ -1227,27 +1266,26 @@ function Results({
         </div>
         <div className="mt-5 grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
           {[
-            ["Thuốc đã kiểm tra", checkRecord?.summary?.meds_count || 0],
-            ["Tương tác thuốc–thuốc", findings.length],
-            [
-              "Mức độ cao nhất",
-              findings.find((f) => f.severity)?.severity || "Chưa có",
-            ],
+            ["Thuốc đã kiểm tra", checkRecord?.summary?.meds_count || 0, "bg-teal-50", "text-teal-800"],
+            ["Tương tác thuốc–thuốc", findings.length, findings.length ? "bg-rose-50" : "bg-slate-50", findings.length ? "text-rose-700" : "text-slate-700"],
+            ["Mức độ cao nhất", highestSeverity, severe ? "bg-rose-50" : highestSeverity === "Trung bình" ? "bg-amber-50" : highestSeverity === "Nhẹ" ? "bg-sky-50" : "bg-slate-50", severe ? "text-rose-700" : highestSeverity === "Trung bình" ? "text-amber-700" : highestSeverity === "Nhẹ" ? "text-sky-800" : "text-slate-700"],
             [
               "Nguồn bằng chứng",
               new Set(
                 findings.flatMap((f) => f.citations.map((c) => c.source_id)),
               ).size,
+              "bg-sky-50",
+              "text-sky-800",
             ],
-          ].map(([label, value]) => (
+          ].map(([label, value, surface, color]) => (
             <div
               key={String(label)}
-              className="rounded-lg bg-slate-50 p-3 sm:p-4"
+              className={`rounded-lg p-3 sm:p-4 ${surface}`}
             >
-              <p className="truncate text-[11px] font-semibold text-slate-500">
+              <p className="text-[11px] font-semibold leading-snug text-slate-600">
                 {label}
               </p>
-              <p className="mt-2 text-lg font-extrabold">{value}</p>
+              <p className={`mt-2 text-xl font-extrabold leading-tight tabular-nums sm:text-2xl ${color}`}>{value}</p>
             </div>
           ))}
         </div>

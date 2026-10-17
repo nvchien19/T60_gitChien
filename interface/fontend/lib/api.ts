@@ -20,7 +20,28 @@ export type EvalRun = { id: string; label: string; note: string; n_cases: number
 export type EvalAllMetric = { key: string; op: '>=' | '<=' | null; threshold: number | null; basis: string; pooled: number | null; mean: number | null; passed: boolean | null; runs: Record<string, number | null> }
 export type EvalBenchmark = { name: string; kind: 'db' | 'llm'; source: string; sensitivity?: number; specificity?: number; ppv?: number; npv?: number; accuracy?: number }
 export type EvalAll = { generated: string; n_cases: number; confusion: { tp: number; fp: number; fn: number; tn: number }; runs: EvalRun[]; metrics: EvalAllMetric[]; benchmarks: EvalBenchmark[] }
-export type FoodFinding = RawFinding & { original_management?: string; original_mechanism?: string }
+export type EvalBinary = { tp: number; fp: number; fn: number; tn: number; n: number; sensitivity: number | null; sensitivity_ci: number[] | null; specificity: number | null; specificity_ci: number[] | null; ppv: number | null; ppv_ci?: number[] | null; npv: number | null; accuracy: number | null; f1: number | null; kappa_weighted?: number | null }
+export type EvalNorm = { items: number; drug_items: number; correct_rate: number | null; correct_rate_ci: number[] | null; recognized_rate: number | null; wrong_rate: number | null; suggest_rate: number | null; unknown_rate: number | null; precision_when_recognized: number | null; not_drug_items: number; not_drug_rejected: number }
+export type EvalStat = { mean: number; median: number; p90: number }
+export type EvalRef = 'micromedex' | 'drugscom'
+export type EvalAuthRef = 'any' | 'two' | 'labels'
+export type EvalAuthBlock = { label: string; positives: number; system: EvalBinary; tools: Record<string, EvalBinary & { label: string; in_reference: boolean }> }
+export type EvalLiterature = { study: string; setting: string; columns?: string[]; rows?: (string | number)[][]; summary?: string }
+export type EvalRx = {
+  generated: string
+  alashwal: { n: number; positives: Record<EvalRef, number>; system: Record<EvalRef, EvalBinary>; comparators: Record<EvalRef, Record<string, EvalBinary & { label: string }>>; reference_agreement: EvalBinary }
+  authoritative: { n: number; refs: Record<EvalAuthRef, EvalAuthBlock>; sources: { micromedex: number; fda_label: number; japan_label: number; fda_no_label: number }; by_n_sources: Record<string, number>; fp_vs_micromedex: { n: number; supported_by_label: number } } | null
+  literature: EvalLiterature[]
+  onc: { n: number; recognized: number; alert_any: number; alert_major: number; alert_any_rate: number | null; alert_major_rate: number | null; alert_major_rate_recognized: number | null; by_rule: Record<string, { name: string; n: number; recognized: number; alert: number; major: number }> }
+  rx: {
+    n_prescriptions: number; n_mimic: number; n_vn: number; median_drugs: number | null; normalization: Record<'all' | 'mimic' | 'vn', EvalNorm>
+    must_alert: { n: number; hit_major: number }; duplicates: { expected: number; detected: number; recall: number | null; precision: number | null; flagged_checkable: number; flagged_confirmed: number }
+    burden: Record<'ddi' | 'major_plus' | 'moderate' | 'minor' | 'food' | 'dup' | 'n_drugs', EvalStat> & { rx_with_major_plus: number | null; rx_with_any_ddi: number | null }
+    citation_rate: number | null; findings_total: number
+  }
+  sources: Record<string, string>
+}
+export type FoodFinding = RawFinding &{ original_management?: string; original_mechanism?: string }
 type RawFinding = { untranslated_fields?: string[]; machine_translation?: boolean; pair: string[]; severity_vi: string; summary: string; management: string; citations: Citation[] }
 type RawPrescription = { id: string; name?: string; created_at?: string | null; last_checked?: string | null; status: Status; highest_severity_vi?: string | null; checks_count: number; medications: Medication[]; patient_context?: PatientContext }
 type RawReview = { created_by?: number | null; creator_name?: string; response?: string; responder_name?: string; responded_at?: string | null; id: number; prescription_id: string; patient: string; message: string; created_at: string; status: 'Đang chờ' | 'Đã phản hồi'; med_count: number }

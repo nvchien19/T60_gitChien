@@ -54,9 +54,9 @@ function LoginScreen({ onLogin, connectionError, onRetry }: { onLogin: (user: Au
     finally { setBusy(false); }
   }
   return <main className="login-scene">
-    <a href="/" className="login-brand" aria-label="Về dashboard"><BrandLogo size={112} alt="VINMEC" /></a>
+    <a href="/" className="login-brand" aria-label="Về dashboard"><BrandLogo size={128} alt="" /></a>
     <section className="login-card" aria-labelledby="login-title">
-      <div className="login-symbol"><BrandLogo size={72} alt="VINMEC" /></div>
+      <div className="login-symbol"><BrandLogo size={72} alt="MediCheck" /></div>
       <h1 id="login-title">Chào mừng trở lại!</h1>
       <p className="login-subtitle">Đăng nhập để kết nối và chăm sóc an toàn hơn.</p>
       <div className="login-roles">
@@ -76,6 +76,6 @@ function LoginScreen({ onLogin, connectionError, onRetry }: { onLogin: (user: Au
       </form>
       <p className="login-note"><LockKeyhole size={13} /> Tài khoản được cấp bởi quản trị viên</p>
     </section>
-    <p className="login-footer">Kết nối bác sĩ & dược sĩ · Đồng hành cùng an toàn dùng thuốc</p>
+    <p className="login-footer">Cảnh báo tương tác thuốc có trích dẫn nguồn · Hỗ trợ dược sĩ và bác sĩ rà soát đơn</p>
   </main>;
 }

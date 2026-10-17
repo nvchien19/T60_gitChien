@@ -12,6 +12,17 @@
   object-fit: contain;
 }
 
+.medicheck-home .home-header .theme-toggle {
+  width: 62px;
+  min-width: 62px;
+  height: 44px;
+}
+
+.medicheck-home .home-header .theme-toggle svg {
+  width: 58px;
+  height: 24px;
+}
+
 .theme-dark.medicheck-home .home-header-logo {
   filter: brightness(1.25) saturate(1.08);
 }
