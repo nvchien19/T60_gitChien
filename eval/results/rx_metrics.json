@@ -1,0 +1,1560 @@
+{
+ "generated": "2026-10-17 10:06",
+ "function": "run_check (kiểm tra đơn), không qua LLM",
+ "alashwal": {
+  "n": 255,
+  "positives": {
+   "drugscom": 79,
+   "micromedex": 47
+  },
+  "system": {
+   "drugscom": {
+    "tp": 73,
+    "fp": 0,
+    "fn": 6,
+    "tn": 176,
+    "n": 255,
+    "sensitivity": 0.924,
+    "sensitivity_ci": [
+     0.844,
+     0.965
+    ],
+    "specificity": 1.0,
+    "specificity_ci": [
+     0.979,
+     1.0
+    ],
+    "ppv": 1.0,
+    "ppv_ci": [
+     0.95,
+     1.0
+    ],
+    "npv": 0.967,
+    "npv_ci": [
+     0.93,
+     0.985
+    ],
+    "accuracy": 0.976,
+    "f1": 0.96,
+    "kappa_weighted": 0.945
+   },
+   "micromedex": {
+    "tp": 44,
+    "fp": 29,
+    "fn": 3,
+    "tn": 179,
+    "n": 255,
+    "sensitivity": 0.936,
+    "sensitivity_ci": [
+     0.828,
+     0.978
+    ],
+    "specificity": 0.861,
+    "specificity_ci": [
+     0.807,
+     0.901
+    ],
+    "ppv": 0.603,
+    "ppv_ci": [
+     0.488,
+     0.707
+    ],
+    "npv": 0.984,
+    "npv_ci": [
+     0.953,
+     0.994
+    ],
+    "accuracy": 0.875,
+    "f1": 0.733,
+    "kappa_weighted": 0.614
+   }
+  },
+  "comparators": {
+   "drugscom": {
+    "micromedex": {
+     "label": "Micromedex",
+     "tp": 44,
+     "fp": 3,
+     "fn": 35,
+     "tn": 173,
+     "n": 255,
+     "sensitivity": 0.557,
+     "sensitivity_ci": [
+      0.447,
+      0.661
+     ],
+     "specificity": 0.983,
+     "specificity_ci": [
+      0.951,
+      0.994
+     ],
+     "ppv": 0.936,
+     "ppv_ci": [
+      0.828,
+      0.978
+     ],
+     "npv": 0.832,
+     "npv_ci": [
+      0.775,
+      0.876
+     ],
+     "accuracy": 0.851,
+     "f1": 0.698
+    },
+    "chatgpt4": {
+     "label": "ChatGPT-4",
+     "tp": 59,
+     "fp": 84,
+     "fn": 20,
+     "tn": 92,
+     "n": 255,
+     "sensitivity": 0.747,
+     "sensitivity_ci": [
+      0.641,
+      0.83
+     ],
+     "specificity": 0.523,
+     "specificity_ci": [
+      0.449,
+      0.595
+     ],
+     "ppv": 0.413,
+     "ppv_ci": [
+      0.335,
+      0.495
+     ],
+     "npv": 0.821,
+     "npv_ci": [
+      0.74,
+      0.881
+     ],
+     "accuracy": 0.592,
+     "f1": 0.532
+    },
+    "chatgpt35": {
+     "label": "ChatGPT-3.5",
+     "tp": 65,
+     "fp": 107,
+     "fn": 14,
+     "tn": 69,
+     "n": 255,
+     "sensitivity": 0.823,
+     "sensitivity_ci": [
+      0.724,
+      0.891
+     ],
+     "specificity": 0.392,
+     "specificity_ci": [
+      0.323,
+      0.466
+     ],
+     "ppv": 0.378,
+     "ppv_ci": [
+      0.309,
+      0.452
+     ],
+     "npv": 0.831,
+     "npv_ci": [
+      0.737,
+      0.897
+     ],
+     "accuracy": 0.525,
+     "f1": 0.518
+    },
+    "bingai": {
+     "label": "Bing AI",
+     "tp": 70,
+     "fp": 19,
+     "fn": 9,
+     "tn": 157,
+     "n": 255,
+     "sensitivity": 0.886,
+     "sensitivity_ci": [
+      0.797,
+      0.939
+     ],
+     "specificity": 0.892,
+     "specificity_ci": [
+      0.838,
+      0.93
+     ],
+     "ppv": 0.787,
+     "ppv_ci": [
+      0.69,
+      0.859
+     ],
+     "npv": 0.946,
+     "npv_ci": [
+      0.9,
+      0.971
+     ],
+     "accuracy": 0.89,
+     "f1": 0.834
+    },
+    "bard": {
+     "label": "Bard",
+     "tp": 65,
+     "fp": 66,
+     "fn": 14,
+     "tn": 110,
+     "n": 255,
+     "sensitivity": 0.823,
+     "sensitivity_ci": [
+      0.724,
+      0.891
+     ],
+     "specificity": 0.625,
+     "specificity_ci": [
+      0.552,
+      0.693
+     ],
+     "ppv": 0.496,
+     "ppv_ci": [
+      0.412,
+      0.581
+     ],
+     "npv": 0.887,
+     "npv_ci": [
+      0.819,
+      0.932
+     ],
+     "accuracy": 0.686,
+     "f1": 0.619
+    }
+   },
+   "micromedex": {
+    "drugscom": {
+     "label": "Drugs.com",
+     "tp": 44,
+     "fp": 35,
+     "fn": 3,
+     "tn": 173,
+     "n": 255,
+     "sensitivity": 0.936,
+     "sensitivity_ci": [
+      0.828,
+      0.978
+     ],
+     "specificity": 0.832,
+     "specificity_ci": [
+      0.775,
+      0.876
+     ],
+     "ppv": 0.557,
+     "ppv_ci": [
+      0.447,
+      0.661
+     ],
+     "npv": 0.983,
+     "npv_ci": [
+      0.951,
+      0.994
+     ],
+     "accuracy": 0.851,
+     "f1": 0.698
+    },
+    "chatgpt4": {
+     "label": "ChatGPT-4",
+     "tp": 43,
+     "fp": 100,
+     "fn": 4,
+     "tn": 108,
+     "n": 255,
+     "sensitivity": 0.915,
+     "sensitivity_ci": [
+      0.801,
+      0.966
+     ],
+     "specificity": 0.519,
+     "specificity_ci": [
+      0.452,
+      0.586
+     ],
+     "ppv": 0.301,
+     "ppv_ci": [
+      0.232,
+      0.38
+     ],
+     "npv": 0.964,
+     "npv_ci": [
+      0.912,
+      0.986
+     ],
+     "accuracy": 0.592,
+     "f1": 0.453
+    },
+    "chatgpt35": {
+     "label": "ChatGPT-3.5",
+     "tp": 42,
+     "fp": 130,
+     "fn": 5,
+     "tn": 78,
+     "n": 255,
+     "sensitivity": 0.894,
+     "sensitivity_ci": [
+      0.774,
+      0.954
+     ],
+     "specificity": 0.375,
+     "specificity_ci": [
+      0.312,
+      0.442
+     ],
+     "ppv": 0.244,
+     "ppv_ci": [
+      0.186,
+      0.314
+     ],
+     "npv": 0.94,
+     "npv_ci": [
+      0.867,
+      0.974
+     ],
+     "accuracy": 0.471,
+     "f1": 0.383
+    },
+    "bingai": {
+     "label": "Bing AI",
+     "tp": 41,
+     "fp": 48,
+     "fn": 6,
+     "tn": 160,
+     "n": 255,
+     "sensitivity": 0.872,
+     "sensitivity_ci": [
+      0.748,
+      0.94
+     ],
+     "specificity": 0.769,
+     "specificity_ci": [
+      0.707,
+      0.821
+     ],
+     "ppv": 0.461,
+     "ppv_ci": [
+      0.361,
+      0.564
+     ],
+     "npv": 0.964,
+     "npv_ci": [
+      0.923,
+      0.983
+     ],
+     "accuracy": 0.788,
+     "f1": 0.603
+    },
+    "bard": {
+     "label": "Bard",
+     "tp": 39,
+     "fp": 92,
+     "fn": 8,
+     "tn": 116,
+     "n": 255,
+     "sensitivity": 0.83,
+     "sensitivity_ci": [
+      0.699,
+      0.911
+     ],
+     "specificity": 0.558,
+     "specificity_ci": [
+      0.49,
+      0.624
+     ],
+     "ppv": 0.298,
+     "ppv_ci": [
+      0.226,
+      0.381
+     ],
+     "npv": 0.935,
+     "npv_ci": [
+      0.878,
+      0.967
+     ],
+     "accuracy": 0.608,
+     "f1": 0.439
+    }
+   }
+  },
+  "reference_agreement": {
+   "tp": 44,
+   "fp": 35,
+   "fn": 3,
+   "tn": 173,
+   "n": 255,
+   "sensitivity": 0.936,
+   "sensitivity_ci": [
+    0.828,
+    0.978
+   ],
+   "specificity": 0.832,
+   "specificity_ci": [
+    0.775,
+    0.876
+   ],
+   "ppv": 0.557,
+   "ppv_ci": [
+    0.447,
+    0.661
+   ],
+   "npv": 0.983,
+   "npv_ci": [
+    0.951,
+    0.994
+   ],
+   "accuracy": 0.851,
+   "f1": 0.698
+  }
+ },
+ "authoritative": {
+  "n": 255,
+  "refs": {
+   "any": {
+    "label": "Ít nhất 1 nguồn có thẩm quyền: Micromedex, nhãn thuốc FDA hoặc nhãn thuốc Nhật Bản (PMDA, qua KEGG)",
+    "positives": 72,
+    "system": {
+     "tp": 57,
+     "fp": 16,
+     "fn": 15,
+     "tn": 167,
+     "n": 255,
+     "sensitivity": 0.792,
+     "sensitivity_ci": [
+      0.684,
+      0.869
+     ],
+     "specificity": 0.913,
+     "specificity_ci": [
+      0.863,
+      0.945
+     ],
+     "ppv": 0.781,
+     "ppv_ci": [
+      0.673,
+      0.86
+     ],
+     "npv": 0.918,
+     "npv_ci": [
+      0.868,
+      0.949
+     ],
+     "accuracy": 0.878,
+     "f1": 0.786
+    },
+    "tools": {
+     "micromedex": {
+      "label": "Micromedex",
+      "in_reference": true,
+      "tp": 47,
+      "fp": 0,
+      "fn": 25,
+      "tn": 183,
+      "n": 255,
+      "sensitivity": 0.653,
+      "sensitivity_ci": [
+       0.538,
+       0.752
+      ],
+      "specificity": 1.0,
+      "specificity_ci": [
+       0.979,
+       1.0
+      ],
+      "ppv": 1.0,
+      "ppv_ci": [
+       0.924,
+       1.0
+      ],
+      "npv": 0.88,
+      "npv_ci": [
+       0.829,
+       0.917
+      ],
+      "accuracy": 0.902,
+      "f1": 0.79
+     },
+     "drugscom": {
+      "label": "Drugs.com",
+      "in_reference": false,
+      "tp": 58,
+      "fp": 21,
+      "fn": 14,
+      "tn": 162,
+      "n": 255,
+      "sensitivity": 0.806,
+      "sensitivity_ci": [
+       0.7,
+       0.88
+      ],
+      "specificity": 0.885,
+      "specificity_ci": [
+       0.831,
+       0.924
+      ],
+      "ppv": 0.734,
+      "ppv_ci": [
+       0.628,
+       0.819
+      ],
+      "npv": 0.92,
+      "npv_ci": [
+       0.871,
+       0.952
+      ],
+      "accuracy": 0.863,
+      "f1": 0.768
+     },
+     "chatgpt4": {
+      "label": "ChatGPT-4",
+      "in_reference": false,
+      "tp": 61,
+      "fp": 82,
+      "fn": 11,
+      "tn": 101,
+      "n": 255,
+      "sensitivity": 0.847,
+      "sensitivity_ci": [
+       0.747,
+       0.912
+      ],
+      "specificity": 0.552,
+      "specificity_ci": [
+       0.48,
+       0.622
+      ],
+      "ppv": 0.427,
+      "ppv_ci": [
+       0.348,
+       0.509
+      ],
+      "npv": 0.902,
+      "npv_ci": [
+       0.833,
+       0.944
+      ],
+      "accuracy": 0.635,
+      "f1": 0.568
+     },
+     "chatgpt35": {
+      "label": "ChatGPT-3.5",
+      "in_reference": false,
+      "tp": 61,
+      "fp": 111,
+      "fn": 11,
+      "tn": 72,
+      "n": 255,
+      "sensitivity": 0.847,
+      "sensitivity_ci": [
+       0.747,
+       0.912
+      ],
+      "specificity": 0.393,
+      "specificity_ci": [
+       0.326,
+       0.466
+      ],
+      "ppv": 0.355,
+      "ppv_ci": [
+       0.287,
+       0.429
+      ],
+      "npv": 0.867,
+      "npv_ci": [
+       0.778,
+       0.924
+      ],
+      "accuracy": 0.522,
+      "f1": 0.5
+     },
+     "bingai": {
+      "label": "Bing AI",
+      "in_reference": false,
+      "tp": 54,
+      "fp": 35,
+      "fn": 18,
+      "tn": 148,
+      "n": 255,
+      "sensitivity": 0.75,
+      "sensitivity_ci": [
+       0.639,
+       0.836
+      ],
+      "specificity": 0.809,
+      "specificity_ci": [
+       0.746,
+       0.859
+      ],
+      "ppv": 0.607,
+      "ppv_ci": [
+       0.503,
+       0.702
+      ],
+      "npv": 0.892,
+      "npv_ci": [
+       0.835,
+       0.93
+      ],
+      "accuracy": 0.792,
+      "f1": 0.671
+     },
+     "bard": {
+      "label": "Bard",
+      "in_reference": false,
+      "tp": 54,
+      "fp": 77,
+      "fn": 18,
+      "tn": 106,
+      "n": 255,
+      "sensitivity": 0.75,
+      "sensitivity_ci": [
+       0.639,
+       0.836
+      ],
+      "specificity": 0.579,
+      "specificity_ci": [
+       0.507,
+       0.648
+      ],
+      "ppv": 0.412,
+      "ppv_ci": [
+       0.332,
+       0.498
+      ],
+      "npv": 0.855,
+      "npv_ci": [
+       0.782,
+       0.906
+      ],
+      "accuracy": 0.627,
+      "f1": 0.532
+     }
+    }
+   },
+   "two": {
+    "label": "Ít nhất 2 trong 3 nguồn trên",
+    "positives": 37,
+    "system": {
+     "tp": 36,
+     "fp": 37,
+     "fn": 1,
+     "tn": 181,
+     "n": 255,
+     "sensitivity": 0.973,
+     "sensitivity_ci": [
+      0.862,
+      0.995
+     ],
+     "specificity": 0.83,
+     "specificity_ci": [
+      0.775,
+      0.874
+     ],
+     "ppv": 0.493,
+     "ppv_ci": [
+      0.382,
+      0.605
+     ],
+     "npv": 0.995,
+     "npv_ci": [
+      0.97,
+      0.999
+     ],
+     "accuracy": 0.851,
+     "f1": 0.654
+    },
+    "tools": {
+     "micromedex": {
+      "label": "Micromedex",
+      "in_reference": true,
+      "tp": 36,
+      "fp": 11,
+      "fn": 1,
+      "tn": 207,
+      "n": 255,
+      "sensitivity": 0.973,
+      "sensitivity_ci": [
+       0.862,
+       0.995
+      ],
+      "specificity": 0.95,
+      "specificity_ci": [
+       0.912,
+       0.972
+      ],
+      "ppv": 0.766,
+      "ppv_ci": [
+       0.628,
+       0.864
+      ],
+      "npv": 0.995,
+      "npv_ci": [
+       0.973,
+       0.999
+      ],
+      "accuracy": 0.953,
+      "f1": 0.857
+     },
+     "drugscom": {
+      "label": "Drugs.com",
+      "in_reference": false,
+      "tp": 36,
+      "fp": 43,
+      "fn": 1,
+      "tn": 175,
+      "n": 255,
+      "sensitivity": 0.973,
+      "sensitivity_ci": [
+       0.862,
+       0.995
+      ],
+      "specificity": 0.803,
+      "specificity_ci": [
+       0.745,
+       0.85
+      ],
+      "ppv": 0.456,
+      "ppv_ci": [
+       0.35,
+       0.565
+      ],
+      "npv": 0.994,
+      "npv_ci": [
+       0.969,
+       0.999
+      ],
+      "accuracy": 0.827,
+      "f1": 0.621
+     },
+     "chatgpt4": {
+      "label": "ChatGPT-4",
+      "in_reference": false,
+      "tp": 35,
+      "fp": 108,
+      "fn": 2,
+      "tn": 110,
+      "n": 255,
+      "sensitivity": 0.946,
+      "sensitivity_ci": [
+       0.823,
+       0.985
+      ],
+      "specificity": 0.505,
+      "specificity_ci": [
+       0.439,
+       0.57
+      ],
+      "ppv": 0.245,
+      "ppv_ci": [
+       0.182,
+       0.321
+      ],
+      "npv": 0.982,
+      "npv_ci": [
+       0.937,
+       0.995
+      ],
+      "accuracy": 0.569,
+      "f1": 0.389
+     },
+     "chatgpt35": {
+      "label": "ChatGPT-3.5",
+      "in_reference": false,
+      "tp": 34,
+      "fp": 138,
+      "fn": 3,
+      "tn": 80,
+      "n": 255,
+      "sensitivity": 0.919,
+      "sensitivity_ci": [
+       0.787,
+       0.972
+      ],
+      "specificity": 0.367,
+      "specificity_ci": [
+       0.306,
+       0.433
+      ],
+      "ppv": 0.198,
+      "ppv_ci": [
+       0.145,
+       0.264
+      ],
+      "npv": 0.964,
+      "npv_ci": [
+       0.899,
+       0.988
+      ],
+      "accuracy": 0.447,
+      "f1": 0.326
+     },
+     "bingai": {
+      "label": "Bing AI",
+      "in_reference": false,
+      "tp": 33,
+      "fp": 56,
+      "fn": 4,
+      "tn": 162,
+      "n": 255,
+      "sensitivity": 0.892,
+      "sensitivity_ci": [
+       0.753,
+       0.957
+      ],
+      "specificity": 0.743,
+      "specificity_ci": [
+       0.681,
+       0.797
+      ],
+      "ppv": 0.371,
+      "ppv_ci": [
+       0.278,
+       0.475
+      ],
+      "npv": 0.976,
+      "npv_ci": [
+       0.94,
+       0.991
+      ],
+      "accuracy": 0.765,
+      "f1": 0.524
+     },
+     "bard": {
+      "label": "Bard",
+      "in_reference": false,
+      "tp": 30,
+      "fp": 101,
+      "fn": 7,
+      "tn": 117,
+      "n": 255,
+      "sensitivity": 0.811,
+      "sensitivity_ci": [
+       0.658,
+       0.905
+      ],
+      "specificity": 0.537,
+      "specificity_ci": [
+       0.47,
+       0.602
+      ],
+      "ppv": 0.229,
+      "ppv_ci": [
+       0.165,
+       0.308
+      ],
+      "npv": 0.944,
+      "npv_ci": [
+       0.888,
+       0.972
+      ],
+      "accuracy": 0.576,
+      "f1": 0.357
+     }
+    }
+   },
+   "labels": {
+    "label": "Chỉ nhãn thuốc được cơ quan quản lý duyệt (FDA hoặc Nhật Bản), không dùng Micromedex",
+    "positives": 61,
+    "system": {
+     "tp": 49,
+     "fp": 24,
+     "fn": 12,
+     "tn": 170,
+     "n": 255,
+     "sensitivity": 0.803,
+     "sensitivity_ci": [
+      0.687,
+      0.884
+     ],
+     "specificity": 0.876,
+     "specificity_ci": [
+      0.823,
+      0.915
+     ],
+     "ppv": 0.671,
+     "ppv_ci": [
+      0.557,
+      0.768
+     ],
+     "npv": 0.934,
+     "npv_ci": [
+      0.888,
+      0.962
+     ],
+     "accuracy": 0.859,
+     "f1": 0.731
+    },
+    "tools": {
+     "micromedex": {
+      "label": "Micromedex",
+      "in_reference": false,
+      "tp": 36,
+      "fp": 11,
+      "fn": 25,
+      "tn": 183,
+      "n": 255,
+      "sensitivity": 0.59,
+      "sensitivity_ci": [
+       0.465,
+       0.705
+      ],
+      "specificity": 0.943,
+      "specificity_ci": [
+       0.901,
+       0.968
+      ],
+      "ppv": 0.766,
+      "ppv_ci": [
+       0.628,
+       0.864
+      ],
+      "npv": 0.88,
+      "npv_ci": [
+       0.829,
+       0.917
+      ],
+      "accuracy": 0.859,
+      "f1": 0.667
+     },
+     "drugscom": {
+      "label": "Drugs.com",
+      "in_reference": false,
+      "tp": 50,
+      "fp": 29,
+      "fn": 11,
+      "tn": 165,
+      "n": 255,
+      "sensitivity": 0.82,
+      "sensitivity_ci": [
+       0.705,
+       0.896
+      ],
+      "specificity": 0.851,
+      "specificity_ci": [
+       0.794,
+       0.894
+      ],
+      "ppv": 0.633,
+      "ppv_ci": [
+       0.523,
+       0.731
+      ],
+      "npv": 0.938,
+      "npv_ci": [
+       0.892,
+       0.965
+      ],
+      "accuracy": 0.843,
+      "f1": 0.714
+     },
+     "chatgpt4": {
+      "label": "ChatGPT-4",
+      "in_reference": false,
+      "tp": 52,
+      "fp": 91,
+      "fn": 9,
+      "tn": 103,
+      "n": 255,
+      "sensitivity": 0.852,
+      "sensitivity_ci": [
+       0.743,
+       0.92
+      ],
+      "specificity": 0.531,
+      "specificity_ci": [
+       0.461,
+       0.6
+      ],
+      "ppv": 0.364,
+      "ppv_ci": [
+       0.289,
+       0.445
+      ],
+      "npv": 0.92,
+      "npv_ci": [
+       0.854,
+       0.957
+      ],
+      "accuracy": 0.608,
+      "f1": 0.51
+     },
+     "chatgpt35": {
+      "label": "ChatGPT-3.5",
+      "in_reference": false,
+      "tp": 52,
+      "fp": 120,
+      "fn": 9,
+      "tn": 74,
+      "n": 255,
+      "sensitivity": 0.852,
+      "sensitivity_ci": [
+       0.743,
+       0.92
+      ],
+      "specificity": 0.381,
+      "specificity_ci": [
+       0.316,
+       0.451
+      ],
+      "ppv": 0.302,
+      "ppv_ci": [
+       0.239,
+       0.375
+      ],
+      "npv": 0.892,
+      "npv_ci": [
+       0.807,
+       0.942
+      ],
+      "accuracy": 0.494,
+      "f1": 0.446
+     },
+     "bingai": {
+      "label": "Bing AI",
+      "in_reference": false,
+      "tp": 46,
+      "fp": 43,
+      "fn": 15,
+      "tn": 151,
+      "n": 255,
+      "sensitivity": 0.754,
+      "sensitivity_ci": [
+       0.633,
+       0.845
+      ],
+      "specificity": 0.778,
+      "specificity_ci": [
+       0.715,
+       0.831
+      ],
+      "ppv": 0.517,
+      "ppv_ci": [
+       0.415,
+       0.618
+      ],
+      "npv": 0.91,
+      "npv_ci": [
+       0.856,
+       0.944
+      ],
+      "accuracy": 0.773,
+      "f1": 0.613
+     },
+     "bard": {
+      "label": "Bard",
+      "in_reference": false,
+      "tp": 45,
+      "fp": 86,
+      "fn": 16,
+      "tn": 108,
+      "n": 255,
+      "sensitivity": 0.738,
+      "sensitivity_ci": [
+       0.616,
+       0.832
+      ],
+      "specificity": 0.557,
+      "specificity_ci": [
+       0.486,
+       0.625
+      ],
+      "ppv": 0.344,
+      "ppv_ci": [
+       0.268,
+       0.428
+      ],
+      "npv": 0.871,
+      "npv_ci": [
+       0.801,
+       0.919
+      ],
+      "accuracy": 0.6,
+      "f1": 0.469
+     }
+    }
+   }
+  },
+  "sources": {
+   "micromedex": 47,
+   "fda_label": 54,
+   "japan_label": 18,
+   "fda_no_label": 0
+  },
+  "by_n_sources": {
+   "0": 183,
+   "1": 35,
+   "2": 27,
+   "3": 10
+  },
+  "fp_vs_micromedex": {
+   "n": 29,
+   "supported_by_label": 13
+  }
+ },
+ "literature": [
+  {
+   "study": "Marcath LA et al. J Oncol Pract 2018;14(6):e368-e374, doi:10.1200/JOP.18.00086",
+   "setting": "145 cặp thuốc ung thư đường uống với thuốc khác; chuẩn: Stockley's Drug Interactions, dược sĩ thẩm định",
+   "columns": [
+    "sensitivity",
+    "specificity",
+    "ppv",
+    "npv"
+   ],
+   "rows": [
+    [
+     "Lexicomp",
+     0.96,
+     0.8,
+     0.95,
+     0.83
+    ],
+    [
+     "Micromedex",
+     0.86,
+     0.87,
+     0.96,
+     0.62
+    ],
+    [
+     "Facts & Comparisons",
+     0.67,
+     0.93,
+     0.97,
+     0.42
+    ],
+    [
+     "PEPID",
+     0.9,
+     0.53,
+     0.88,
+     0.59
+    ],
+    [
+     "Drugs.com",
+     0.93,
+     0.73,
+     0.93,
+     0.73
+    ],
+    [
+     "Epocrates (miễn phí)",
+     0.73,
+     0.83,
+     0.94,
+     0.45
+    ],
+    [
+     "Medscape",
+     0.79,
+     0.73,
+     0.92,
+     0.48
+    ],
+    [
+     "RxList",
+     0.65,
+     0.83,
+     0.94,
+     0.38
+    ],
+    [
+     "WebMD",
+     0.79,
+     0.77,
+     0.93,
+     0.49
+    ]
+   ]
+  },
+  {
+   "study": "Kheshti R et al. J Res Pharm Pract 2016;5(4):257-263, PMC5084483",
+   "setting": "360 cặp từ đơn thật + 40 cặp đã biết; chuẩn: dược sĩ lâm sàng cùng Stockley's",
+   "summary": "Lexi-Interact độ nhạy cao nhất (0,77), Micromedex độ đặc hiệu cao nhất (0,78); tỷ lệ trả lời đúng: Lexi-Interact 69,8%, Epocrates 60,3%, Micromedex 50,8%, Medscape 49%, iFacts 36,7%."
+  },
+  {
+   "study": "Bossaer JB et al. J Oncol Pharm Pract 2022, doi:10.1177/1078155220984244",
+   "setting": "229 cặp thật (chuẩn: nhãn thuốc FDA, dược sĩ ung thư phân xử) + 64 cặp không có tương tác",
+   "summary": "Điểm tổng hợp độ chính xác: Lexicomp 355, Drugs.com 352, Epocrates 344, Medscape 280, Micromedex 270."
+  },
+  {
+   "study": "Xu et al. Front Pharmacol 2025, PMC12504084",
+   "setting": "So mức độ giữa Micromedex, Lexicomp, Epocrates, Medscape, Drugs.com",
+   "summary": "Các phần mềm thương mại đồng thuận rất thấp với nhau (Gwet AC1 0,16–0,24): không có phần mềm nào là đáp án tuyệt đối."
+  }
+ ],
+ "onc": {
+  "n": 469,
+  "recognized": 384,
+  "alert_any": 376,
+  "alert_major": 337,
+  "alert_any_rate": 0.802,
+  "alert_major_rate": 0.719,
+  "alert_major_rate_ci": [
+   0.676,
+   0.757
+  ],
+  "alert_major_rate_recognized": 0.878,
+  "alert_major_rate_recognized_ci": [
+   0.841,
+   0.907
+  ],
+  "by_rule": {
+   "ONC-01": {
+    "n": 60,
+    "recognized": 55,
+    "alert": 55,
+    "major": 55,
+    "name": "Amphetamine derivatives – MAO inhibitors"
+   },
+   "ONC-02": {
+    "n": 5,
+    "recognized": 5,
+    "alert": 5,
+    "major": 5,
+    "name": "Atazanavir – Proton pump inhibitors"
+   },
+   "ONC-03": {
+    "n": 2,
+    "recognized": 2,
+    "alert": 2,
+    "major": 2,
+    "name": "Febuxostat – Azathioprine, mercaptopurine"
+   },
+   "ONC-04": {
+    "n": 55,
+    "recognized": 55,
+    "alert": 55,
+    "major": 55,
+    "name": "SSRI/SNRI – MAO inhibitors"
+   },
+   "ONC-05": {
+    "n": 23,
+    "recognized": 23,
+    "alert": 21,
+    "major": 13,
+    "name": "Irinotecan – CYP3A4 inhibitors"
+   },
+   "ONC-06": {
+    "n": 30,
+    "recognized": 30,
+    "alert": 30,
+    "major": 30,
+    "name": "Narcotic analgesics – MAO inhibitors"
+   },
+   "ONC-07": {
+    "n": 95,
+    "recognized": 50,
+    "alert": 50,
+    "major": 50,
+    "name": "Tricyclic antidepressants – MAO inhibitors"
+   },
+   "ONC-09": {
+    "n": 4,
+    "recognized": 4,
+    "alert": 4,
+    "major": 1,
+    "name": "Ramelteon – CYP1A2 inhibitors"
+   },
+   "ONC-10": {
+    "n": 60,
+    "recognized": 60,
+    "alert": 60,
+    "major": 35,
+    "name": "Strong CYP3A4 inducers – Protease inhibitors"
+   },
+   "ONC-11": {
+    "n": 42,
+    "recognized": 42,
+    "alert": 40,
+    "major": 40,
+    "name": "Simvastatin, lovastatin – CYP3A4 inhibitors"
+   },
+   "ONC-12": {
+    "n": 64,
+    "recognized": 32,
+    "alert": 28,
+    "major": 28,
+    "name": "CYP3A4 inhibitors – Ergot alkaloids"
+   },
+   "ONC-13": {
+    "n": 7,
+    "recognized": 7,
+    "alert": 7,
+    "major": 7,
+    "name": "Tizanidine – CYP1A2 inhibitors"
+   },
+   "ONC-14": {
+    "n": 1,
+    "recognized": 1,
+    "alert": 1,
+    "major": 1,
+    "name": "Tranylcypromine – Procarbazine"
+   },
+   "ONC-15": {
+    "n": 21,
+    "recognized": 18,
+    "alert": 18,
+    "major": 15,
+    "name": "Triptans – MAO inhibitors"
+   }
+  }
+ },
+ "rx": {
+  "n_prescriptions": 253,
+  "n_mimic": 249,
+  "n_vn": 4,
+  "median_drugs": 15,
+  "normalization": {
+   "all": {
+    "items": 3415,
+    "drug_items": 3412,
+    "correct_rate": 0.765,
+    "correct_rate_ci": [
+     0.75,
+     0.779
+    ],
+    "recognized_rate": 0.766,
+    "wrong_rate": 0.001,
+    "suggest_rate": 0.086,
+    "unknown_rate": 0.148,
+    "precision_when_recognized": 0.998,
+    "not_drug_items": 3,
+    "not_drug_rejected": 3
+   },
+   "mimic": {
+    "items": 3403,
+    "drug_items": 3403,
+    "correct_rate": 0.764,
+    "correct_rate_ci": [
+     0.749,
+     0.778
+    ],
+    "recognized_rate": 0.765,
+    "wrong_rate": 0.001,
+    "suggest_rate": 0.087,
+    "unknown_rate": 0.148,
+    "precision_when_recognized": 0.998,
+    "not_drug_items": 0,
+    "not_drug_rejected": 0
+   },
+   "vn": {
+    "items": 12,
+    "drug_items": 9,
+    "correct_rate": 1.0,
+    "correct_rate_ci": [
+     0.701,
+     1.0
+    ],
+    "recognized_rate": 1.0,
+    "wrong_rate": 0.0,
+    "suggest_rate": 0.0,
+    "unknown_rate": 0.0,
+    "precision_when_recognized": 1.0,
+    "not_drug_items": 3,
+    "not_drug_rejected": 3
+   }
+  },
+  "must_alert": {
+   "n": 1,
+   "hit_major": 1
+  },
+  "duplicates": {
+   "expected": 73,
+   "detected": 20,
+   "recall": 0.274,
+   "recall_ci": [
+    0.185,
+    0.386
+   ],
+   "flagged_checkable": 20,
+   "flagged_confirmed": 20,
+   "precision": 1.0
+  },
+  "burden": {
+   "ddi": {
+    "mean": 11,
+    "median": 6,
+    "p90": 24.0
+   },
+   "major_plus": {
+    "mean": 1.55,
+    "median": 1,
+    "p90": 5.0
+   },
+   "moderate": {
+    "mean": 7.44,
+    "median": 5,
+    "p90": 17.0
+   },
+   "minor": {
+    "mean": 2.01,
+    "median": 1,
+    "p90": 5.0
+   },
+   "food": {
+    "mean": 8.01,
+    "median": 7,
+    "p90": 14.0
+   },
+   "dup": {
+    "mean": 0.25,
+    "median": 0,
+    "p90": 1.0
+   },
+   "n_drugs": {
+    "mean": 15.29,
+    "median": 15,
+    "p90": 24.0
+   },
+   "rx_with_major_plus": 0.554,
+   "rx_with_any_ddi": 0.932
+  },
+  "citation_rate": 1.0,
+  "findings_total": 4800
+ },
+ "options": [
+  {
+   "option": "cutoff_minor",
+   "drugscom": {
+    "sensitivity": 0.924,
+    "specificity": 0.977,
+    "ppv": 0.948,
+    "npv": 0.966,
+    "f1": 0.936,
+    "tp": 73,
+    "fp": 4,
+    "fn": 6,
+    "tn": 172
+   },
+   "micromedex": {
+    "sensitivity": 0.936,
+    "specificity": 0.841,
+    "ppv": 0.571,
+    "npv": 0.983,
+    "f1": 0.709,
+    "tp": 44,
+    "fp": 33,
+    "fn": 3,
+    "tn": 175
+   },
+   "alerts_per_rx_median": 6,
+   "alerts_per_rx_p90": 24.0
+  },
+  {
+   "option": "cutoff_moderate",
+   "drugscom": {
+    "sensitivity": 0.924,
+    "specificity": 1.0,
+    "ppv": 1.0,
+    "npv": 0.967,
+    "f1": 0.96,
+    "tp": 73,
+    "fp": 0,
+    "fn": 6,
+    "tn": 176
+   },
+   "micromedex": {
+    "sensitivity": 0.936,
+    "specificity": 0.861,
+    "ppv": 0.603,
+    "npv": 0.984,
+    "f1": 0.733,
+    "tp": 44,
+    "fp": 29,
+    "fn": 3,
+    "tn": 179
+   },
+   "alerts_per_rx_median": 6,
+   "alerts_per_rx_p90": 21.0
+  },
+  {
+   "option": "cutoff_major",
+   "drugscom": {
+    "sensitivity": 0.114,
+    "specificity": 1.0,
+    "ppv": 1.0,
+    "npv": 0.715,
+    "f1": 0.205,
+    "tp": 9,
+    "fp": 0,
+    "fn": 70,
+    "tn": 176
+   },
+   "micromedex": {
+    "sensitivity": 0.17,
+    "specificity": 0.995,
+    "ppv": 0.889,
+    "npv": 0.841,
+    "f1": 0.285,
+    "tp": 8,
+    "fp": 1,
+    "fn": 39,
+    "tn": 207
+   },
+   "alerts_per_rx_median": 1,
+   "alerts_per_rx_p90": 5.0
+  },
+  {
+   "option": "source_ddinter_only",
+   "drugscom": {
+    "sensitivity": 0.924,
+    "specificity": 1.0,
+    "ppv": 1.0,
+    "npv": 0.967,
+    "f1": 0.96,
+    "tp": 73,
+    "fp": 0,
+    "fn": 6,
+    "tn": 176
+   },
+   "micromedex": {
+    "sensitivity": 0.936,
+    "specificity": 0.861,
+    "ppv": 0.603,
+    "npv": 0.984,
+    "f1": 0.733,
+    "tp": 44,
+    "fp": 29,
+    "fn": 3,
+    "tn": 179
+   }
+  },
+  {
+   "option": "fn_breakdown_drugscom",
+   "reasons": {
+    "name_not_recognized": 2,
+    "no_record": 4
+   }
+  },
+  {
+   "option": "fn_breakdown_micromedex",
+   "reasons": {
+    "no_record": 3
+   }
+  },
+  {
+   "option": "fp_vs_drugscom_but_micromedex_pos",
+   "n_fp": 0,
+   "micromedex_positive": 0
+  },
+  {
+   "option": "onc_alert_moderate_or_more",
+   "rate": 0.802
+  },
+  {
+   "option": "sources_seen",
+   "sources": {
+    "ddinter": 3191,
+    "patel2020": 36,
+    "openfda": 7
+   }
+  }
+ ],
+ "sources": {
+  "alashwal": "Al-Ashwal FY et al. Drug Healthc Patient Saf 2023;15:137-147, doi:10.2147/DHPS.S425858, phụ lục S1 (CC BY-NC 3.0)",
+  "onc": "Phansalkar S et al. JAMIA 2012;19(5):735-743, doi:10.1136/amiajnl-2011-000612, Bảng 2",
+  "mimic": "Johnson A et al. MIMIC-IV Clinical Database Demo v2.2, PhysioNet, doi:10.13026/dp1f-ex47 (ODbL 1.0)",
+  "rxnorm": "RxNav, U.S. National Library of Medicine",
+  "fda_label": "Nhãn thuốc FDA (Structured Product Labeling) qua openFDA, U.S. Food and Drug Administration; nhãn đã dùng ghi ở eval/golden/refs/fda_labels_used.json",
+  "japan_label": "KEGG DRUG / DDI (Kanehisa Laboratories), tổng hợp từ tờ hướng dẫn sử dụng thuốc được PMDA Nhật Bản duyệt; chỉ dùng học thuật"
+ }
+}

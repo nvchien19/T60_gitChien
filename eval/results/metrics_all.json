@@ -1,11 +1,11 @@
 {
- "generated": "20261010-210205",
- "n_cases": 48,
+ "generated": "20261007-223656",
+ "n_cases": 98,
  "confusion": {
-  "tp": 44,
-  "fp": 4,
+  "tp": 89,
+  "fp": 8,
   "fn": 1,
-  "tn": 15
+  "tn": 33
  },
  "runs": [
   {
@@ -46,6 +46,51 @@
     }
    ],
    "db_gaps": []
+  },
+  {
+   "id": "holdout",
+   "label": "Bộ độc lập (50 ca)",
+   "note": "Ca viết trước khi chạy, agent không được chỉnh theo kết quả. Đáp án lấy nguyên từ CSDL.",
+   "n_cases": 50,
+   "confusion": {
+    "tp": 45,
+    "fp": 4,
+    "fn": 0,
+    "tn": 18
+   },
+   "review_cases": [
+    {
+     "id": "HS-002",
+     "category": "ddi_pair",
+     "fn": 0,
+     "fp": 1
+    },
+    {
+     "id": "HS-005",
+     "category": "ddi_pair",
+     "fn": 0,
+     "fp": 1
+    },
+    {
+     "id": "HS-016",
+     "category": "ddi_pair",
+     "fn": 0,
+     "fp": 1
+    },
+    {
+     "id": "HS-023",
+     "category": "combination",
+     "fn": 0,
+     "fp": 1
+    }
+   ],
+   "db_gaps": [
+    "HS-001",
+    "HS-006",
+    "HS-007",
+    "HS-031",
+    "HS-050"
+   ]
   }
  ],
  "metrics": [
@@ -54,11 +99,12 @@
    "op": ">=",
    "threshold": 0.9,
    "basis": "Mục tiêu dự án: bỏ sót tương tác là lỗi nặng nhất",
-   "pooled": 0.9777777777777777,
-   "mean": 0.9777777777777777,
+   "pooled": 0.9888888888888889,
+   "mean": 0.9888888888888889,
    "passed": true,
    "runs": {
-    "golden": 0.9777777777777777
+    "golden": 0.9777777777777777,
+    "holdout": 1.0
    }
   },
   {
@@ -66,11 +112,12 @@
    "op": "<=",
    "threshold": 0.1,
    "basis": "Mục tiêu dự án (= 1 - recall)",
-   "pooled": 0.022222222222222223,
-   "mean": 0.022222222222222223,
+   "pooled": 0.011111111111111112,
+   "mean": 0.011111111111111112,
    "passed": true,
    "runs": {
-    "golden": 0.022222222222222223
+    "golden": 0.022222222222222223,
+    "holdout": 0.0
    }
   },
   {
@@ -78,11 +125,12 @@
    "op": ">=",
    "threshold": 0.9,
    "basis": "Mục tiêu dự án: hạn chế cảnh báo thừa",
-   "pooled": 0.9166666666666666,
-   "mean": 0.9166666666666666,
+   "pooled": 0.9175257731958762,
+   "mean": 0.9175170068027211,
    "passed": true,
    "runs": {
-    "golden": 0.9166666666666666
+    "golden": 0.9166666666666666,
+    "holdout": 0.9183673469387755
    }
   },
   {
@@ -90,11 +138,12 @@
    "op": ">=",
    "threshold": 0.9,
    "basis": "Mục tiêu dự án: cân bằng precision và recall",
-   "pooled": 0.946236559139785,
-   "mean": 0.946236559139785,
+   "pooled": 0.9518716577540107,
+   "mean": 0.9518416838252117,
    "passed": true,
    "runs": {
-    "golden": 0.946236559139785
+    "golden": 0.946236559139785,
+    "holdout": 0.9574468085106383
    }
   },
   {
@@ -102,35 +151,38 @@
    "op": ">=",
    "threshold": 0.96,
    "basis": "Lexicomp 0,96 (Marcath 2018)",
-   "pooled": 0.9777777777777777,
-   "mean": 0.9777777777777777,
+   "pooled": 0.9888888888888889,
+   "mean": 0.9888888888888889,
    "passed": true,
    "runs": {
-    "golden": 0.9777777777777777
+    "golden": 0.9777777777777777,
+    "holdout": 1.0
    }
   },
   {
    "key": "specificity",
    "op": ">=",
    "threshold": 0.84,
-   "basis": "Lexicomp 0,84 (Marcath 2018)",
-   "pooled": 0.7894736842105263,
-   "mean": 0.7894736842105263,
+   "basis": "Tự đặt, chặt hơn Lexicomp 0,80 (Marcath 2018)",
+   "pooled": 0.8048780487804879,
+   "mean": 0.8038277511961722,
    "passed": false,
    "runs": {
-    "golden": 0.7894736842105263
+    "golden": 0.7894736842105263,
+    "holdout": 0.8181818181818182
    }
   },
   {
    "key": "ppv",
    "op": ">=",
    "threshold": 0.97,
-   "basis": "Lexicomp 0,97 (Marcath 2018)",
-   "pooled": 0.9166666666666666,
-   "mean": 0.9166666666666666,
+   "basis": "Mức cao nhất trong 9 công cụ; Lexicomp 0,95 (Marcath 2018)",
+   "pooled": 0.9175257731958762,
+   "mean": 0.9175170068027211,
    "passed": false,
    "runs": {
-    "golden": 0.9166666666666666
+    "golden": 0.9166666666666666,
+    "holdout": 0.9183673469387755
    }
   },
   {
@@ -138,11 +190,12 @@
    "op": ">=",
    "threshold": 0.83,
    "basis": "Lexicomp 0,83 (Marcath 2018)",
-   "pooled": 0.9375,
-   "mean": 0.9375,
+   "pooled": 0.9705882352941176,
+   "mean": 0.96875,
    "passed": true,
    "runs": {
-    "golden": 0.9375
+    "golden": 0.9375,
+    "holdout": 1.0
    }
   },
   {
@@ -150,11 +203,12 @@
    "op": ">=",
    "threshold": 0.95,
    "basis": "ARCHITECTURE.md giai đoạn 1",
-   "pooled": 0.96,
-   "mean": 0.96,
+   "pooled": 0.9791666666666666,
+   "mean": 0.98,
    "passed": true,
    "runs": {
-    "golden": 0.96
+    "golden": 0.96,
+    "holdout": 1.0
    }
   },
   {
@@ -166,7 +220,8 @@
    "mean": 1.0,
    "passed": true,
    "runs": {
-    "golden": 1.0
+    "golden": 1.0,
+    "holdout": 1.0
    }
   },
   {
@@ -178,7 +233,8 @@
    "mean": 1.0,
    "passed": true,
    "runs": {
-    "golden": 1.0
+    "golden": 1.0,
+    "holdout": 1.0
    }
   },
   {
@@ -190,7 +246,8 @@
    "mean": 1.0,
    "passed": true,
    "runs": {
-    "golden": 1.0
+    "golden": 1.0,
+    "holdout": 1.0
    }
   },
   {
@@ -198,11 +255,12 @@
    "op": ">=",
    "threshold": 0.95,
    "basis": "ARCHITECTURE.md việc cần làm #3",
-   "pooled": 1.0,
-   "mean": 1.0,
+   "pooled": 0.9948453608247423,
+   "mean": 0.994949494949495,
    "passed": true,
    "runs": {
-    "golden": 1.0
+    "golden": 1.0,
+    "holdout": 0.98989898989899
    }
   },
   {
@@ -210,11 +268,12 @@
    "op": ">=",
    "threshold": 0.95,
    "basis": "suggest phải hỏi lại, không tự nhận",
-   "pooled": 1.0,
-   "mean": 1.0,
+   "pooled": 0.9897959183673469,
+   "mean": 0.99,
    "passed": true,
    "runs": {
-    "golden": 1.0
+    "golden": 1.0,
+    "holdout": 0.98
    }
   },
   {
@@ -226,7 +285,8 @@
    "mean": 1.0,
    "passed": true,
    "runs": {
-    "golden": 1.0
+    "golden": 1.0,
+    "holdout": 1.0
    }
   },
   {
@@ -238,7 +298,8 @@
    "mean": 1.0,
    "passed": true,
    "runs": {
-    "golden": 1.0
+    "golden": 1.0,
+    "holdout": 1.0
    }
   },
   {
@@ -250,7 +311,8 @@
    "mean": 1.0,
    "passed": true,
    "runs": {
-    "golden": 1.0
+    "golden": 1.0,
+    "holdout": 1.0
    }
   },
   {
@@ -262,7 +324,8 @@
    "mean": 1.0,
    "passed": true,
    "runs": {
-    "golden": 1.0
+    "golden": 1.0,
+    "holdout": 1.0
    }
   },
   {
@@ -274,7 +337,8 @@
    "mean": 0.0,
    "passed": true,
    "runs": {
-    "golden": 0.0
+    "golden": 0.0,
+    "holdout": 0.0
    }
   },
   {
@@ -282,11 +346,12 @@
    "op": ">=",
    "threshold": 1.0,
    "basis": "Quy tắc G3",
-   "pooled": 0.8833333333333333,
-   "mean": 0.8833333333333333,
+   "pooled": 0.905982905982906,
+   "mean": 0.906578947368421,
    "passed": false,
    "runs": {
-    "golden": 0.8833333333333333
+    "golden": 0.8833333333333333,
+    "holdout": 0.9298245614035088
    }
   },
   {
@@ -298,7 +363,8 @@
    "mean": 1.0,
    "passed": true,
    "runs": {
-    "golden": 1.0
+    "golden": 1.0,
+    "holdout": 1.0
    }
   },
   {
@@ -306,11 +372,12 @@
    "op": "<=",
    "threshold": 10000,
    "basis": "PRD: < 10 giây",
-   "pooled": 96,
-   "mean": 96.0,
+   "pooled": 75,
+   "mean": 82.0,
    "passed": true,
    "runs": {
-    "golden": 96
+    "golden": 96,
+    "holdout": 68
    }
   },
   {
@@ -318,11 +385,12 @@
    "op": null,
    "threshold": null,
    "basis": "",
-   "pooled": 0.921875,
-   "mean": 0.921875,
+   "pooled": 0.9312977099236641,
+   "mean": 0.9310867537313433,
    "passed": null,
    "runs": {
-    "golden": 0.921875
+    "golden": 0.921875,
+    "holdout": 0.9402985074626866
    }
   },
   {
@@ -330,11 +398,12 @@
    "op": null,
    "threshold": null,
    "basis": "",
-   "pooled": 0.9053545321637426,
-   "mean": 0.9053545321637426,
+   "pooled": 0.9204702365398427,
+   "mean": 0.9197459117219455,
    "passed": null,
    "runs": {
-    "golden": 0.9053545321637426
+    "golden": 0.9053545321637426,
+    "holdout": 0.9341372912801484
    }
   },
   {
@@ -346,7 +415,8 @@
    "mean": 1.0,
    "passed": null,
    "runs": {
-    "golden": 1.0
+    "golden": 1.0,
+    "holdout": 1.0
    }
   },
   {
@@ -354,11 +424,12 @@
    "op": null,
    "threshold": null,
    "basis": "",
-   "pooled": 0.9791666666666666,
-   "mean": 0.9791666666666666,
+   "pooled": 0.9795918367346939,
+   "mean": 0.9795833333333333,
    "passed": null,
    "runs": {
-    "golden": 0.9791666666666666
+    "golden": 0.9791666666666666,
+    "holdout": 0.98
    }
   },
   {
@@ -370,7 +441,8 @@
    "mean": 1.0,
    "passed": null,
    "runs": {
-    "golden": 1.0
+    "golden": 1.0,
+    "holdout": 1.0
    }
   },
   {
@@ -382,7 +454,8 @@
    "mean": 1.0,
    "passed": null,
    "runs": {
-    "golden": 1.0
+    "golden": 1.0,
+    "holdout": 1.0
    }
   },
   {
@@ -390,11 +463,12 @@
    "op": null,
    "threshold": null,
    "basis": "",
-   "pooled": 35,
-   "mean": 35.0,
+   "pooled": 38,
+   "mean": 39.0,
    "passed": null,
    "runs": {
-    "golden": 35
+    "golden": 35,
+    "holdout": 43
    }
   }
  ],
