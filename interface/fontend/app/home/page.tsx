@@ -81,7 +81,7 @@ export default function Page() {
         </nav>
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <ThemeToggle checked={darkMode} onCheckedChange={changeTheme} compact />
-          <button onClick={() => setChatOpen(true)} className="home-header-cta hidden items-center rounded-full bg-teal-600 px-6 py-3 text-sm font-bold text-white shadow-md shadow-teal-200 transition hover:bg-teal-700 sm:inline-flex">Bắt đầu kiểm tra <ArrowRight className="ml-2 inline size-4" /></button>
+          <button onClick={() => setChatOpen(true)} className="home-header-cta hidden min-h-10 items-center rounded-lg bg-teal-600 px-4 py-2 text-sm font-bold text-white shadow-md shadow-teal-200 transition hover:bg-teal-700 sm:inline-flex">Bắt đầu kiểm tra <ArrowRight className="ml-2 inline size-4" /></button>
           <a href="/login" aria-label="Đăng nhập" title="Đăng nhập" className="home-header-login hidden items-center justify-center rounded-full border border-teal-200/80 bg-white/60 text-teal-700 transition hover:bg-teal-50 sm:inline-flex"><LogIn className="size-4" /></a>
         </div>
         <button aria-label="Mở menu" onClick={() => setMenuOpen(!menuOpen)} className="rounded-lg p-2 text-slate-500 lg:hidden"><Menu className="size-5" /></button>
