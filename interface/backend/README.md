@@ -223,7 +223,8 @@ Base `/api/v1`.
 | POST | `/api/v1/reviews` | Gửi review HITL (tự đếm `med_count` nếu thiếu) |
 | GET | `/api/v1/reviews?prescription_id=&status=` | List yêu cầu dược sĩ, mới nhất trước |
 | PATCH | `/api/v1/reviews/{review_id}` | Dược sĩ chuyển `Đang chờ` → `Đã phản hồi` |
-| POST | `/api/v1/assistant/chat` | Assistant **rule-based, không LLM** |
+| POST | `/api/v1/assistant/chat` | Trợ lý trả lời từ bằng chứng của lần kiểm tra đã lưu (DeepSeek, có kiểm trích dẫn và thẩm định) |
+| POST | `/api/v1/assistant/chat/stream` | Như trên, qua SSE: sự kiện `stage` cho từng bước, `done` mang câu trả lời đã kiểm chứng, `error` mang `{status, detail}` |
 | POST | `/api/v1/chat` | Chat qua agent LangGraph (503 nếu thiếu langgraph) |
 | GET | `/api/v1/status` | Trạng thái agent |
 

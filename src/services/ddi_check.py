@@ -7,6 +7,7 @@ from itertools import combinations
 
 from langchain_core.language_models import BaseChatModel
 
+from interface.backend.services.progress import report
 from src.models.schemas import (
     Citation,
     DrugSuggestion,
@@ -93,6 +94,7 @@ async def check_interactions(
     drugs: list[str], repo: DDIRepository, *, llm: BaseChatModel | None = None, max_llm_pairs: int = 8
 ) -> InteractionCheckResponse:
     # 1. normalize
+    report("lookup")
     inputs = _dedupe_inputs(drugs)
     resolved, notes = [], []
     for name in inputs:

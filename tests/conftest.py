@@ -17,6 +17,13 @@ from interface.backend.main import app
 TEST_DB = Path("data/test_be.db")
 
 
+@pytest.fixture(autouse=True)
+def no_live_external_drugs(monkeypatch):
+    from interface.backend.config import get_settings
+    monkeypatch.setattr(get_settings(), "external_drug_lookup_enabled", False)
+    monkeypatch.setattr(get_settings(), "assistant_intent_llm_enabled", False)
+
+
 def _seed_sync():
     import sqlite3
 
@@ -106,7 +113,10 @@ async def client():
     app.dependency_overrides[get_session] = _override
     transport = ASGITransport(app=app)
     from interface.backend.api.routers.auth import _attempts
+    from interface.backend.services.rate_limit import chat_limit, explain_limit
     _attempts.clear()
+    chat_limit.calls.clear()
+    explain_limit.calls.clear()
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
         result = await ac.post("/api/v1/auth/login", json={
             "email": "pharmacist@test.vn", "password": "Test-password-123",

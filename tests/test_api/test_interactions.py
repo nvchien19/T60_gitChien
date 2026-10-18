@@ -1,4 +1,4 @@
-"""Test /api/v1/interactions/check với CSDL và LLM giả lập (không gọi Postgres hay DeepSeek)."""
+"""Test /api/v1/interactions/explain với CSDL và LLM giả lập (không gọi Postgres hay DeepSeek)."""
 
 import json
 import re
@@ -13,7 +13,7 @@ from src.services.ddi_repository import ClassMember, DrugMatch, FormRule, Intera
 from src.services.explainer import SEVERITY_VI, template_explanation
 from src.services.llm import get_explainer_llm
 
-URL = "/api/v1/interactions/check"
+URL = "/api/v1/interactions/explain"
 NAMES = {
     "D14": "Acetaminophen",
     "D1951": "Warfarin",
@@ -353,3 +353,44 @@ def test_templates_pass_guardrail(severity):
     text = template_explanation(pair)
     assert guardrail.check(text).ok, guardrail.check(text).violations
     assert "[1]" in text
+
+
+def sse_events(body: str) -> list[tuple[str, dict]]:
+    parsed = []
+    for block in body.split("\n\n"):
+        lines = dict(line.split(": ", 1) for line in block.splitlines() if line and not line.startswith(":"))
+        if lines:
+            parsed.append((lines["event"], json.loads(lines["data"])))
+    return parsed
+
+
+@pytest.mark.asyncio
+async def test_explain_stream_sends_stages_then_verified_explanation(client, use):
+    use(llm=FakeLLM(GOOD))
+    r = await client.post(URL + "/stream", json={"drugs": ["Ibuprofen", "Warfarin"]})
+    assert r.status_code == 200 and r.headers["content-type"].startswith("text/event-stream")
+    events = sse_events(r.text)
+    assert [d["stage"] for e, d in events if e == "stage"] == ["lookup", "explaining", "verifying"]
+    name, body = events[-1]
+    assert name == "done" and body["pairs"][0]["explanation_source"] == "llm"
+    assert body["pairs"][0]["explanation"] == (await client.post(URL, json={"drugs": ["Ibuprofen", "Warfarin"]})).json()["pairs"][0]["explanation"]
+
+
+@pytest.mark.asyncio
+async def test_explain_stream_shows_rewrite_when_sentence_rejected(client, use):
+    use(llm=FakeLLM(claims(SEVERITY, BAD_FACTS[0], REFERRAL), GOOD))
+    events = sse_events((await client.post(URL + "/stream", json={"drugs": ["Ibuprofen", "Warfarin"]})).text)
+    stages = [d["stage"] for e, d in events if e == "stage"]
+    assert stages[:2] == ["lookup", "explaining"] and "rewriting" in stages and stages[-1] == "verifying"
+    assert events[-1][0] == "done" and "ngưng" not in events[-1][1]["pairs"][0]["explanation"]
+
+
+@pytest.mark.asyncio
+async def test_explain_stream_reports_db_error_as_error_event(client, use):
+    class BrokenRepo(FakeRepo):
+        async def find_drug(self, query, max_results=5):
+            raise psycopg.OperationalError("down")
+
+    use(llm=None, repo=BrokenRepo())
+    events = sse_events((await client.post(URL + "/stream", json={"drugs": ["Ibuprofen", "Warfarin"]})).text)
+    assert events[-1][0] == "error" and events[-1][1]["status"] == 503

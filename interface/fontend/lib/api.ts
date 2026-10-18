@@ -98,18 +98,31 @@ export async function loadReviews(): Promise<ReviewRequest[]> {
 
 export type PairExplanation = { text: string; source: 'llm' | 'template' | 'none'; refs: { label: string; url: string }[] }
 type RawExplainedPair = { explanation: string; explanation_source: PairExplanation['source']; mechanisms: { source_id: string; interaction_id: number; source_url: string }[]; form_notes: { source_id: string; rule_id: string; source_url: string }[] }
-const explanations = new Map<string, Promise<PairExplanation | null>>()
+type PendingExplanation = { promise: Promise<PairExplanation | null>; stages: ProgressStage[]; listeners: Set<(stages: ProgressStage[]) => void> }
+const explanations = new Map<string, PendingExplanation>()
 
 // Lời giải thích tiếng Việt cho một cặp thuốc; null khi CSDL chưa có bản ghi của cặp. Số [k] trong text ứng với refs[k-1].
-export function explainPair(a: string, b: string): Promise<PairExplanation | null> {
+// onStages nhận các bước backend đã chạy; nhiều nơi cùng chờ một cặp thì cùng nhận, nơi mở sau thấy cả các bước trước.
+export function explainPair(a: string, b: string, onStages?: (stages: ProgressStage[]) => void): { promise: Promise<PairExplanation | null>; unsubscribe: () => void } {
   const key = [a, b].sort().join('|')
   let pending = explanations.get(key)
   if (!pending) {
-    pending = api<{ pairs: RawExplainedPair[] }>('/interactions/explain', { drugs: [a, b] }).then(({ pairs }) => pairs[0] ? { text: pairs[0].explanation, source: pairs[0].explanation_source, refs: [...pairs[0].mechanisms.map(m => ({ label: `${m.source_id} · bản ghi ${m.interaction_id}`, url: m.source_url })), ...pairs[0].form_notes.map(n => ({ label: `${n.source_id} · quy tắc ${n.rule_id}`, url: n.source_url }))] } : null)
-    explanations.set(key, pending)
-    pending.catch(() => explanations.delete(key))
+    const entry: PendingExplanation = { stages: [], listeners: new Set(), promise: Promise.resolve(null) }
+    entry.promise = streamPost<{ pairs: RawExplainedPair[] }>('/interactions/explain', { drugs: [a, b] }, stage => {
+      if (entry.stages.at(-1)?.stage === stage.stage) return
+      entry.stages = [...entry.stages, stage]
+      entry.listeners.forEach(listener => listener(entry.stages))
+    }).then(({ pairs }) => pairs[0] ? { text: pairs[0].explanation, source: pairs[0].explanation_source, refs: [...pairs[0].mechanisms.map(m => ({ label: `${m.source_id} · bản ghi ${m.interaction_id}`, url: m.source_url })), ...pairs[0].form_notes.map(n => ({ label: `${n.source_id} · quy tắc ${n.rule_id}`, url: n.source_url }))] } : null)
+    entry.promise.catch(() => explanations.delete(key)).finally(() => entry.listeners.clear())
+    explanations.set(key, entry)
+    pending = entry
   }
-  return pending
+  const current = pending
+  if (onStages) {
+    current.listeners.add(onStages)
+    if (current.stages.length) onStages(current.stages)
+  }
+  return { promise: current.promise, unsubscribe: () => { if (onStages) current.listeners.delete(onStages) } }
 }
 
 export function findingsOf(record: CheckRecord): Finding[] {
@@ -129,4 +142,58 @@ export type AssistantReply = {
   citations: Citation[]
   limitations: string[]
   disclaimer: string
+}
+export type ProgressStage = { stage: string; label: string }
+
+// Hỏi trợ lý: nhận từng bước đang chạy, câu trả lời chỉ đến một lần sau khi backend đã kiểm chứng.
+export function askAssistant(body: unknown, onStage: (stage: ProgressStage) => void, signal?: AbortSignal): Promise<AssistantReply> {
+  return streamPost<AssistantReply>('/assistant/chat', body, onStage, signal)
+}
+
+const LOST = 'Mất kết nối với máy chủ trước khi có kết quả. Vui lòng thử lại.'
+
+// Gọi `${path}/stream` (SSE): sự kiện `stage` cho từng bước, rồi `done` mang kết quả hoặc `error`.
+// Backend cũ chưa có endpoint stream (404/405) thì gọi `path` trả JSON một lần.
+async function streamPost<T>(path: string, body: unknown, onStage: (stage: ProgressStage) => void, signal?: AbortSignal): Promise<T> {
+  const timeout = AbortSignal.timeout(90000)
+  let response: Response
+  try {
+    response = await fetch(`/api/v1${path}/stream`, { method: 'POST', cache: 'no-store', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', Accept: 'text/event-stream' }, body: JSON.stringify(body), signal: signal && 'any' in AbortSignal ? AbortSignal.any([signal, timeout]) : signal ?? timeout })
+  } catch (error) {
+    if (signal?.aborted) throw error
+    throw new Error('Không kết nối được backend. Hãy kiểm tra dịch vụ API và thử lại.')
+  }
+  if (response.status === 404 || response.status === 405) return api<T>(path, body)
+  if (!response.ok) {
+    const error = await response.json().catch(() => null)
+    if (response.status === 401 && typeof window !== 'undefined') window.dispatchEvent(new Event('session-expired'))
+    throw new ApiError(typeof error?.detail === 'string' ? error.detail : `API trả về lỗi ${response.status}. Vui lòng thử lại.`, response.status)
+  }
+  if (!response.headers.get('content-type')?.includes('text/event-stream') || !response.body) return response.json() as Promise<T>
+  const reader = response.body.getReader()
+  const decoder = new TextDecoder()
+  let buffer = ''
+  try {
+    for (;;) {
+      const { value, done } = await reader.read()
+      buffer = (buffer + decoder.decode(value, { stream: !done })).replace(/\r\n/g, '\n')
+      let end: number
+      while ((end = buffer.indexOf('\n\n')) >= 0) {
+        const block = buffer.slice(0, end)
+        buffer = buffer.slice(end + 2)
+        const event = block.match(/^event: ?(.*)$/m)?.[1]
+        const data = block.split('\n').filter(line => line.startsWith('data:')).map(line => line.replace(/^data: ?/, '')).join('\n')
+        if (!event || !data) continue
+        const payload = JSON.parse(data)
+        if (event === 'stage') onStage(payload as ProgressStage)
+        else if (event === 'done') return payload as T
+        else if (event === 'error') throw new ApiError(typeof payload.detail === 'string' ? payload.detail : 'Hệ thống gặp lỗi. Vui lòng thử lại.', Number(payload.status) || 500)
+      }
+      if (done) break
+    }
+  } catch (error) {
+    if (error instanceof ApiError || signal?.aborted) throw error
+    throw new Error(LOST)
+  } finally { reader.cancel().catch(() => undefined) }
+  throw new Error(LOST)
 }

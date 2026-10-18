@@ -20,10 +20,27 @@ DISCLAIMER = (
 )
 
 
+# Tách câu ở dấu kết câu theo sau là khoảng trắng; "0.5 mg" không bị tách.
+SENTENCE_END = re.compile(r"(?<=[.!?;])\s+|\n+")
+
+
 def sanitize_text(text: str, is_no_record: bool = False) -> str:
+    """Bỏ nguyên câu có lời khuyên dùng/đổi thuốc, chèn HANDOFF một lần vào chỗ câu đầu tiên bị bỏ.
+
+    Thay riêng cụm từ thì khuyến cáo của nguồn bị cắt giữa câu ("có thể yêu cầu Liên hệ bác sĩ...").
+    """
     if not text:
         return text
-    t = BANNED_ADVICE.sub(HANDOFF, text)
+    if BANNED_ADVICE.search(text):
+        kept, handoff_added = [], HANDOFF in text
+        for sentence in SENTENCE_END.split(text):
+            if not BANNED_ADVICE.search(sentence):
+                kept.append(sentence)
+            elif not handoff_added:
+                kept.append(HANDOFF)
+                handoff_added = True
+        text = " ".join(s for s in kept if s.strip())
+    t = text
     if is_no_record:
         t = BANNED_SAFE.sub("chưa có bản ghi trong CSDL", t)
     return t

@@ -77,3 +77,16 @@ async def test_check_detail_is_stored_snapshot(client):
         con.close()
     assert after["findings"] == before["findings"]
     assert after["findings"][0]["severity"] == "major"
+
+
+@pytest.mark.asyncio
+async def test_duplicate_active_ingredient_is_reported(client):
+    # Hai tên trên đơn cùng một hoạt chất (vd hai biệt dược cùng thành phần) phải ra cảnh báo trùng.
+    r = await client.post("/api/v1/interactions/check",
+                          json={"drugs": ["Aspirin", "Aspirin 81mg", "Warfarin"], "include_food": False})
+    assert r.status_code == 200
+    dups = [f for f in r.json()["duplicate_findings"] if f["severity"] == "duplicate_active"]
+    assert len(dups) == 1
+    assert dups[0]["pair"] == ["Aspirin", "Aspirin 81mg"]
+    assert dups[0]["severity_vi"] == "Trung bình"
+    assert [c["source_id"] for c in dups[0]["citations"]] == ["ddinter"]

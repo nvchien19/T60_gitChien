@@ -2,6 +2,7 @@ import logging
 
 import psycopg
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import StreamingResponse
 from langchain_core.language_models import BaseChatModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -10,6 +11,7 @@ from interface.backend.repositories import ddi_repo
 from interface.backend.schemas.chat import InteractionCheckRequest, InteractionCheckResponse
 from interface.backend.schemas.ddi import CheckRequest, CheckResponse
 from interface.backend.services.check_service import normalize_list, run_check
+from interface.backend.services.progress import progress_events
 from interface.backend.services.rate_limit import explain_limit
 from src.core.guardrails import NO_RECORD_MSG
 from src.services.ddi_check import check_interactions
@@ -37,6 +39,22 @@ async def explain(
 
     Chưa có DEEPSEEK_API_KEY, LLM lỗi hoặc viết ngoài bằng chứng thì trả bản mẫu soạn sẵn từ CSDL.
     """
+    return await _explain(request, repo, llm)
+
+
+@router.post("/interactions/explain/stream", dependencies=[Depends(explain_limit)])
+async def explain_stream(
+    request: InteractionCheckRequest,
+    repo: DDIRepository = Depends(get_repository),
+    llm: BaseChatModel | None = Depends(get_explainer_llm),
+):
+    """Như /interactions/explain nhưng gửi từng bước qua SSE; lời giải thích chỉ gửi sau khi đã kiểm chứng."""
+    return StreamingResponse(progress_events(lambda: _explain(request, repo, llm)), media_type="text/event-stream",
+                             headers={"X-Accel-Buffering": "no"})
+
+
+async def _explain(request: InteractionCheckRequest, repo: DDIRepository,
+                   llm: BaseChatModel | None) -> InteractionCheckResponse:
     try:
         result = await check_interactions(request.drugs, repo, llm=llm if request.explain else None)
     except psycopg.Error as e:

@@ -17,6 +17,7 @@ from interface.backend.config import get_settings
 from interface.backend.schemas.ddi import Citation, FindingOut
 from interface.backend.services.assistant_usage import record_attempt, record_receipt
 from interface.backend.services.conversation_privacy import sanitize_conversation
+from interface.backend.services.progress import report
 from src.core.guardrails import BANNED_ADVICE
 from src.services.grounding import Claim, Evidence, assemble, check_claims
 
@@ -77,7 +78,10 @@ PRIVATE = re.compile(
 )
 ADVICE = re.compile(
     r"\b(start|stop|switch|increase|decrease|take|prescribe)\b|"
-    r"\b(uong|dung|tang|giam|doi|ngung|ngun?g|ke)\s+(thuoc|lieu|don)\b|"
+    # "uống/dùng thuốc" sau chủ ngữ mô tả ("ở bệnh nhân dùng thuốc chống đông") là câu mô tả của nguồn, không phải
+    # lời bảo người dùng; vẫn chặn "nên/hãy dùng thuốc" và mọi "tăng/giảm/đổi/ngưng/kê thuốc, liều, đơn".
+    r"\b(?<!benh nhan )(?<!nguoi )(?<!nguoi benh )(?<!dang )(uong|dung)\s+(thuoc|lieu|don)\b|"
+    r"\b(tang|giam|doi|ngung|ngun?g|ke)\s+(thuoc|lieu|don)\b|"
     r"\bban\s+(dang\s+)?(bi|mac)\b", re.I,
 )
 
@@ -185,6 +189,7 @@ async def explain(question: str, findings: list[FindingOut], citations: list[Cit
             payload = {"question": clean_question, "conversation": clean_history,
                        "answer_focus": focus, "evidence": evidence,
                        "detail": detail, "max_sentences": 6 if detail == "expanded" else 2}
+            report("composing")
             raw = await provider_json(SYSTEM, payload)
             result_data = Facts.model_validate(raw)
             if result_data.outcome != "answered":
@@ -205,6 +210,7 @@ async def explain(question: str, findings: list[FindingOut], citations: list[Cit
             if result.rejected or len(result.kept) != len(claims):
                 return "", "ungrounded_output"
             # Verification is mandatory even when EXPLAIN_VERIFY is disabled elsewhere.
+            report("verifying")
             verdict_data = await provider_json(VERIFY, {
                 "question": clean_question, "conversation": clean_history,
                 "answer_focus": focus, "statements": [{"id": i, "text": c.text, "quote": c.quote,
@@ -215,6 +221,7 @@ async def explain(question: str, findings: list[FindingOut], citations: list[Cit
                 # One bounded repair attempt based on relevance, then recheck everything.
                 repair = dict(payload, revision="The previous answer missed the question. Answer directly, "
                               "leading with named warned combinations if that is what was asked.")
+                report("revising")
                 revised = Facts.model_validate(await provider_json(SYSTEM, repair))
                 if revised.outcome != "answered" or not revised.sentences:
                     return "", "irrelevant_answer"
@@ -226,6 +233,7 @@ async def explain(question: str, findings: list[FindingOut], citations: list[Cit
                 revised_checks = check_claims(revised_claims, Evidence(sources=evidence, definitions=""))
                 if revised_checks.rejected:
                     return "", "ungrounded_output"
+                report("verifying")
                 verdict_data = await provider_json(VERIFY, {
                     "question": clean_question, "conversation": clean_history, "answer_focus": focus,
                     "statements": [{"id": i, "text": c.text, "quote": c.quote,

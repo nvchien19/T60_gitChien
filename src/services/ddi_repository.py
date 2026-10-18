@@ -117,7 +117,8 @@ class PostgresDDIRepository:
     """
 
     def __init__(self, dsn: str | None = None):
-        self.dsn = dsn or get_settings().database_url
+        # psycopg không hiểu hậu tố driver của SQLAlchemy (docker-compose đặt `postgresql+asyncpg://`)
+        self.dsn = (dsn or get_settings().database_url).replace("postgresql+asyncpg://", "postgresql://", 1)
 
     def _fetch_sync(self, sql: str, params: tuple) -> list[dict]:
         with psycopg.connect(self.dsn, row_factory=dict_row, connect_timeout=5) as conn:

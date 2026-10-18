@@ -13,6 +13,7 @@ import logging
 from langchain_core.language_models import BaseChatModel
 from langchain_core.messages import HumanMessage, SystemMessage
 
+from interface.backend.services.progress import report
 from src.config import get_settings
 from src.models.schemas import PairResult
 from src.services import guardrail
@@ -182,12 +183,14 @@ async def _generate(
 ) -> tuple[str, list[Rejected]]:
     """Một vòng sinh + kiểm chứng. Trả về (văn bản, các câu bị loại); văn bản rỗng nếu không còn câu dữ kiện nào."""
     evidence_text, ev = build_evidence(pair)
+    report("rewriting" if feedback else "explaining")
     msg = await llm.ainvoke(
         [SystemMessage(content=SYSTEM_PROMPT), HumanMessage(content=evidence_text + feedback)], **JSON_MODE
     )
     res = check_claims(parse_claims(str(msg.content)), ev)
     kept, rejected = res.kept, res.rejected
     if verify and kept:
+        report("verifying")
         vres = await verify_claims(kept, ev, evidence_text, llm)
         kept, rejected = vres.kept, rejected + vres.rejected
     if not any(c.type == "fact" for c in kept):

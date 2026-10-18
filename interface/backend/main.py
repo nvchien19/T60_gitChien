@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
+from interface.backend import dev_watchdog
 from interface.backend.api.routers import (
     auth,
     drugs,
@@ -24,6 +25,7 @@ from interface.backend.services.auth_service import current_user
 async def lifespan(app: FastAPI):
     settings = get_settings()
     print(f"Starting {settings.app_name} in {settings.app_env} mode")
+    dev_watchdog.start()
     # P0: tu tao bang khi chay (thay Alembic cho dev/test; prod van co migration)
     if settings.app_env in ("development", "test"):
         try:
@@ -49,7 +51,9 @@ app = FastAPI(
 async def private_api_cache(request: Request, call_next):
     response = await call_next(request)
     if request.url.path.startswith("/api/v1"):
-        response.headers["Cache-Control"] = "no-store"
+        # SSE thêm no-transform để lớp nén của proxy (Next.js) không gom sự kiện rồi mới gửi.
+        stream = response.headers.get("content-type", "").startswith("text/event-stream")
+        response.headers["Cache-Control"] = "no-store, no-transform" if stream else "no-store"
     response.headers.setdefault("X-Content-Type-Options", "nosniff")
     response.headers.setdefault("X-Frame-Options", "DENY")
     response.headers.setdefault("Referrer-Policy", "no-referrer")

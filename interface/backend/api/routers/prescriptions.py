@@ -4,6 +4,7 @@ import uuid
 from datetime import UTC, datetime
 
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import StreamingResponse
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -25,6 +26,7 @@ from interface.backend.services.check_service import normalize_list, run_check
 from interface.backend.schemas.assistant import AssistantRequest, AssistantResponse
 from interface.backend.services.assistant_service import answer
 from interface.backend.services.patient_context import context_options, empty_context, validate_context
+from interface.backend.services.progress import progress_events
 from interface.backend.services.rate_limit import chat_limit
 
 router = APIRouter(tags=["prescriptions"])
@@ -356,3 +358,11 @@ async def update_review(review_id: int, req: ReviewStatusUpdate,
 @router.post("/assistant/chat", response_model=AssistantResponse, dependencies=[Depends(chat_limit)])
 async def assistant_chat(payload: AssistantRequest, db: AsyncSession = Depends(get_session)):
     return await answer(db, payload)
+
+
+@router.post("/assistant/chat/stream", dependencies=[Depends(chat_limit)])
+async def assistant_chat_stream(payload: AssistantRequest, db: AsyncSession = Depends(get_session)):
+    """Như /assistant/chat nhưng gửi tiến trình qua SSE; câu trả lời chỉ gửi sau khi đã kiểm chứng."""
+    # Cache-Control do middleware ở main.py đặt; X-Accel-Buffering tắt bộ đệm của nginx nếu có.
+    return StreamingResponse(progress_events(lambda: answer(db, payload)), media_type="text/event-stream",
+                             headers={"X-Accel-Buffering": "no"})

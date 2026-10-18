@@ -24,6 +24,7 @@ from interface.backend.services.assistant_local_labels import local_label_reply
 from interface.backend.services.assistant_nutrition import nutrition_reply
 from interface.backend.services.assistant_situations import requests_treatment, social_reply
 from interface.backend.services.assistant_usage import UsageMeter, active_usage
+from interface.backend.services.progress import report
 from src.core.guardrails import DISCLAIMER, HANDOFF, sanitize_text
 from src.tools.ranker import SEVERITY_VI
 
@@ -109,6 +110,7 @@ async def _answer(db: AsyncSession, request: AssistantRequest) -> AssistantRespo
                   and (explicit_lookup or not await drug_in_catalog(db, name))]
         if not absent:
             return None
+        report("label_lookup")
         text, cites, found = await label_reply(absent, request.message, unsafe, detail=request.detail)
         if not text:
             if explicit_lookup:
@@ -132,6 +134,7 @@ async def _answer(db: AsyncSession, request: AssistantRequest) -> AssistantRespo
         return response("Tôi không đưa ra chẩn đoán hoặc chỉ định điều trị, liều dùng hay thay đổi thuốc. "
                         "Tôi có thể giúp bạn hiểu bằng chứng tương tác để trao đổi với bác sĩ/dược sĩ.",
                         "out_of_scope")
+    report("routing")
     decision = await classify_question(request.message, [turn.model_dump() for turn in request.history], unsafe)
     if decision.moderation != "allowed":
         return AssistantResponse(reply="Tôi không xử lý lời công kích hoặc yêu cầu vượt quy tắc. Bạn vui lòng đặt lại câu hỏi về thuốc một cách tôn trọng.",
@@ -165,6 +168,7 @@ async def _answer(db: AsyncSession, request: AssistantRequest) -> AssistantRespo
             return external
         return response("Hãy chọn đơn thuốc và chạy kiểm tra để tôi có bằng chứng để giải thích.",
                         "needs_clarification")
+    report("context")
     prescription, check, medications = await assistant_context(
         db, request.prescription_id, request.check_id)
     if prescription is None:
@@ -283,6 +287,8 @@ async def _answer(db: AsyncSession, request: AssistantRequest) -> AssistantRespo
         if relevant_names or (not findings and drug_question):
             absent = [name for name in (relevant_names or names)
                       if not await drug_in_catalog(db, name)]
+            if absent:
+                report("label_lookup")
             external_text, external_cites, external_found = await label_reply(
                 absent, request.message, unsafe, detail=request.detail)
         else:

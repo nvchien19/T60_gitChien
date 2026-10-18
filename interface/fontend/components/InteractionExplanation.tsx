@@ -2,26 +2,28 @@
 
 import { useEffect, useState } from 'react'
 import { Sparkles } from 'lucide-react'
-import { explainPair, type PairExplanation } from '@/lib/api'
+import { ProgressSteps } from '@/components/ProgressSteps'
+import { explainPair, type PairExplanation, type ProgressStage } from '@/lib/api'
 
-type State = { status: 'loading' } | { status: 'error'; message: string } | { status: 'done'; data: PairExplanation | null }
+type State = { status: 'loading'; stages: ProgressStage[] } | { status: 'error'; message: string } | { status: 'done'; data: PairExplanation | null }
 
 export function InteractionExplanation({ a, b }: { a: string; b: string }) {
-  const [state, setState] = useState<State>({ status: 'loading' })
+  const [state, setState] = useState<State>({ status: 'loading', stages: [] })
 
   useEffect(() => {
     let cancelled = false
-    setState({ status: 'loading' })
-    explainPair(a, b)
+    setState({ status: 'loading', stages: [] })
+    const { promise, unsubscribe } = explainPair(a, b, stages => { if (!cancelled) setState(current => current.status === 'loading' ? { status: 'loading', stages } : current) })
+    promise
       .then(data => { if (!cancelled) setState({ status: 'done', data }) })
       .catch(e => { if (!cancelled) setState({ status: 'error', message: (e as Error).message }) })
-    return () => { cancelled = true }
+    return () => { cancelled = true; unsubscribe() }
   }, [a, b])
 
   if (state.status === 'done' && !state.data) return null
   return <div>
     <h4 className="flex items-center gap-2 text-sm font-extrabold"><Sparkles className="size-4 text-teal-500" /> Giải thích bằng tiếng Việt</h4>
-    {state.status === 'loading' && <p role="status" className="mt-2 animate-pulse text-sm text-slate-500">Đang diễn giải bản ghi và đối chiếu từng câu với nguồn…</p>}
+    {state.status === 'loading' && <ProgressSteps className="mt-2" title="Đang chuẩn bị lời giải thích" stages={state.stages} note="Lời giải thích chỉ hiện sau khi từng câu đã được đối chiếu với bản ghi nguồn." />}
     {state.status === 'error' && <p role="alert" className="mt-2 text-sm text-rose-600">Chưa lấy được lời giải thích. {state.message}</p>}
     {state.status === 'done' && state.data && <>
       <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-slate-600">{state.data.text}</p>

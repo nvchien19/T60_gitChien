@@ -81,7 +81,7 @@ export default function Page() {
         </nav>
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <ThemeToggle checked={darkMode} onCheckedChange={changeTheme} compact />
-          <button onClick={() => setChatOpen(true)} className="home-header-cta hidden min-h-10 items-center rounded-lg bg-teal-600 px-4 py-2 text-sm font-bold text-white shadow-md shadow-teal-200 transition hover:bg-teal-700 sm:inline-flex">Bắt đầu kiểm tra <ArrowRight className="ml-2 inline size-4" /></button>
+          <button onClick={() => setChatOpen(true)} className="home-header-cta hidden items-center rounded-lg bg-teal-600 px-5 py-2 text-sm font-bold text-white shadow-md shadow-teal-200 transition hover:bg-teal-700 sm:inline-flex">Bắt đầu kiểm tra <ArrowRight className="ml-2 inline size-4" /></button>
           <a href="/login" aria-label="Đăng nhập" title="Đăng nhập" className="home-header-login hidden items-center justify-center rounded-full border border-teal-200/80 bg-white/60 text-teal-700 transition hover:bg-teal-50 sm:inline-flex"><LogIn className="size-4" /></a>
         </div>
         <button aria-label="Mở menu" onClick={() => setMenuOpen(!menuOpen)} className="rounded-lg p-2 text-slate-500 lg:hidden"><Menu className="size-5" /></button>
@@ -137,7 +137,7 @@ export default function Page() {
 
       <section id="safety" className="px-5 pb-20 sm:px-8"><div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-8 rounded-[2rem] bg-[#dff4f2] p-8 sm:p-12 lg:flex-row lg:items-center"><div><p className="text-[10px] font-black uppercase tracking-[0.2em] text-teal-700" style={{ fontFamily: 'inherit' }}>Sẵn sàng bắt đầu?</p><h2 className="mt-4 max-w-lg text-3xl font-black tracking-tight text-slate-900 sm:text-4xl" style={{ fontFamily: 'inherit' }}>Kiểm tra danh sách thuốc của bạn ngay hôm nay.</h2></div><button onClick={() => setChatOpen(true)} className="shrink-0 rounded-full bg-teal-600 px-7 py-4 text-sm font-bold text-white shadow-xl shadow-teal-200 hover:bg-teal-700" style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif' }}>Mở MediCheck <ArrowRight className="ml-2 inline size-4" /></button></div></section>
 
-      <footer className="border-t border-slate-100 px-5 py-8 sm:px-8"><div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left"><BrandLogo size={96} alt="Vinmec" className="h-auto w-24" /><p className="text-[10px] text-slate-400">Thông tin tham khảo, không thay thế chẩn đoán y khoa.</p></div></footer>
+      <footer className="border-t border-slate-100 px-5 py-8 sm:px-8"><div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left"><BrandLogo size={96} alt="VINMEC" className="h-auto w-24" /><p className="text-[10px] text-slate-400">Thông tin tham khảo, không thay thế chẩn đoán y khoa.</p></div></footer>
 
       {chatOpen && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/30 p-3 backdrop-blur-sm sm:items-center">

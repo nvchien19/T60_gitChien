@@ -33,14 +33,18 @@ def get_llm(
 
 def get_explainer_llm() -> ChatOpenAI | None:
     """LLM giải thích tương tác (DeepSeek, API tương thích OpenAI). None nếu chưa điền DEEPSEEK_API_KEY."""
-    api_key = os.getenv("DEEPSEEK_API_KEY", "").strip()
+    # Đọc qua Settings vì `.env` không được nạp vào os.environ; biến môi trường thật vẫn được ưu tiên.
+    from src.config import get_settings
+
+    s = get_settings()
+    api_key = s.deepseek_api_key.strip()
     if not api_key:
         return None
     return ChatOpenAI(
-        model=os.getenv("DEEPSEEK_MODEL") or DEFAULT_DEEPSEEK_MODEL,
+        model=s.deepseek_model or DEFAULT_DEEPSEEK_MODEL,
         api_key=api_key,
-        base_url=os.getenv("DEEPSEEK_BASE_URL") or DEFAULT_DEEPSEEK_BASE_URL,
-        temperature=float(os.getenv("EXPLAIN_TEMPERATURE") or DEFAULT_EXPLAIN_TEMPERATURE),
-        timeout=float(os.getenv("EXPLAIN_TIMEOUT_S") or DEFAULT_EXPLAIN_TIMEOUT_S),
+        base_url=s.deepseek_base_url or DEFAULT_DEEPSEEK_BASE_URL,
+        temperature=s.explain_temperature,
+        timeout=s.explain_timeout_s,
         max_retries=1,
     )

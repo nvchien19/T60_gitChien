@@ -17,6 +17,7 @@ import {
   History,
   Home,
   Info,
+  LoaderCircle,
   Menu,
   Pill,
   Plus,
@@ -28,7 +29,9 @@ import {
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-const MedicationAssistantWidget = dynamic(() => import("@/components/MedicationAssistantWidget").then(module => module.MedicationAssistantWidget), { loading: () => <p role="status" className="fixed bottom-5 right-5 rounded-xl bg-white p-4 text-sm shadow-lg">Đang tải trợ lý…</p> });
+// Tải sẵn mã trợ lý khi người dùng rê chuột/chạm vào nút, để lúc bấm mở gần như không phải chờ.
+const loadAssistant = () => import("@/components/MedicationAssistantWidget");
+const MedicationAssistantWidget = dynamic(() => loadAssistant().then(module => module.MedicationAssistantWidget), { loading: () => <p role="status" className="fixed bottom-20 right-4 z-[9999] flex min-h-11 items-center gap-2 rounded-full bg-slate-900 px-4 py-3 text-xs font-bold text-white shadow-lg sm:right-5 lg:bottom-7 lg:right-8"><LoaderCircle className="size-4 animate-spin" /> Đang mở trợ lý…</p> });
 const PrescriptionEditor = dynamic(() => import("@/components/PrescriptionEditor").then(module => module.PrescriptionEditor), { loading: () => <p role="status" className="p-4 text-sm text-slate-500">Đang tải…</p> });
 import type { EditableMedicationDraft } from "@/components/PrescriptionEditor";
 import { FoodInteractions } from "@/components/FoodInteractions";
@@ -565,7 +568,7 @@ function ClinicalDashboard({ user, onLogout }: { user: AuthUser; onLogout: () =>
         onClose={() => setShowAssistant(false)}
         onSaved={reload}
         onView={openPrescription}
-      /> : <button type="button" onClick={() => setShowAssistant(true)} aria-label="Mở trợ lý An toàn Thuốc" className="fixed bottom-20 right-4 z-[9999] flex min-h-11 items-center gap-2 rounded-full bg-slate-900 px-4 py-3 text-xs font-bold text-white shadow-lg hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500 sm:right-5 lg:bottom-7 lg:right-8"><Bot className="size-4" /> Hỏi trợ lý</button>}
+      /> : <button type="button" onPointerEnter={() => void loadAssistant()} onFocus={() => void loadAssistant()} onClick={() => setShowAssistant(true)} aria-label="Mở trợ lý An toàn Thuốc" className="fixed bottom-20 right-4 z-[9999] flex min-h-11 items-center gap-2 rounded-full bg-slate-900 px-4 py-3 text-xs font-bold text-white shadow-lg hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500 sm:right-5 lg:bottom-7 lg:right-8"><Bot className="size-4" /> Hỏi trợ lý</button>}
       <nav
         aria-label="Điều hướng di động"
         className="fixed inset-x-0 bottom-0 z-30 flex border-t border-slate-200 bg-white/95 px-1 pb-[calc(env(safe-area-inset-bottom)+6px)] pt-1.5 backdrop-blur lg:hidden"
