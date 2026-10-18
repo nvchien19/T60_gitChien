@@ -65,6 +65,29 @@ export async function api<T>(path: string, body?: unknown, method?: 'POST' | 'PU
   return response.json() as Promise<T>
 }
 
+/** Read the combined evaluation report, with support for older API deployments. */
+export async function loadEvaluation(): Promise<EvalAll & { latestOnly?: boolean }> {
+  try {
+    return await api<EvalAll>('/eval/metrics/all')
+  } catch (error) {
+    if (!(error instanceof ApiError) || error.status !== 404) throw error
+  }
+  const latest = await api<EvalMetrics>('/eval/metrics')
+  return {
+    generated: latest.run,
+    n_cases: latest.n_cases,
+    confusion: latest.confusion,
+    runs: [],
+    metrics: latest.metrics.map(metric => ({
+      key: metric.key, op: metric.op, threshold: metric.threshold,
+      basis: metric.basis, pooled: metric.value, mean: metric.value,
+      passed: metric.passed, runs: {},
+    })),
+    benchmarks: [],
+    latestOnly: true,
+  }
+}
+
 export async function loadPrescriptions(): Promise<Prescription[]> {
   const rows: RawPrescription[] = []
   for (let offset = 0; ; offset += 100) {

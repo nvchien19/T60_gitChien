@@ -10,8 +10,7 @@ branch_labels = None
 depends_on = None
 
 
-def upgrade() -> None:
-    op.add_column("prescriptions", sa.Column("patient_context", sa.JSON(), nullable=True))
+def _create_gene_table() -> None:
     op.create_table(
         "gene_interactions",
         sa.Column("id", sa.BigInteger(), primary_key=True, autoincrement=False),
@@ -28,7 +27,19 @@ def upgrade() -> None:
         sa.Column("guideline_url", sa.Text()),
         sa.Column("source_id", sa.String(), sa.ForeignKey("sources.source_id"), nullable=False),
     )
-    op.create_index("ix_gene_interactions_drug_id", "gene_interactions", ["drug_id"])
+
+
+def upgrade() -> None:
+    inspector = sa.inspect(op.get_bind())
+    columns = {column["name"] for column in inspector.get_columns("prescriptions")}
+    if "patient_context" not in columns:
+        op.add_column("prescriptions", sa.Column("patient_context", sa.JSON(), nullable=True))
+    if not inspector.has_table("gene_interactions"):
+        _create_gene_table()
+    inspector = sa.inspect(op.get_bind())
+    indexes = {index["name"] for index in inspector.get_indexes("gene_interactions")}
+    if "ix_gene_interactions_drug_id" not in indexes:
+        op.create_index("ix_gene_interactions_drug_id", "gene_interactions", ["drug_id"])
 
 
 def downgrade() -> None:

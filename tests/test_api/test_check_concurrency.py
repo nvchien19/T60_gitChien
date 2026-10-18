@@ -9,7 +9,7 @@ from interface.backend.services import check_service
 
 @pytest.mark.asyncio
 async def test_ten_concurrent_normalizations_load_catalog_once(monkeypatch):
-    for name in ("_ALIASES_CACHE", "_NAMES_CACHE", "_ALIAS_INDEX", "_ALIAS_CHOICES"):
+    for name in ("_ALIASES_CACHE", "_NAMES_CACHE"):
         monkeypatch.setattr(check_service, name, None)
 
     loads = 0

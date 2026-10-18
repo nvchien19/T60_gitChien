@@ -6,6 +6,9 @@ Lớp orchestration của backend web. Lõi AI ở `src/` chỉ nhận dữ li�
 qua `interface/backend/agent_adapter` — không bao giờ tự truy vấn DB.
 """
 
+import asyncio
+from weakref import WeakKeyDictionary
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from interface.backend.config import get_settings
@@ -37,6 +40,7 @@ SYMBOL = {"contraindicated": "⛔", "major": "!", "moderate": "△", "minor": "�
 
 _ALIASES_CACHE: list | None = None
 _NAMES_CACHE: dict | None = None
+_CATALOG_LOCKS: WeakKeyDictionary[asyncio.AbstractEventLoop, asyncio.Lock] = WeakKeyDictionary()
 
 
 async def load_catalog(db: AsyncSession) -> tuple[list[AliasRow], dict[str, str]]:
@@ -47,12 +51,18 @@ async def load_catalog(db: AsyncSession) -> tuple[list[AliasRow], dict[str, str]
     global _ALIASES_CACHE, _NAMES_CACHE
     if _ALIASES_CACHE is not None and _NAMES_CACHE is not None:
         return _ALIASES_CACHE, _NAMES_CACHE
-    rows = await ddi_repo.get_aliases_for_fuzzy(db, limit=200000)
-    _ALIASES_CACHE = [AliasRow(alias=r[0], drug_id=r[1], alias_type=r[2],
-                               source_id=r[3] or "", status=r[4] or "ok",
-                               drug_name=r[5] or "") for r in rows]
-    _NAMES_CACHE = await ddi_repo.get_drug_names(db, list({a.drug_id for a in _ALIASES_CACHE}))
-    return _ALIASES_CACHE, _NAMES_CACHE
+    loop = asyncio.get_running_loop()
+    lock = _CATALOG_LOCKS.setdefault(loop, asyncio.Lock())
+    async with lock:
+        if _ALIASES_CACHE is not None and _NAMES_CACHE is not None:
+            return _ALIASES_CACHE, _NAMES_CACHE
+        rows = await ddi_repo.get_aliases_for_fuzzy(db, limit=200000)
+        aliases = [AliasRow(alias=r[0], drug_id=r[1], alias_type=r[2],
+                            source_id=r[3] or "", status=r[4] or "ok",
+                            drug_name=r[5] or "") for r in rows]
+        names = await ddi_repo.get_drug_names(db, list({a.drug_id for a in aliases}))
+        _ALIASES_CACHE, _NAMES_CACHE = aliases, names
+        return aliases, names
 
 
 async def normalize_list(db: AsyncSession, names: list[str]) -> list[NormalizedItem]:

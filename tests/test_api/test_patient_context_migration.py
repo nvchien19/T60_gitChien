@@ -10,7 +10,7 @@ from alembic.operations import Operations
 
 @pytest.mark.parametrize("already_created", [False, True])
 def test_patient_context_migration_preserves_precreated_gene_data(already_created):
-    path = Path(__file__).resolve().parents[2] / "alembic/versions/b2d5e7f91a38_patient_context_gene_interactions.py"
+    path = Path(__file__).resolve().parents[2] / "alembic/versions/b2d7e4a19630_patient_context_and_gene_interactions.py"
     spec = importlib.util.spec_from_file_location("patient_context_migration", path)
     migration = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(migration)
@@ -22,7 +22,7 @@ def test_patient_context_migration_preserves_precreated_gene_data(already_create
         with Operations.context(MigrationContext.configure(connection)):
             if already_created:
                 migration._create_gene_table()
-                connection.execute(sa.text("INSERT INTO gene_interactions (id, drug_name, genes) VALUES (1, 'fixture', '{}')"))
+                connection.execute(sa.text("INSERT INTO gene_interactions (id, drug_name, genes, lookupkey, source_id) VALUES (1, 'fixture', '{}', '{}', 'fixture')"))
             migration.upgrade()
             # Re-running against an existing schema must not duplicate objects or remove rows.
             migration.upgrade()
